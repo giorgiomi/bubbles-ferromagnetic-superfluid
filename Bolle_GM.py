@@ -186,7 +186,7 @@ threshold = -0.2 # used to discriminate the bubble
 
 # Cycle through days
 #for fs in np.arange(len(seqs)): # all seqs
-for fs in [2]: # only the first
+for fs in [0]: # only the first
     df12_ = pd.read_hdf(f[fs]) # importing sequence
 
     #Cycle through sequences
@@ -311,11 +311,12 @@ for fs in [2]: # only the first
                     # Bubble center and size
                     # print(f"b_center = {int(best_BS_right[1] / 2 + best_BS_left[1] / 2) - 150}")
                     # print(f"b_size = {best_2arctan[2] - best_2arctan[1]}")
-                    b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2) - 150) # why 150?
+                    # b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2) - 150) # why 150?
+                    b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2))
                     b_size.append(best_2arctan[2] - best_2arctan[1])
                     b_sizeADV.append(best_BS_right[1] - best_BS_left[1])
 
-                    print('Arctan fit working')
+                    #print('Arctan fit working')
                 
                 except:
                     print('Arctan fit does not work, going with gaussian')
@@ -335,26 +336,51 @@ for fs in [2]: # only the first
                     # Bubble center and size
                     b_size.append(best_GS[2] * 2.355)
                     b_sizeADV.append(best_GS[2] * 2.355)
-                    b_center.append(0)
+                    b_center.append(w)
 
             # Over the threshold value, the bubble is not formed, hence everything set to 0
             else: 
-                print("Over threshold")
+                #print("Over threshold")
                 b_size.append(0)
                 b_sizeADV.append(0)
                 b_center.append(0)
         
         b_size = np.array(b_size)
         b_sizeADV = np.array(b_sizeADV) 
-        b_center = np.array(b_center) 
+        b_center = np.array(b_center)
 
-        # Plotting the bubble
+
+        # Plotting the bubble (unordered)
         fig, ax = plt.subplots(figsize = (10, 5), ncols = 2)
-        # ax[0].pcolormesh(M, vmin = -1, vmax = +1, cmap = 'RdBu')
         ax[0].pcolormesh(M, vmin = -1, vmax = +1, cmap = 'RdBu')
-        Zlist = np.argsort(b_size)
-        Z = (M[Zlist])[np.where(b_size[Zlist] > 0)]
-        ax[1].pcolormesh(Z, vmin = -1, vmax = +1, cmap = 'RdBu')
+        ax[0].set_title('Unordered bubble')
+        ax[0].set_xlabel('x')
+        ax[0].set_ylabel('shots')
+
+        Zlist = np.argsort(b_sizeADV)
+        Z = (M[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
+        b_sizeADV_sorted = (b_sizeADV[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
+        b_center_sorted = (b_center[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
+
+        # Shifting
+        length = 2 * w
+        shift = - b_center_sorted + length/2
+        #print(shift)
+        max_shift = np.max(np.abs(shift))
+        #print(max_shift)
+        Z_shifted = np.zeros((len(Z), length + 2 * int(max_shift)))
+        for i in np.arange(len(Z_shifted)):
+            Z_shifted[i, (int(max_shift + int(shift[i]))) : (int(max_shift) + int(shift[i]) + length)] = Z[i]
+
+        #Plotting the bubble (ordered)
+        im = ax[1].pcolormesh(Z_shifted, vmin=-1, vmax=1, cmap='RdBu')
+        cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
+        fig.colorbar(im, cax=cbar_ax)
+        ax[1].set_title('Ordered bubble')
+        ax[1].set_xlabel('x')
+        # xx = xx - max_shift
+        # ax[1].set_xticks(np.linspace(0, len(xx)-1, 10))
+        # ax[1].set_xticklabels([int(x) for x in np.linspace(-max_shift, max_shift + length, 10)])
         plt.show()
 
         # Plotting bubble size
