@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+from scipy.fft import fft, ifft
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -388,5 +389,17 @@ for fs in [0]: # only the first
         plt.plot(b_sizeADV[np.argsort(b_sizeADV)])
         #plt.ylim(-10,300)
         plt.show()
+
+        ## Fourier Transform
+        # let's try with one example
+        y = Z_shifted[-50]
+        y = y[330:412]
+        yf = fft(y)
+        plt.plot(y)
+        plt.show()
+        plt.plot(yf) 
+        plt.yscale('log')
+        plt.show()
+
         
         
