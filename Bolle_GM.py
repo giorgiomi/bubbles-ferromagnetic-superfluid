@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from scipy.fft import fft, ifft
+from scipy.fft import fft, fftfreq, rfft, rfftfreq
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -391,15 +391,45 @@ for fs in [0]: # only the first
         plt.show()
 
         ## Fourier Transform
-        # let's try with one example
-        y = Z_shifted[-50]
-        y = y[330:412]
-        yf = fft(y)
+
+        # one example for now
+        index = -6 # index from last
+        y = Z[index] 
+        center = b_center_sorted[index]
+        extra_width = 0
+        width = b_sizeADV_sorted[index] + extra_width
+
         plt.plot(y)
+        plt.axvline(x = center, color='r', linestyle='--')
+        plt.axvline(x = center - width/2, color='r', linestyle='--')
+        plt.axvline(x = center + width/2, color='r', linestyle='--')
+        plt.grid()
+        plt.xlabel('x')
+        plt.ylabel('Z')
+        plt.title(f"Shot {index}")
         plt.show()
-        plt.plot(yf) 
+
+        # Selecting the outside of the bubble
+        outside_right = y[:int(center - width/2)]
+        outside_left = y[int(center + width/2):]
+
+        # Fourier Transform of the outside region
+        right_fft = rfft(outside_right)
+        right_fftfreq = rfftfreq(len(outside_right))
+        left_fft = rfft(outside_left)
+        left_fftfreq = rfftfreq(len(outside_left))
+
+        plt.plot(right_fftfreq, np.abs(right_fft), label='right')
+        plt.plot(left_fftfreq, np.abs(left_fft), label='left')
+        plt.grid()
+        plt.xlabel('omega')
+        # plt.ylabel('Z')
+        plt.title('Fourier Transform of the outside region')
+        plt.legend()
         plt.yscale('log')
         plt.show()
+
+        
 
         
         
