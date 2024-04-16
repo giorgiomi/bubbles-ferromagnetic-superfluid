@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from scipy.fft import fft, fftfreq, rfft, rfftfreq
+from scipy.fft import rfft, rfftfreq
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -187,7 +187,7 @@ threshold = -0.2 # used to discriminate the bubble
 
 # Cycle through days
 #for fs in np.arange(len(seqs)): # all seqs
-for fs in [0]: # only the first
+for fs in [2]: # only the first
     df12_ = pd.read_hdf(f[fs]) # importing sequence
 
     #Cycle through sequences
@@ -254,6 +254,7 @@ for fs in [0]: # only the first
         # Central region
         b_check_ROI = np.s_[:, (w - b_check):(w + b_check)] # Bubble checking for central region
         Mb = np.mean(M[b_check_ROI], axis=1) # average magnetization in the central 2*b_check pixels
+        n_shots = len(Mb)
 
         # Full region
         MK = np.mean(M, axis=1)
@@ -269,7 +270,7 @@ for fs in [0]: # only the first
         timeAdvBubble = []
 
         #Cycle through shots
-        for i in np.arange(len(Mb)):
+        for i in np.arange(n_shots):
             #initial values for bubble fitting
             init_amp = (0.7 - Mb[i]) / 2
             init_c1 =  w - LL[i]
@@ -349,15 +350,17 @@ for fs in [0]: # only the first
         b_size = np.array(b_size)
         b_sizeADV = np.array(b_sizeADV) 
         b_center = np.array(b_center)
+        np.savetxt('data/center.csv', b_center, delimiter=',')
+        np.savetxt('data/sizeADV.csv', b_sizeADV, delimiter=',')
 
-
-        # Plotting the bubble (unordered)
+        # Plotting the bubble (unsorted)
         fig, ax = plt.subplots(figsize = (10, 5), ncols = 2)
         ax[0].pcolormesh(M, vmin = -1, vmax = +1, cmap = 'RdBu')
-        ax[0].set_title('Unordered bubble')
+        ax[0].set_title('Unsorted bubble')
         ax[0].set_xlabel('x')
         ax[0].set_ylabel('shots')
 
+        # Sorting the bubble
         Zlist = np.argsort(b_sizeADV)
         Z = (M[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         b_sizeADV_sorted = (b_sizeADV[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
@@ -373,11 +376,11 @@ for fs in [0]: # only the first
         for i in np.arange(len(Z_shifted)):
             Z_shifted[i, (int(max_shift + int(shift[i]))) : (int(max_shift) + int(shift[i]) + length)] = Z[i]
 
-        #Plotting the bubble (ordered)
+        #Plotting the bubble (sorted)
         im = ax[1].pcolormesh(Z_shifted, vmin=-1, vmax=1, cmap='RdBu')
         cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
         fig.colorbar(im, cax=cbar_ax)
-        ax[1].set_title('Ordered bubble')
+        ax[1].set_title('Sorted bubble')
         ax[1].set_xlabel('x')
         # xx = xx - max_shift
         # ax[1].set_xticks(np.linspace(0, len(xx)-1, 10))
@@ -391,45 +394,54 @@ for fs in [0]: # only the first
         plt.show()
 
         ## Fourier Transform
+        # Cycle again through shots
+        for i in range(len(Z)):
+            y = Z[i] 
+            center = b_center_sorted[i]
+            extra_width = 0
+            width = b_sizeADV_sorted[i] + extra_width
 
-        # one example for now
-        index = -6 # index from last
-        y = Z[index] 
-        center = b_center_sorted[index]
-        extra_width = 0
-        width = b_sizeADV_sorted[index] + extra_width
+            # plt.plot(y)
+            # plt.axvline(x = center, color='r', linestyle='--')
+            # plt.axvline(x = center - width/2, color='r', linestyle='--')
+            # plt.axvline(x = center + width/2, color='r', linestyle='--')
+            # plt.grid()
+            # plt.xlabel('x')
+            # plt.ylabel('Z')
+            # plt.title(f"Shot {i}")
+            # plt.show()
 
-        plt.plot(y)
-        plt.axvline(x = center, color='r', linestyle='--')
-        plt.axvline(x = center - width/2, color='r', linestyle='--')
-        plt.axvline(x = center + width/2, color='r', linestyle='--')
-        plt.grid()
-        plt.xlabel('x')
-        plt.ylabel('Z')
-        plt.title(f"Shot {index}")
-        plt.show()
+            # Selecting the outside and inside of the bubble
+            outside_right = y[:int(center - width/2)]
+            outside_left = y[int(center + width/2):]
+            inside = y[int(center - width/2):int(center + width/2)]
 
-        # Selecting the outside of the bubble
-        outside_right = y[:int(center - width/2)]
-        outside_left = y[int(center + width/2):]
+            # Fourier Transform of the outside region
+            right_fft = rfft(outside_right)
+            right_fftfreq = rfftfreq(len(outside_right))
+            left_fft = rfft(outside_left)
+            left_fftfreq = rfftfreq(len(outside_left))
 
-        # Fourier Transform of the outside region
-        right_fft = rfft(outside_right)
-        right_fftfreq = rfftfreq(len(outside_right))
-        left_fft = rfft(outside_left)
-        left_fftfreq = rfftfreq(len(outside_left))
+            # Average
+            rl_avg_fft = (right_fft + left_fft) / 2
 
-        plt.plot(right_fftfreq, np.abs(right_fft), label='right')
-        plt.plot(left_fftfreq, np.abs(left_fft), label='left')
-        plt.grid()
-        plt.xlabel('omega')
-        # plt.ylabel('Z')
-        plt.title('Fourier Transform of the outside region')
-        plt.legend()
-        plt.yscale('log')
-        plt.show()
+            # plt.plot(right_fftfreq, np.abs(right_fft), label='right')
+            # plt.plot(left_fftfreq, np.abs(left_fft), label='left')
+            # plt.grid()
+            # # plt.xlabel('omega')
+            # # plt.ylabel('Z')
+            # plt.title('Fourier Transform of the outside region')
+            # plt.legend()
+            # plt.yscale('log')
+            # plt.show()
 
-        
+            # Fourier Transform of the inside region
+            inside_fft = rfft(inside)
+            inside_fftfreq = rfftfreq(len(inside))
 
-        
-        
+            # plt.plot(inside_fftfreq, np.abs(inside_fft), label='inside')
+            # plt.grid()
+            # # plt.xlabel('omega')
+            # plt.title('Fourier Transform of the inside region')
+            # plt.yscale('log')
+            # plt.show()
