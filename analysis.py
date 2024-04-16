@@ -2,13 +2,22 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.fft import rfft, rfftfreq
+
 from parameters import import_parameters
+import sys
 
 # Data
 f, seqs, Omega, knT, detuning = import_parameters()
 w = 200
 
-for day in np.arange(len(seqs)):
+if int(sys.argv[1]) == -1:
+    chosen_days = np.arange(len(seqs))
+else:
+    chosen_days = [int(sys.argv[1])]
+
+for day in chosen_days:
+#for day in np.arange(len(seqs)):
     for seq, seqi in enumerate((seqs[day])):
         df_center = pd.read_csv(f"data/day_{day}/seq_{seq}/center.csv")
         df_size = pd.read_csv(f"data/day_{day}/seq_{seq}/sizeADV.csv")
@@ -45,6 +54,27 @@ for day in np.arange(len(seqs)):
         fig.colorbar(im, cax=cbar_ax)
         ax[1].set_title('Sorted bubble')
         ax[1].set_xlabel('x')
+        fig.suptitle(f"Day {day}, sequence {seq}")
+        plt.show()
+
+        ## FFT
+        # FFT on background noise
+        M_noise = M[np.where(b_sizeADV == 0)]
+
+        noise_fft_mean = np.zeros(201)
+        for shot in M_noise:
+            noise_fft = rfft(shot)
+            noise_freq = rfftfreq(len(shot), d = 1)
+            #plt.plot(noise_freq, np.abs(noise_fft))
+            noise_fft_mean += np.abs(noise_fft)
+        noise_fft_mean /= len(M_noise)
+
+        plt.plot(noise_freq, noise_fft_mean, label='FFT on background noise')
+        plt.grid(True, which='both')
+        plt.title(f"Day {day}, sequence {seq}")
+        plt.yscale('log')
+        plt.legend()
+        plt.annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.85), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='square', facecolor='white', edgecolor='black'))
         plt.show()
 
         
