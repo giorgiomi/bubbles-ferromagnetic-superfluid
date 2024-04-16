@@ -1,8 +1,7 @@
+# Saves data from hdf to csv, with fits
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from scipy.fft import rfft, rfftfreq
 
 from parameters import import_parameters
 from functions import bubble, gauss, bubbleshoulder # fit functions
@@ -157,7 +156,7 @@ for fs in np.arange(len(seqs)): # all seqs
                 #print("Over threshold")
                 b_size.append(0)
                 b_sizeADV.append(0)
-                b_center.append(0)
+                b_center.append(w)
         
         b_size = np.array(b_size)
         b_sizeADV = np.array(b_sizeADV) 
