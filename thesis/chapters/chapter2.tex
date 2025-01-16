@@ -1,4 +1,17 @@
-\lipsum[3-4]
-ciaooooo
+\section{Raw data processing}
+Raw data is organized in a hierarchical system. At a fixed instant, the condensate's measured data are called a \textit{shot}. Each shot is part of a series of them that can be analyzed as the time evolution of a single system; this series is called a \textit{sequence}. Eventually, during a \textit{day} of measurements, many sequences may be collected, and a selection of them will be studied in the following analysis.
 
-\lipsum[1-5]
+Thus, a shot contains all the information of the system at a certain instant, including the magnetization data, and that is what concerns this work.
+
+\subsection{Bubble parameters}
+The most interesting parameters to retrieve from a shot are the bubble center and width.
+In order to find those parameters, the magnetization data is fitted with a double-arctangent function
+\begin{equation*}
+    M(x) = -A \left[\frac{2}{\pi}\arctan(\frac{x-x_1}{w_1}) - \frac{2}{\pi}\arctan(\frac{x-x_2}{w_2})\right] + \delta\, ,
+\end{equation*}
+where $x_1$ and $x_2$ are the centers of the arctangent "shoulders", and $w_1$ and $w_2$ are the arctangent widths.
+In some cases, especially when the magnetization does not reach the minimum value $M_{\rm min} = -1$ in the bubble center, it is better to use a gaussian profile, such as
+\begin{equation*}
+    M(x) = - A \exp{-\frac{(x-x_0)^2}{2w^2}} + \delta\, ,
+\end{equation*}
+with $x_0$ being the bubble center and $w$ its width.

@@ -1,20 +1,20 @@
 import numpy as np
 
 def import_parameters():
-    # Importing data from Bolle
-    f = [r"Bolle/08/seq_89.hdf", # database of a certain day
-        r"Bolle/08/seq_2.hdf",
-        r"Bolle/08/seq_8.hdf",
-        r"Bolle/11_14/seq_1.hdf",
-        r"Bolle/11_11/seq_1.hdf",
-        r"Bolle/11_25/seq_1.hdf",
-        r"Bolle/11_29/seq_1.hdf",
-        r"Bolle/11_30/seq_1.hdf",
-        r"Bolle/01_13/seq_1.hdf",
-        r"Bolle/01_16/seq_1.hdf",
-        r"Bolle/01_17/seq_1.hdf",
-        r"Bolle/01_19/seq_1.hdf",
-        r"Bolle/01_24/seq_1.hdf"]
+    # Importing data from raw
+    f = [r"raw/08/seq_89.hdf", # database of a certain day
+        r"raw/08/seq_2.hdf",
+        r"raw/08/seq_8.hdf",
+        r"raw/11_14/seq_1.hdf",
+        r"raw/11_11/seq_1.hdf",
+        r"raw/11_25/seq_1.hdf",
+        r"raw/11_29/seq_1.hdf",
+        r"raw/11_30/seq_1.hdf",
+        r"raw/01_13/seq_1.hdf",
+        r"raw/01_16/seq_1.hdf",
+        r"raw/01_17/seq_1.hdf",
+        r"raw/01_19/seq_1.hdf",
+        r"raw/01_24/seq_1.hdf"]
 
     # Choosing sequences
     seqs = [[[5],[6],[7],[8]], # useful sequences for day 1

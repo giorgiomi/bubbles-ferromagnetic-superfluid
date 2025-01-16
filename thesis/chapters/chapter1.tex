@@ -1,12 +1,11 @@
-\section{Prova}
-\gls{due}
-\nomenclature[psi]{$\ket{\psi}$}{Wave function}
-\nomenclature[h]{$\hbar$}{Planck's constant}
+The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom ($\mathbf{F} = \mathbf{I} + \mathbf{J}$, takes into account the nuclear spin and the total angular momentum of the electrons) and $m_F$ its projection on the quantization axis. The $\ket{\uparrow}$ state is then coupled to $\ket{1, -1} = \ket{\downarrow}$ through microwave radiation with amplitude $\Omega_R$.
 
-\lipsum[1-25]
+The trapping potential is harmonic in all three directions, but strongly asymmetric concerning the radial ($\rho$) and axial ($x$) directions. In fact, the trapping frequencies are respectively $\nu_\rho = 2\ \unit{\kilo\hertz}$ and $\nu_x = 20\ \unit{\hertz}$, yielding an elongated system (cigar-shaped) with inhomogeneous density. The spatial size of the system is given by the Thomas-Fermi radii $R_\rho = 2\ \unit{\micro\meter}$ and $R_x = 200\ \unit{\micro\meter}$. This particular setup is helpful for suppressing the radial spin dynamics of the condensate and thus being able to study its longitudinal properties.
 
-\section{Parte due}
-\lipsum[2-30]
-\cite{zenesini2024false}
-\Glspl{set}
+In order to extract the density distribution, the two spin states are treated independently one from another, and two imaging sequences are obtained at the end of each experimental realization. Then, an integration along the transverse direction is performed, obtaining two 1D density profiles $n_\uparrow(x)$ and $n_\downarrow(x)$, from which one can extract the relative magnetization
+\begin{equation*}
+    M(x) = \frac{n_\uparrow(x) - n_\downarrow(x)}{n_\uparrow(x) + n_\downarrow(x)}\, .
+\end{equation*}
 
+It is possible to study the two-component system by separating the treatment on the density ($n = n_\uparrow + n_\downarrow$) and the spin ($nM = n_\uparrow - n_\downarrow$) degrees of of freedom. 
+While the density is described by a continuity equation, the spin behaviour is ruled by a magnetic mean-field Hamiltionian, that presents a first-order phase transition in the central region of the system when $\Omega_R < |k|n$, where $k \propto \Delta a$. At fixed values of $\Omega_R$, the experiment can be tuned by the parameter $\delta$, expressing the \textit{detuning}. In general, the mean-field energy landscape $E(M)$ is described by an asymmetric double-well, that becomes symmetric for $\delta = 0$. In the case of $\delta > 0$, the energy is minimized by positive values of $M$, and the absolute minimum will correspond to

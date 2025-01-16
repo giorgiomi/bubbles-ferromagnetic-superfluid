@@ -26,14 +26,14 @@ threshold = -0.2 # used to discriminate the bubble
 # Cycle through days
 for fs in np.arange(len(seqs)): # all seqs
 # for fs in [0]: # only the first seq
-    if not os.path.exists(f"data/day_{fs}"):
-        os.mkdir(f"data/day_{fs}") # create a folder for the day
+    if not os.path.exists(f"data/processed/day_{fs}"):
+        os.mkdir(f"data/processed/day_{fs}") # create a folder for the day
     df12_ = pd.read_hdf(f[fs]) # importing sequence
 
     #Cycle through sequences
     for ei, ai in enumerate((seqs[fs])):
-        if not os.path.exists(f"data/day_{fs}/seq_{ei}"):
-            os.mkdir(f"data/day_{fs}/seq_{ei}") # create a folder for the sequence
+        if not os.path.exists(f"data/processed/day_{fs}/seq_{ei}"):
+            os.mkdir(f"data/processed/day_{fs}/seq_{ei}") # create a folder for the sequence
 
         m1 = [] # magnetization UP
         m2 = [] # magnetization DOWN

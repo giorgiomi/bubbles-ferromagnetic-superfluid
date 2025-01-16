@@ -11,17 +11,21 @@ import sys
 f, seqs, Omega, knT, detuning = import_parameters()
 w = 200
 
-if int(sys.argv[1]) == -1:
-    chosen_days = np.arange(len(seqs))
+if len(sys.argv) > 1:
+    if int(sys.argv[1]) == -1:
+        chosen_days = np.arange(len(seqs))
+    else:
+        chosen_days = [int(sys.argv[1])]
 else:
-    chosen_days = [int(sys.argv[1])]
+    print(f"Usage: {sys.argv[0]} <chosen_days>\t use chosen_days = -1 for all")
+    exit()
 
 for day in chosen_days:
 #for day in np.arange(len(seqs)):
     for seq, seqi in enumerate((seqs[day])):
-        df_center = pd.read_csv(f"data/day_{day}/seq_{seq}/center.csv")
-        df_size = pd.read_csv(f"data/day_{day}/seq_{seq}/sizeADV.csv")
-        df_M = pd.read_csv(f"data/day_{day}/seq_{seq}/magnetization.csv")
+        df_center = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/center.csv")
+        df_size = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/sizeADV.csv")
+        df_M = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/magnetization.csv")
 
         b_center = df_center.to_numpy().flatten()
         b_sizeADV = df_size.to_numpy().flatten()
