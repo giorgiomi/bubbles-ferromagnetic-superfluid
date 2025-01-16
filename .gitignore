@@ -1,3 +1,8 @@
+## A simple .gitignore config file, I am working with macOs and VS Code
+
+# VS Code
+.vscode
+
 # macOs
 *.DS_Store
 
@@ -11,3 +16,23 @@ __pycache__
 *.csv
 *.hdf
 *.rtf
+
+# latex
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.synctex(busy)
+*.bbl
+*.bcf
+*.fdb_latexmk
+*.fls
+*.blg
+*.run.xml
+main-frn.pdf
+main-frn.tex
+*.bcf-SAVE-ERROR
+*.bbl-SAVE-ERROR
+
+# images
+*.png
