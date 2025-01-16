@@ -37,24 +37,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Number of sample points
-N = 600
+N = 50
 
 # sample spacing
-T = 1.0 / 10.0
+T = 1.0
 x = np.linspace(0.0, N*T, N, endpoint=False)
 # y = np.sin(50.0 * 2.0*np.pi*x) + 0.5*np.sin(80.0 * 2.0*np.pi*x)
-y = np.sin(x)
+y = np.sin(x) - 10.0
 print(len(y), len(x))
 
 plt.plot(x, y)
 plt.show()
 
-yf = fft(y)
-xf = fftfreq(len(y), d=1)
+yf = rfft(y)
+xf = rfftfreq(len(y), d=1)
 
 plt.plot(xf, np.abs(yf))
 # plt.plot(xf, 2.0/N * np.abs(yf[0:N//2]))
-plt.yscale('log')
+# plt.yscale('log')
 plt.show()
 
 print(len(yf), len(xf))
