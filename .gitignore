@@ -8,6 +8,6 @@
 __pycache__
 
 # data
-.csv
-.hdf
-.rtf
+*.csv
+*.hdf
+*.rtf
