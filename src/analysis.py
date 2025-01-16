@@ -32,10 +32,10 @@ for day in chosen_days:
         M = df_M.to_numpy()
 
         # Plotting the bubble (unsorted)
-        fig, ax = plt.subplots(figsize = (10, 5), ncols = 2)
+        fig, ax = plt.subplots(figsize=(10, 5), ncols=3, gridspec_kw={'width_ratios': [1, 1, 0.05]})
         ax[0].pcolormesh(M, vmin = -1, vmax = +1, cmap = 'RdBu')
         ax[0].set_title('Unsorted bubble')
-        ax[0].set_xlabel('x')
+        ax[0].set_xlabel('$x\ [\mu m]$')
         ax[0].set_ylabel('shots')
 
         # Sorting the bubble
@@ -52,15 +52,14 @@ for day in chosen_days:
         for i in np.arange(len(Z_shifted)):
             Z_shifted[i, (int(max_shift + int(shift[i]))) : (int(max_shift) + int(shift[i]) + length)] = Z[i]
 
-        #Plotting the bubble (sorted)
+        # Plotting the bubble (sorted)
         im = ax[1].pcolormesh(Z_shifted, vmin=-1, vmax=1, cmap='RdBu')
-        cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
-        fig.colorbar(im, cax=cbar_ax)
+        cbar = fig.colorbar(im, cax=ax[2])
+        cbar.set_label('M', rotation=270)
         ax[1].set_title('Sorted bubble')
         ax[1].set_xlabel('x')
-        fig.suptitle(f"Day {day}, sequence {seq}")
+        fig.suptitle(f"Experiment realization of day {day}, sequence {seq}")
         plt.show()
-
 
         ## FFT
 
@@ -71,53 +70,66 @@ for day in chosen_days:
         for shot in M_noise:
             noise_fft = rfft(shot)
             noise_freq = rfftfreq(len(shot), d = 1)
-            #plt.plot(noise_freq, np.abs(noise_fft))
+            # plt.plot(noise_freq, np.abs(noise_fft))
             noise_fft_mean += np.abs(noise_fft)
         noise_fft_mean /= len(M_noise)
-        print(len(noise_freq))
 
         plt.plot(noise_freq, noise_fft_mean, '-', label='FFT on background noise')
-        plt.grid(True, which='both')
+        # plt.grid(True, which='both')
         plt.title(f"Day {day}, sequence {seq}")
         plt.yscale('log')
+        # plt.xscale('log')
         plt.legend()
-        plt.annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='square', facecolor='white', edgecolor='black'))
-        #plt.show()
+        plt.annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
+        # plt.show()
+
+        # exit()
 
         # FFT on bubble (inside)
         max_size = int((b_sizeADV_sorted[-1] + 1)/2)
         # print(f"max_size = {max_size}")
         inside_fft_mean = np.zeros(max_size)
 
+        # cycle through ordered shots from half to end
         for i in range(int(len(Z)/2), len(Z)):
+
+        # cycle through ordered shots from beginning to end
+        # for i in range(len(Z)):
             y = Z[i] 
             center = b_center_sorted[i]
-            extra_width = 0
+            extra_width = 0 # to change where FFT is done
             width = b_sizeADV_sorted[i] + extra_width
             inside = y[int(center - width/2):int(center + width/2)]
 
             inside_fft = rfft(inside)
             inside_freq = rfftfreq(len(inside), d = 1)
-            # print(f"shot #{i}: {len(inside_fft)}")
+            print(f"shot #{i}, len_fft: {len(inside_fft)}")
+            print(f"shot #{i}, len_freq: {len(inside_freq)}")
             inside_fft = np.concatenate((np.array(inside_fft), np.zeros(max_size - len(inside_fft))), axis=None)
+            
+            # plt.plot(inside_freq, np.abs(inside_fft))
+
             inside_fft_mean += np.abs(inside_fft)
 
+        print(len(inside_fft_mean))
+        print(len(Z))
         inside_fft_mean /= len(Z)
-        print(len(inside_freq))
 
         delta_freq = inside_freq[1] - inside_freq[0]
         inside_freq = np.arange(0, delta_freq * (max_size), delta_freq)
 
         plt.plot(inside_freq, inside_fft_mean, '-', label='FFT on inside region')
-        plt.grid(True, which='both')
-        plt.title(f"Day {day}, sequence {seq}")
+        # plt.grid(True, which='both')
+        plt.title(f"FFT analysis of day {day}, sequence {seq}")
+        plt.xlabel("f")
         plt.yscale('log')
+        plt.xlim(-0.02, 0.52)
         plt.legend()
-        plt.annotate(f"# of inside shots = {int(len(Z)/2)}", xy=(0.8, 0.65), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='square', facecolor='white', edgecolor='black'))
+        plt.annotate(f"# of inside shots = {int(len(Z)/2)}", xy=(0.8, 0.65), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
         plt.show()
 
-        # print(len(noise_freq))
-        # print(len(inside_freq))
+        print(f"Length of noise frequency array: {len(noise_freq)}")
+        print(f"Length of inside frequency array: {len(inside_freq)}")
 
   
         
