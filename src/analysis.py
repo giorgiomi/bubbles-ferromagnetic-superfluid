@@ -66,29 +66,42 @@ for day in chosen_days:
         # FFT on background noise
         M_noise = M[np.where(b_sizeADV == 0)]
 
-        noise_fft_mean = np.zeros(w + 1)
+        # Common frequency grid for noise
+        sampling_rate = 1.0
+        common_noise_freq_grid = rfftfreq(len(M_noise[0]), d=sampling_rate)
+
+        noise_fft_magnitudes = []
         for shot in M_noise:
             noise_fft = rfft(shot)
-            noise_freq = rfftfreq(len(shot), d = 1)
-            # plt.plot(noise_freq, np.abs(noise_fft))
-            noise_fft_mean += np.abs(noise_fft)
-        noise_fft_mean /= len(M_noise)
-        # print(f"noise fft len: {len(noise_fft_mean)}") # Noise data is always the same length, no problem here
+            noise_spectrum = np.abs(noise_fft)
+            noise_freq_grid = rfftfreq(len(shot), d=1.0)
+            
+            # Interpolate onto the common frequency grid
+            interpolated_noise_magnitude = np.interp(common_noise_freq_grid, noise_freq_grid, noise_spectrum)
+            noise_fft_magnitudes.append(interpolated_noise_magnitude)
+
+            # plt.plot(noise_freq_grid, noise_spectrum, alpha=0.03)
+
+        noise_fft_magnitudes = np.array(noise_fft_magnitudes)
+        noise_fft_mean = np.mean(noise_fft_magnitudes, axis=0)
+        noise_freq = common_noise_freq_grid
 
         plt.plot(noise_freq, noise_fft_mean, '-', label='FFT on background noise')
         plt.annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
         # plt.show()
 
         # FFT on bubble (inside)
-        max_size = int((b_sizeADV_sorted[-1] + 1)/2)
-        # print(f"max_size = {max_size}")
-        inside_fft_mean = np.zeros(max_size)
+        max_length = int(max(b_sizeADV_sorted) + 1)
 
+        # Common frequency grid
+        common_freq_grid = rfftfreq(max_length, d=sampling_rate)
+
+        inside_fft_magnitudes = []
         # cycle through ordered shots from half to end
-        # for i in range(int(len(Z)/2), len(Z)):
+        for i in range(int(len(Z)/2), len(Z)):
 
         # cycle through ordered shots from beginning to end
-        for i in range(len(Z)):
+        # for i in range(len(Z)):
             y = Z[i] 
             center = b_center_sorted[i]
             extra_width = -20 # to change where FFT is done
@@ -98,33 +111,26 @@ for day in chosen_days:
             # plt.plot(range(len(inside)), inside)
             # plt.show()
 
+            # compute FFT of the inside
+            N = len(inside)
+            freq_grid = rfftfreq(N, d=sampling_rate)
             inside_fft = rfft(inside)
-            inside_freq = rfftfreq(len(inside), d = 1)
-            # print(f"shot #{i}, len_fft: {len(inside_fft)}")
-            # print(f"shot #{i}, len_freq: {len(inside_freq)}")
+            inside_spectrum = np.abs(inside_fft)
+            
+            # Interpolate onto the common frequency grid
+            interpolated_magnitude = np.interp(common_freq_grid, freq_grid, inside_spectrum)
+            inside_fft_magnitudes.append(interpolated_magnitude)
 
             ## plot each individual FFT to debug
             # plt.figure()
-            plt.plot(inside_freq, np.abs(inside_fft), alpha=0.05)
+            # plt.plot(freq_grid, inside_spectrum, alpha=0.03)
             # plt.yscale('log')
             # plt.show()
 
-            inside_fft = np.concatenate((np.array(inside_fft), np.zeros(max_size - len(inside_fft))), axis=None)
-            # print(f"len_inside_ftt_mean = {len(inside_fft_mean)}")
-            # print(np.abs(inside_fft))
+        inside_fft_magnitudes = np.array(inside_fft_magnitudes)
+        inside_fft_mean = np.mean(inside_fft_magnitudes, axis=0)
 
-            ## PROBLEM!! 
-            # I have to take the average value of the FFT, but the frequencies are not the same. 
-            inside_fft_mean += np.abs(inside_fft)
-
-        # print(len(inside_fft_mean))
-        # print(len(Z))
-        inside_fft_mean /= (len(Z))
-
-        delta_freq = inside_freq[1] - inside_freq[0]
-        inside_freq = np.arange(0, delta_freq * (max_size), delta_freq)
-
-        # plt.plot(inside_freq, inside_fft_mean, '-', label='FFT on inside region')
+        plt.plot(common_freq_grid, inside_fft_mean, '-', label='FFT on inside region')
         plt.title(f"FFT analysis of day {day}, sequence {seq}")
         plt.xlabel("f")
         # plt.xscale('log')
@@ -133,9 +139,3 @@ for day in chosen_days:
         plt.legend()
         plt.annotate(f"# of inside shots = {int(len(Z)/2)}", xy=(0.8, 0.65), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
         plt.show()
-
-        # print(f"Length of noise frequency array: {len(noise_freq)}")
-        # print(f"Length of inside frequency array: {len(inside_freq)}")
-
-  
-        
