@@ -47,3 +47,6 @@ main-frn.tex
 
 # images
 *.png
+
+# articles and books
+*.pdf

@@ -25,20 +25,20 @@ def bubbleshoulder(x, amp, cen1, offset, wid1):
 
 ## Data
 
-# Importing data from Bolle
-f = [r"Bolle/08/seq_89.hdf", # database of a certain day
-     r"Bolle/08/seq_2.hdf",
-     r"Bolle/08/seq_8.hdf",
-     r"Bolle/11_14/seq_1.hdf",
-     r"Bolle/11_11/seq_1.hdf",
-     r"Bolle/11_25/seq_1.hdf",
-     r"Bolle/11_29/seq_1.hdf",
-     r"Bolle/11_30/seq_1.hdf",
-     r"Bolle/01_13/seq_1.hdf",
-     r"Bolle/01_16/seq_1.hdf",
-     r"Bolle/01_17/seq_1.hdf",
-     r"Bolle/01_19/seq_1.hdf",
-     r"Bolle/01_24/seq_1.hdf"]
+# Importing data from data/raw
+f = [r"data/raw/08/seq_89.hdf", # database of a certain day
+     r"data/raw/08/seq_2.hdf",
+     r"data/raw/08/seq_8.hdf",
+     r"data/raw/11_14/seq_1.hdf",
+     r"data/raw/11_11/seq_1.hdf",
+     r"data/raw/11_25/seq_1.hdf",
+     r"data/raw/11_29/seq_1.hdf",
+     r"data/raw/11_30/seq_1.hdf",
+     r"data/raw/01_13/seq_1.hdf",
+     r"data/raw/01_16/seq_1.hdf",
+     r"data/raw/01_17/seq_1.hdf",
+     r"data/raw/01_19/seq_1.hdf",
+     r"data/raw/01_24/seq_1.hdf"]
 
 # Choosing sequences
 seqs = [[[5],[6],[7],[8]], # useful sequences for day 1
@@ -186,8 +186,8 @@ s_size = 30 # half size of the region to fit the shoulder
 threshold = -0.2 # used to discriminate the bubble
 
 # Cycle through days
-#for fs in np.arange(len(seqs)): # all seqs
-for fs in [2]: # only the first
+for fs in np.arange(len(seqs)): # all seqs
+# for fs in [2]: # only the first
     df12_ = pd.read_hdf(f[fs]) # importing sequence
 
     #Cycle through sequences
@@ -300,15 +300,16 @@ for fs in [2]: # only the first
                     best_BS_right, covar_BS_right = curve_fit(bubbleshoulder, xx_right, Mi_right, p0 = init_BS_right)
 
                     # Plot bubble and bubbleshoulder fit
-                    # plt.plot(xx, M[i])
-                    # plt.plot(xx, bubble(xx, *best_2arctan))
-                    # plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left))
-                    # plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right))
-                    # plt.title('Arctan and shoulders fit')
-                    # plt.xlabel('x')
-                    # plt.ylabel('M')
-                    # plt.grid()
-                    # plt.show()
+                    plt.plot(xx, M[i], label="Data")
+                    plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
+                    plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
+                    plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
+                    plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
+                    plt.xlabel('$x\ [\mu m]$')
+                    plt.ylabel('$Z(x)$')
+                    plt.legend()
+                    # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
+                    plt.show()
 
                     # Bubble center and size
                     # print(f"b_center = {int(best_BS_right[1] / 2 + best_BS_left[1] / 2) - 150}")
@@ -321,19 +322,20 @@ for fs in [2]: # only the first
                     #print('Arctan fit working')
                 
                 except:
-                    print('Arctan fit does not work, going with gaussian')
+                    # print('Arctan fit does not work, going with gaussian')
 
                     # Gaussian fit
                     best_GS, covar_GS = curve_fit(gauss, xx, M[i], p0 = [2, w, 10, .7])
 
                     # Plot gaussian fit
-                    # plt.plot(xx, M[i])
-                    # plt.plot(xx, gauss(xx, *best_GS))
-                    # plt.grid()
-                    # plt.title('Gaussian fit')
-                    # plt.xlabel('x')
-                    # plt.ylabel('M')
-                    # plt.show()
+                    plt.plot(xx, M[i], label="Data")
+                    plt.plot(xx, gauss(xx, *best_GS), label="Gaussian fit")
+                    plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
+                    plt.xlabel('$x\ [\mu m]$')
+                    plt.ylabel('$Z(x)$')
+                    plt.legend()
+                    plt.savefig('thesis/figures/chap2/gaussian_fit.png', dpi=500)
+                    plt.show()
                     
                     # Bubble center and size
                     b_size.append(best_GS[2] * 2.355)
@@ -350,8 +352,8 @@ for fs in [2]: # only the first
         b_size = np.array(b_size)
         b_sizeADV = np.array(b_sizeADV) 
         b_center = np.array(b_center)
-        np.savetxt('data/center.csv', b_center, delimiter=',')
-        np.savetxt('data/sizeADV.csv', b_sizeADV, delimiter=',')
+        # np.savetxt('data/center.csv', b_center, delimiter=',')
+        # np.savetxt('data/sizeADV.csv', b_sizeADV, delimiter=',')
 
         # Plotting the bubble (unsorted)
         fig, ax = plt.subplots(figsize = (10, 5), ncols = 2)

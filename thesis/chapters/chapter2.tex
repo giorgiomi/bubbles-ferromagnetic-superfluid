@@ -1,17 +1,61 @@
-\section{Raw data processing}
-Raw data is organized in a hierarchical system. At a fixed instant, the condensate's measured data are called a \textit{shot}. Each shot is part of a series of them that can be analyzed as the time evolution of a single system; this series is called a \textit{sequence}. Eventually, during a \textit{day} of measurements, many sequences may be collected, and a selection of them will be studied in the following analysis.
+Raw data is organized in a hierarchical system. At a fixed instant, the condensate's measured data are called a \textit{shot} (it refers to the imaging process). Each shot is part of a series of them that can be analyzed as the time evolution of a single system: this series is called a \textit{sequence}. Eventually, during a \textit{day} of measurements, many sequences may be collected, and a selection of them will be studied in the following analysis. For each sequence, the experimental data contains also the radiation coupling $\Omega_R$ in a range between 200 and 800 \unit{\hertz} (it changes from one day of measurements to another) and the detuning $\delta$.
 
-Thus, a shot contains all the information of the system at a certain instant, including the magnetization data, and that is what concerns this work.
+A shot contains all the information on the system at a certain instant, including the two population densities, $n_\uparrow(x)$ for to the atoms in the state $\ket{\uparrow}$ and $n_\downarrow(x)$ for the atoms in the state $\ket{\downarrow}$, distributed on a length scale from 0 to 400 pixels. The spatial resolution of the image is $1\ \text{pixel}\ = 1\ \unit{\micro\meter}$, so the two length units will be often used interchangeably. The magnetization data $Z(x)$ is calculated with Eq.\ \eqref{eq:magnetization} and, by definition, composed of a series of values ranging from $-1$ to $1$.
 
-\subsection{Bubble parameters}
-The most interesting parameters to retrieve from a shot are the bubble center and width.
-In order to find those parameters, the magnetization data is fitted with a double-arctangent function
+\section{Magnetization data}
+Our focus here is to study the magnetization of the system, developing a method to analyze the effects of its bubble formation.
+
+\subsection{Bubble parameters and shot sorting}
+In order to study the bubble dynamics, the most interesting parameters to retrieve from a shot are the bubble center $x_0$ and width $w$. However, not all shots contain a bubble, namely the ones taken when the bubble was not formed yet. We can easily classify the two types of shots by computing the magnetization average in the central region and using a threshold value of $Z_{\rm thr} = -0.2$. The no-bubble shots will be useful later, when dealing with the noise frequency spectrum.
+
+To find the bubble parameters, the magnetization data is fitted with a double-arctangent function
+\begin{equation}
+    Z_{\rm fit}(x) = -A \left[\frac{2}{\pi}\arctan(\frac{x-c_1}{w_1}) - \frac{2}{\pi}\arctan(\frac{x-c_2}{w_2})\right] + \Delta\, ,
+    \label{eq:double-atan}
+\end{equation}
+where $c_1$ and $c_2$ are the centers of the arctangent "shoulders", and $w_1$ and $w_2$ are their characteristic widths. Then, for a better result, a further fit is performed on each shoulder with a single-arctangent function
 \begin{equation*}
-    M(x) = -A \left[\frac{2}{\pi}\arctan(\frac{x-x_1}{w_1}) - \frac{2}{\pi}\arctan(\frac{x-x_2}{w_2})\right] + \delta\, ,
+    Z_{\rm fit}(x) = -A \frac{2}{\pi}\arctan(\frac{x-c}{w}) + \Delta\, ,
 \end{equation*}
-where $x_1$ and $x_2$ are the centers of the arctangent "shoulders", and $w_1$ and $w_2$ are the arctangent widths.
-In some cases, especially when the magnetization does not reach the minimum value $M_{\rm min} = -1$ in the bubble center, it is better to use a gaussian profile, such as
+yielding the shoulder center $c$. Eventually, we obtain the bubble center $x_0 = (c_1 + c_2)/2$ and the bubble width $w = c_2 - c_1$.
+
+In some cases, especially when the bubble is narrow, the fitting procedure to optimize the parameters of Eq.\ \eqref{eq:double-atan}'s function fails and we are forced to use a gaussian profile such as
 \begin{equation*}
-    M(x) = - A \exp{-\frac{(x-x_0)^2}{2w^2}} + \delta\, ,
+    Z_{\rm fit}(x) = - A \exp\left[-\frac{(x-c)^2}{2\sigma^2}\right] + \Delta\, ,
 \end{equation*}
-with $x_0$ being the bubble center and $w$ its width.
+with $x_0 = c$ being the bubble center and $w = \num{2.335}\ \sigma$ its width.
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/chap2/arctan_fit.png}
+        \caption{Example of double arctangent fit results performed on a shot.}
+        \label{fig:atan-fit}
+    \end{minipage}
+    \hspace{0.02\textwidth}
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/chap2/gaussian_fit.png}
+        \caption{Example of gaussian fit results performed on a shot.}
+        \label{fig:gaussian-fit}
+    \end{minipage}
+\end{figure}
+
+An example of fitting with the arctangent functions is provided in Fig.\ \ref{fig:atan-fit}, while a gaussian fit is shown in Fig.\ \ref{fig:gaussian-fit}.
+
+% \subsection{Shot sorting}
+Once the width is retrieved, it is useful to order the shots in a sequence by this parameter. This process lets us display the system evolution, in contrast to the original shot ordering based on the experimental time waited before observing the bubble. Furthermore, we can obtain a nicer picture by aligning the bubbles to their center.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chap2/shot_sorting.png}
+    \caption{Shot sorting based on bubble width and alignment based on bubble center. Both parameters are estimated from the previous fitting procedure.}
+    \label{fig:sorting}
+\end{figure}
+An example sequence is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
+
+\subsection{FFT analysis}
+
+\subsection{Autocorrelation analysis}
+
+\section{Density data}

@@ -149,7 +149,7 @@ for fs in np.arange(len(seqs)): # all seqs
                     # Bubble center and size
                     b_size.append(best_GS[2] * 2.355)
                     b_sizeADV.append(best_GS[2] * 2.355)
-                    b_center.append(w)
+                    b_center.append(best_GS[1])
 
             # Over the threshold value, the bubble is not formed, hence everything set to 0
             else: 

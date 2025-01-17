@@ -34,7 +34,7 @@ for day in chosen_days:
         # Plotting the bubble (unsorted)
         fig, ax = plt.subplots(figsize=(10, 5), ncols=3, gridspec_kw={'width_ratios': [1, 1, 0.05]})
         ax[0].pcolormesh(M, vmin = -1, vmax = +1, cmap = 'RdBu')
-        ax[0].set_title('Unsorted bubble')
+        ax[0].set_title('Unsorted shots')
         ax[0].set_xlabel('$x\ [\mu m]$')
         ax[0].set_ylabel('shots')
 
@@ -56,9 +56,10 @@ for day in chosen_days:
         im = ax[1].pcolormesh(Z_shifted, vmin=-1, vmax=1, cmap='RdBu')
         cbar = fig.colorbar(im, cax=ax[2])
         cbar.set_label('M', rotation=270)
-        ax[1].set_title('Sorted bubble')
+        ax[1].set_title('Sorted shots')
         ax[1].set_xlabel('x')
         fig.suptitle(f"Experiment realization of day {day}, sequence {seq}")
+        # plt.savefig("thesis/figures/chap2/shot_sorting.png", dpi=500)
         plt.show()
 
         ## FFT
@@ -98,10 +99,10 @@ for day in chosen_days:
 
         inside_fft_magnitudes = []
         # cycle through ordered shots from half to end
-        for i in range(int(len(Z)/2), len(Z)):
+        # for i in range(int(len(Z)/2), len(Z)):
 
         # cycle through ordered shots from beginning to end
-        # for i in range(len(Z)):
+        for i in range(len(Z)):
             y = Z[i] 
             center = b_center_sorted[i]
             extra_width = -20 # to change where FFT is done
@@ -137,5 +138,6 @@ for day in chosen_days:
         plt.yscale('log')
         plt.xlim(-0.02, 0.52)
         plt.legend()
-        plt.annotate(f"# of inside shots = {int(len(Z)/2)}", xy=(0.8, 0.65), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
+        # change label depending on how many shots are analyzed
+        plt.annotate(f"# of inside shots = {int(len(Z))}", xy=(0.8, 0.65), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
         plt.show()
