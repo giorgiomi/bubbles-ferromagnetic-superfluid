@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-from parameters import import_parameters
-from functions import bubble, gauss, bubbleshoulder # fit functions
+from util.parameters import import_parameters
+from util.functions import bubble, gauss, bubbleshoulder # fit functions
 
 import os
 import warnings

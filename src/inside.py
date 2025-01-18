@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import rfft, rfftfreq
 
-from parameters import import_parameters
+from util.parameters import import_parameters
 import sys
 
 # Data
@@ -24,13 +24,14 @@ for day in chosen_days:
     for seq, seqi in enumerate((seqs[day])):
         df_size_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/sizeADV_sorted.csv")
         df_center_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/center_sorted.csv")
+        df_Z_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/Z_sorted.csv")
+
         b_sizeADV_sorted = df_size_sorted.to_numpy().flatten()
         b_center_sorted = df_center_sorted.to_numpy().flatten()
-
-        ## FFT
-        sampling_rate = 1.0
+        Z = df_Z_sorted.to_numpy()
 
         # FFT on bubble (inside)
+        sampling_rate = 1.0
         max_length = int(max(b_sizeADV_sorted) + 1)
 
         # Common frequency grid
@@ -70,6 +71,17 @@ for day in chosen_days:
         inside_fft_magnitudes = np.array(inside_fft_magnitudes)
         inside_fft_mean = np.mean(inside_fft_magnitudes, axis=0)
 
+        # Colormap
+        plt.figure()
+        plt.imshow(np.log(inside_fft_magnitudes + 1e-10), aspect='auto', extent=[common_freq_grid[0], common_freq_grid[-1], 0, len(Z)], origin='lower', cmap='viridis')
+        plt.colorbar(label='Log Magnitude')
+        plt.title(f"Inside FFT for day {day}, sequence {seq}")
+        plt.xlabel("Frequency")
+        plt.ylabel("Shot number")
+        plt.show()
+
+        # Average
+        plt.figure()
         plt.plot(common_freq_grid, inside_fft_mean, '-', label='FFT on inside region')
         plt.title(f"FFT analysis of day {day}, sequence {seq}")
         plt.xlabel("f")

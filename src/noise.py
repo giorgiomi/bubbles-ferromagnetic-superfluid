@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import rfft, rfftfreq
 
-from parameters import import_parameters
+from util.parameters import import_parameters
 import sys
 
 # Data
