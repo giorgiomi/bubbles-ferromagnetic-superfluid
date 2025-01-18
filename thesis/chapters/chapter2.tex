@@ -6,7 +6,7 @@ A shot contains all the information on the system at a certain instant, includin
 Our focus here is to study the magnetization of the system, developing a method to analyze the effects of its bubble formation.
 
 \subsection{Bubble parameters and shot sorting}
-In order to study the bubble dynamics, the most interesting parameters to retrieve from a shot are the bubble center $x_0$ and width $w$. However, not all shots contain a bubble, namely the ones taken when the bubble was not formed yet. We can easily classify the two types of shots by computing the magnetization average in the central region and using a threshold value of $Z_{\rm thr} = -0.2$. The no-bubble shots will be useful later, when dealing with the noise frequency spectrum.
+In order to study the bubble dynamics, the most interesting parameters to retrieve from a shot are the bubble center $x_0$ and width $\sigma_B$. However, not all shots contain a bubble, namely the ones taken when the bubble was not formed yet. We can easily classify the two types of shots by computing the magnetization average in the central region and using a threshold value of $Z_{\rm thr} = -0.2$. The no-bubble shots will be useful later, when dealing with the noise frequency spectrum.
 
 To find the bubble parameters, the magnetization data is fitted with a double-arctangent function
 \begin{equation}
@@ -17,13 +17,13 @@ where $c_1$ and $c_2$ are the centers of the arctangent "shoulders", and $w_1$ a
 \begin{equation*}
     Z_{\rm fit}(x) = -A \frac{2}{\pi}\arctan(\frac{x-c}{w}) + \Delta\, ,
 \end{equation*}
-yielding the shoulder center $c$. Eventually, we obtain the bubble center $x_0 = (c_1 + c_2)/2$ and the bubble width $w = c_2 - c_1$.
+yielding the shoulder center $c$. Eventually, we obtain the bubble center $x_0 = (c_1 + c_2)/2$ and the bubble width $\sigma_B = c_2 - c_1$.
 
 In some cases, especially when the bubble is narrow, the fitting procedure to optimize the parameters of Eq.\ \eqref{eq:double-atan}'s function fails and we are forced to use a gaussian profile such as
 \begin{equation*}
     Z_{\rm fit}(x) = - A \exp\left[-\frac{(x-c)^2}{2\sigma^2}\right] + \Delta\, ,
 \end{equation*}
-with $x_0 = c$ being the bubble center and $w = \num{2.335}\ \sigma$ its width.
+with $x_0 = c$ being the bubble center and $\sigma_B = \num{2.335}\ \sigma$ its width.
 
 \begin{figure}[h!]
     \centering
@@ -46,7 +46,7 @@ An example of fitting with the arctangent functions is provided in Fig.\ \ref{fi
 
 % \subsection{Shot sorting}
 Once the width is retrieved, it is useful to order the shots in a sequence by this parameter. This process lets us display the system evolution, in contrast to the original shot ordering based on the experimental time waited before observing the bubble. Furthermore, we can obtain a nicer picture by aligning the bubbles to their center.
-\begin{figure}[h!]
+\begin{figure}[t!]
     \centering
     \includegraphics[width=\textwidth]{figures/chap2/shot_sorting.png}
     \caption{Shot sorting based on bubble width and alignment based on bubble center. Both parameters are estimated from the previous fitting procedure.}
