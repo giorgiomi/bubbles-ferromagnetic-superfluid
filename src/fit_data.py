@@ -1,6 +1,7 @@
 # Saves data from hdf to csv, with fits
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
 from util.parameters import import_parameters
@@ -96,6 +97,8 @@ for fs in np.arange(len(seqs)): # all seqs
         b_size = []
         b_sizeADV = []
         b_center = []
+        b_inside_boundary_left = []
+        b_inside_boundary_right = []
         times = np.unique(time) 
         MbList = []
         timeAdvBubble = []
@@ -134,9 +137,25 @@ for fs in np.arange(len(seqs)): # all seqs
                     # print(f"b_center = {int(best_BS_right[1] / 2 + best_BS_left[1] / 2) - 150}")
                     # print(f"b_size = {best_2arctan[2] - best_2arctan[1]}")
                     # b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2) - 150) # why 150?
+
+                    # Plot bubble and bubbleshoulder fit
+                    # plt.plot(xx, M[i], label="Data")
+                    # plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
+                    # plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
+                    # plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
+                    # plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
+                    # plt.xlabel('$x\ [\mu m]$')
+                    # plt.ylabel('$Z(x)$')
+                    # plt.legend()
+                    # # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
+                    # plt.show()
+
                     b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2))
                     b_size.append(best_2arctan[2] - best_2arctan[1])
                     b_sizeADV.append(best_BS_right[1] - best_BS_left[1])
+
+                    b_inside_boundary_left.append(best_BS_left[1] + 2*best_BS_left[3]) # defines the inside region with BS fit
+                    b_inside_boundary_right.append(best_BS_right[1] - 2*best_BS_right[3]) # defines the inside region with BS fit
 
                     #print('Arctan fit working')
                 
@@ -146,10 +165,24 @@ for fs in np.arange(len(seqs)): # all seqs
                     # Gaussian fit
                     best_GS, covar_GS = curve_fit(gauss, xx, M[i], p0 = [2, w, 10, .7])
 
+                    # Plot gaussian fit
+                    # plt.plot(xx, M[i], label="Data")
+                    # plt.plot(xx, gauss(xx, *best_GS), label="Gaussian fit")
+                    # plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
+                    # plt.xlabel('$x\ [\mu m]$')
+                    # plt.ylabel('$Z(x)$')
+                    # plt.legend()
+                    # plt.savefig('thesis/figures/chap2/gaussian_fit.png', dpi=500)
+                    # plt.show()
+
                     # Bubble center and size
                     b_size.append(best_GS[2] * 2.355)
                     b_sizeADV.append(best_GS[2] * 2.355)
+                    # print(best_GS[2] * 2.355)
                     b_center.append(best_GS[1])
+
+                    b_inside_boundary_left.append(best_GS[1] - best_GS[2] * 0.5) # defines the inside region with GS fit
+                    b_inside_boundary_right.append(best_GS[1] + best_GS[2] * 0.5) # defines the inside region with GS fit
 
             # Over the threshold value, the bubble is not formed, hence everything set to 0
             else: 
@@ -157,10 +190,16 @@ for fs in np.arange(len(seqs)): # all seqs
                 b_size.append(0)
                 b_sizeADV.append(0)
                 b_center.append(w)
+                b_inside_boundary_left.append(w)
+                b_inside_boundary_right.append(w)
         
         b_size = np.array(b_size)
         b_sizeADV = np.array(b_sizeADV) 
         b_center = np.array(b_center)
-        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
-        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
-        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
+        b_inside_boundary_left = np.array(b_inside_boundary_left)
+        b_inside_boundary_right = np.array(b_inside_boundary_right)
+        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
+        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
+        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
+        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
+        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')

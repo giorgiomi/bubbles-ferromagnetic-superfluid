@@ -30,6 +30,7 @@ __pycache__
 *.lof
 *.toc
 *.aux
+*.pyg
 *.log
 *.out
 *.synctex.gz

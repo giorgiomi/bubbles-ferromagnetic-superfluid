@@ -24,9 +24,13 @@ for day in chosen_days:
         df_center = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/center.csv")
         df_size = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/sizeADV.csv")
         df_M = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/magnetization.csv")
+        df_in_left = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_left.csv")
+        df_in_right = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_right.csv")
 
         b_center = df_center.to_numpy().flatten()
         b_sizeADV = df_size.to_numpy().flatten()
+        in_left = df_in_left.to_numpy().flatten()
+        in_right = df_in_right.to_numpy().flatten()
         M = df_M.to_numpy()
 
         # Plotting the bubble (unsorted)
@@ -41,6 +45,8 @@ for day in chosen_days:
         Z = (M[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         b_sizeADV_sorted = (b_sizeADV[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         b_center_sorted = (b_center[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
+        in_left_sorted = (in_left[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
+        in_right_sorted = (in_right[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
 
         # Shifting
         length = 2 * w
@@ -53,8 +59,10 @@ for day in chosen_days:
         # save Z, Z_shifted on file
         # np.savetxt(f"data/processed/day_{day}/seq_{seq}/Z_shifted.csv", Z_shifted, delimiter=',')
         # np.savetxt(f"data/processed/day_{day}/seq_{seq}/Z_sorted.csv", Z, delimiter=',')
-        np.savetxt(f"data/processed/day_{day}/seq_{seq}/center_sorted.csv", b_center_sorted, delimiter=',')
-        np.savetxt(f"data/processed/day_{day}/seq_{seq}/sizeADV_sorted.csv", b_sizeADV_sorted, delimiter=',')
+        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/center_sorted.csv", b_center_sorted, delimiter=',')
+        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/sizeADV_sorted.csv", b_sizeADV_sorted, delimiter=',')
+        np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_left_sorted.csv", in_left_sorted, delimiter=',')
+        np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_right_sorted.csv", in_right_sorted, delimiter=',')
 
         # Plotting the bubble (sorted)
         # im = ax[1].pcolormesh(Z_shifted, vmin=-1, vmax=1, cmap='RdBu')

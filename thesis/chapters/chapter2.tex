@@ -55,7 +55,13 @@ Once the width is retrieved, it is useful to order the shots in a sequence by th
 An example sequence is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
 
 \subsection{FFT analysis}
+Since we are interested in the dynamics of the bubble, energy propagation is an important feature to focus on. In order to study it, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signal. We will first approach the problem of deriving such a profile using Fast Fourier Transform (FFT), an algorithm that implements the Discrete Fourier Transform (DFT) in an efficient manner. Given the input as a sequence of $N$ discrete values $Z_0,\dots,Z_{N-1}$ sampled with spacing $\Delta x$, by definition the DFT is a series of $N$ discrete values $\mathcal{Z}_0,\dots,\mathcal{Z}_{N-1}$ spaced by $\Delta\nu = 1/(N\Delta x)$ such that
+\begin{equation*}
+    \mathcal{Z}_k = \sum_{n=0}^{n=N-1} Z_n e^{-2\pi i \frac{k}{N}n}\, .
+\end{equation*}
+When the input $Z_n$ is real-valued, the transform is too, and it is also symmetric between positive and negative frequencies. The physical world contains only positive frequencies, so we will neglect the negative part of the transform.\footnote{This is achievable in \texttt{Python} using the function \texttt{rfft} instead of \texttt{fft}.}
 
+\newpage
 \subsection{Autocorrelation analysis}
 
 \section{Density data}
