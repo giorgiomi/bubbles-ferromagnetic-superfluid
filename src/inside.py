@@ -82,8 +82,11 @@ for day in chosen_days:
             # print(day, seq, i, N)
             if N > 0:
                 freq_grid = rfftfreq(N, d=sampling_rate)
-                inside_fft = rfft(inside)
+                inside_fft = rfft(inside - np.mean(inside)) ## doing FFT on zero-mean signal
                 inside_spectrum = np.abs(inside_fft)
+
+                # plt.plot(inside-np.mean(inside))
+                # plt.show()
 
                 # plt.plot(freq_grid, inside_spectrum)
                 # plt.title(f"Day {day}, Seq {seq}, Shot {i}")
@@ -104,7 +107,7 @@ for day in chosen_days:
         if int(sys.argv[1]) != -1:
             # Colormap
             plt.figure()
-            plt.imshow(np.log(inside_fft_magnitudes + 1e-10), aspect='auto', extent=[common_freq_grid[0], common_freq_grid[-1], 0, len(Z)], origin='lower', cmap='viridis')
+            plt.imshow(np.log(inside_fft_magnitudes[:,1:]), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], 0, len(Z)-1], origin='lower', cmap='viridis')
             plt.colorbar(label='Log Magnitude')
             plt.title(f"inside FFT of day {day}, sequence {seq}")
             plt.xlabel("Frequency")
@@ -113,7 +116,7 @@ for day in chosen_days:
             
             # Average
             plt.figure()
-            plt.plot(common_freq_grid, inside_fft_mean, '-', label='FFT on background inside')
+            plt.plot(common_freq_grid[1:], inside_fft_mean[1:], '-', label='FFT on background inside')
             plt.annotate(f"# of inside shots = {len(Z)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
             plt.title(f"FFT analysis of day {day}, sequence {seq}")
             plt.xlabel("f")
@@ -131,7 +134,7 @@ sorted_omegas = sorted(omega_fft_dict.keys())
 for omega in sorted_omegas: 
     fft_list = omega_fft_dict[omega]
     avg_fft = np.mean(fft_list, axis=0)
-    plt.plot(common_freq_grid, avg_fft, '-', label=fr'$\Omega = {omega}$ Hz')
+    plt.plot(common_freq_grid[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$ Hz')
     
 plt.xlabel("f")
 plt.yscale('log')

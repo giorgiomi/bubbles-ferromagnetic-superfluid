@@ -41,7 +41,9 @@ for day in chosen_days:
 
         noise_fft_magnitudes = []
         for shot in M_noise:
-            noise_fft = rfft(shot)
+            # plt.plot(shot-np.mean(shot))
+            # plt.show()
+            noise_fft = rfft(shot - np.mean(shot)) ## doing FFT on zero-mean signal
             noise_spectrum = np.abs(noise_fft)
             noise_freq_grid = rfftfreq(len(shot), d=1.0)
             
@@ -88,7 +90,7 @@ sorted_omegas = sorted(omega_fft_dict.keys())
 for omega in sorted_omegas:
     fft_list = omega_fft_dict[omega]
     avg_fft = np.mean(fft_list, axis=0)
-    plt.plot(noise_freq, avg_fft, '-', label=fr'$\Omega = {omega}$')
+    plt.plot(noise_freq[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$')
     
 plt.xlabel("f")
 plt.yscale('log')
@@ -97,15 +99,3 @@ plt.legend()
 plt.title("Average noise FFTs")
 # plt.savefig("thesis/figures/chap2/noiseFFT.png", dpi=500)
 plt.show()
-
-# Colormap for average FFTs, doesn't look to good
-# plt.figure()
-# all_ffts = np.array([np.mean(fft_list, axis=0) for fft_list in omega_fft_dict.values()])
-# omega_values = list(omega_fft_dict.keys())
-# plt.imshow(np.log(all_ffts + 1e-10), aspect='auto', extent=[noise_freq[0], noise_freq[-1], omega_values[0], omega_values[-1]], origin='lower', cmap='viridis')
-# plt.colorbar(label='Log Magnitude')
-# plt.title("Colormap of Average FFTs")
-# plt.xlabel("Frequency")
-# plt.ylabel("Omega")
-# # plt.yticks(ticks=np.arange(len(omega_values)), labels=[f'{omega:.2f}' for omega in omega_values])
-# plt.show()
