@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import rfft, rfftfreq
+from scipy.signal import correlate
 
 from util.parameters import import_parameters
 import sys
@@ -40,12 +41,19 @@ for day in chosen_days:
         common_noise_freq_grid = rfftfreq(len(M_noise[0]), d=sampling_rate)
 
         noise_fft_magnitudes = []
+        noise_autocorr_values = []
         for shot in M_noise:
             # plt.plot(shot-np.mean(shot))
             # plt.show()
             noise_fft = rfft(shot - np.mean(shot)) ## doing FFT on zero-mean signal
             noise_spectrum = np.abs(noise_fft)
             noise_freq_grid = rfftfreq(len(shot), d=1.0)
+
+            # plt.plot(correlate(shot, shot))
+            # noise_autocorr = correlate(shot - np.mean(shot), shot - np.mean(shot))
+            noise_autocorr = correlate(shot, shot)
+            noise_autocorr /= noise_autocorr[0]
+            noise_autocorr_values.append(noise_autocorr)
             
             # Interpolate onto the common frequency grid
             interpolated_noise_magnitude = np.interp(common_noise_freq_grid, noise_freq_grid, noise_spectrum)
@@ -54,6 +62,8 @@ for day in chosen_days:
         noise_fft_magnitudes = np.array(noise_fft_magnitudes)
         noise_fft_mean = np.mean(noise_fft_magnitudes, axis=0)
         noise_freq = common_noise_freq_grid
+
+        noise_autocorr_values = np.array(noise_autocorr_values)
 
         # Store FFT results by omega
         if omega not in omega_fft_dict:
@@ -98,4 +108,12 @@ plt.xlim(-0.02, 0.52)
 plt.legend()
 plt.title("Average noise FFTs")
 # plt.savefig("thesis/figures/chap2/noiseFFT.png", dpi=500)
+plt.show()
+
+
+## Plot autocorr values
+plt.figure()
+noise_autocorr_mean = np.mean(noise_autocorr_values, axis=0)
+plt.plot(noise_autocorr_mean)
+plt.title("Noise autocorrelation mean")
 plt.show()
