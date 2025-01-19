@@ -125,12 +125,12 @@
     \ifdefined\@LogoSfondo
         \ifdefined\@opacitaSfondo {} \else{\@opacitaSfondo=0.05}\fi
         \backgroundsetup{
-            scale=2,
+            scale=0.74,
             angle=20,
             opacity=\@opacitaSfondo,
             color=black,
             contents={\begin{tikzpicture}[remember picture, overlay]
-                \node at ([xshift=-10cm,yshift=-19cm] current page.north east)
+                \node at ([xshift=-9cm,yshift=-26cm] current page.north east)
                     {\includegraphics{\@LogoSfondo}};
                 \end{tikzpicture}}}
         \BgThispage
