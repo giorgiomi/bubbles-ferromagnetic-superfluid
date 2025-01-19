@@ -1,5 +1,76 @@
-\section{Gross-Pitaevskii equation}
+In this chapter we will briefly discuss the theoretical background used when dealing with two-component coherently coupled spin mixtures of BECs. Since we are dealing with a many-body quantum problem, the standard approach is to use a quantum field to describe the state of the condensate. This leads directly to the Gross-Pitaevskii equation, which will be the starting point of this discussion. The following content is mostly based on Ref.\ \cite{lamporesi2023twocomponentspinmixtures}.
 
+\section{Gross-Pitaevskii equation}
+For a 1D single-component BEC, namely made of only one species of $N$ indistinguishable bosons, one can use a single wavefunction $\psi(x,t)$ to describe its ground state (GS) by exploiting a mean-field approximation, thus revealing the Gross-Pitaevskii equation (GPE):
+\begin{equation}
+    i\hbar \pdv{\psi(x,t)}{t} = \left[ 
+        -\frac{\hbar^2}{2m}\nabla^2 + V(x,t) + g|\psi(x,t)|^2
+    \right] \psi(x,t)\, .
+\end{equation}
+The unusual term in this equation is the one proportional to the square modulus of the wavefunction through the constant $g$, called the \textit{contact interaction constant}, that describes the interactions between bosons. In fact, for an ideal gas of non-interacting bosons, $g = 0$ and one retrieves the standard Schrödinger equation, but this situation is not realistic for our purposes. The interaction constant can be written in terms of the boson-boson scattering length $a$, a typical property of elastic collisions, by
+\[
+    g = \frac{4\pi\hbar^2}{m}a\, ,
+\]
+with $g > 0$ for a stable BEC (for $g < 0$ the system is unstable and collapses on itself).
+
+The GPE can be written in its stationary form as
+\begin{equation}
+    \left[ 
+        -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g|\psi(x)|^2
+    \right] \psi(x) = \mu \psi(x)\, ,
+    \label{eq:GPE_stat}
+\end{equation}
+where $\mu$ is the chemical potential and accounts for the energy contribution of a single particle. Spatial properties of the condensate can arise from this equation, especially in the case of $N \gg 1$ and when the interaction term is dominating. By neglecting the kinetic energy term from Eq.\ \eqref{eq:GPE_stat}, one easily gets the stationary solution
+\[
+    |\psi(x)|^2 = n(x) = \frac{\mu - V(x)}{g}\, ,
+\]
+where $n(x)$ is the density distribution, and the association of the latter with the square modulus of the wavefunction leads to the normalization condition $\int |\psi(x)|^2 \dd x = N$. A relevant case is when the external potential is harmonic, yielding a parabolic distribution
+\begin{equation*}
+    n(x) = \frac{\mu - \frac{1}{2}m\omega^2x^2}{g} = 0 \qquad
+    \Leftrightarrow \qquad
+    x = R_{\rm TF} = \sqrt{\frac{2\mu}{m\omega^2}}\, ,
+\end{equation*}
+with $R_{\rm TF}$ being the Thomas-Fermi radius, a parameter indicating the spatial confinement of the condensate.
+
+\section{Two-component spin mixture}
+When the system is composed of two different species ($a$ and $b$), Eq.\ \eqref{eq:GPE_stat} splits into two coupled stationary GPEs:
+\begin{align*}
+    &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{aa}|\psi_a(x)|^2 + g_{ab}|\psi_b(x)|^2
+    \right] \psi_a(x) = \mu_a \psi_a(x)\, , \\
+    &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{ab}|\psi_a(x)|^2 + g_{bb}|\psi_b(x)|^2
+    \right] \psi_b(x) = \mu_b \psi_b(x)\, .
+\end{align*}
+This is due to the possibility of collisions not only between bosons $a$-$a$ or $b$-$b$, but also of the type $a$-$b$, thus producing three interaction constants $g_{aa}, g_{bb}, g_{ab}$. Depending on those constants' values, the system can assume different behaviours and GS configurations. 
+
+For example, take the case of a flat box potential in a total fixed volume $V$, yielding constant densities. Letting $n_a = |\psi_a|^2$ and $n_b = |\psi_b|^2$, we can express the energy density in the following way:
+\begin{equation*}
+    \mathcal{E} = \frac{1}{2}g_a n_a^2 + \frac{1}{2}g_b n_b^2 + g_{ab}n_a n_b - \mu_a n_a - \mu_b n_b\, ,
+\end{equation*}
+where the first three terms represent the interactions between particles of the same type and between different ones, while the last two terms account for the chemical potentials. Now, we state that the system is thermodynamically stable and miscible if and only if the Hessian of $\mathcal{E}$ with respect to $n_a$ and $n_b$ is positive-definite. The calculation is straight-forward:
+\begin{equation*}
+    H = 
+    \begin{bmatrix}
+        \pdv[2]{\mathcal{E}}{n_a} &  \pdv{\mathcal{E}}{n_a}{n_b} \\
+        \pdv{\mathcal{E}}{n_a}{n_b} &  \pdv[2]{\mathcal{E}}{n_b}
+    \end{bmatrix} = 
+    \begin{bmatrix}
+        g_a &  g_{ab} \\
+        g_{ab} &  g_b
+    \end{bmatrix} > 0
+    \qquad \Leftrightarrow \qquad
+    \begin{cases}
+        g_a > 0 \\
+        g_b > 0 \\
+        g_a g_b > g_{ab}^2
+    \end{cases}\, .
+\end{equation*}
+The first two conditions ensure that neither $a$ nor $b$ collapse, while the latter expresses the condition for miscibility. Intuitively, if $g_{ab}$ is small with respect to the other constants, it means that the two species do not interact much one with the other, thus letting themselves mix and spatially overlap. On the other hand, if $g_{ab}$ is big (and positive), they strongly repulse and undergo a phase separation. From now on, only repulsive interactions will be considered, so the only possibilities will be immiscible or miscible (no collapse).
+
+In the more general case of a non-uniform trapping potential, the densities depend from the position and the distributions are correlated with the interaction constants. Considering the harmonic trap and the miscible case, if $g_a < g_b$ then the species $a$ will be confined in a small central region, while the species $b$ will occupy more space.
+
+\section{Coherently coupled mixture}
+
+\newpage
 \section{Experimental platform}
 The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom ($\mathbf{F} = \mathbf{I} + \mathbf{J}$, takes into account the nuclear spin and the total angular momentum of the electrons) and $m_F$ its projection on the quantization axis. The $\ket{\uparrow}$ state is then coupled to $\ket{1, -1} = \ket{\downarrow}$ through microwave radiation with amplitude $\Omega_R$.
 
