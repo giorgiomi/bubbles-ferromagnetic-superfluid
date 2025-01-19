@@ -1,4 +1,4 @@
-In this chapter we will briefly discuss the theoretical background used when dealing with two-component coherently coupled spin mixtures of BECs. Since we are dealing with a many-body quantum problem, the standard approach is to use a quantum field to describe the state of the condensate. This leads directly to the Gross-Pitaevskii equation, which will be the starting point of this discussion. The following content is mostly based on Ref.\ \cite{lamporesi2023twocomponentspinmixtures}.
+In this chapter we will briefly discuss the theoretical background used when dealing with two-component coherently coupled spin mixtures of BECs. Since we are dealing with a many-body quantum problem, the standard approach is to use a quantum field to describe the state of the condensate. This leads directly to the Gross-Pitaevskii equation, which will be the starting point of this discussion. The following content is mostly based on Ref.\ \cite{lamporesi2023two}.
 
 \section{Gross-Pitaevskii equation}
 For a 1D single-component BEC, namely made of only one species of $N$ indistinguishable bosons, one can use a single wavefunction $\psi(x,t)$ to describe its ground state (GS) by exploiting a mean-field approximation, thus revealing the Gross-Pitaevskii equation (GPE):
@@ -31,6 +31,21 @@ where $n(x)$ is the density distribution, and the association of the latter with
     x = R_{\rm TF} = \sqrt{\frac{2\mu}{m\omega^2}}\, ,
 \end{equation*}
 with $R_{\rm TF}$ being the Thomas-Fermi radius, a parameter indicating the spatial confinement of the condensate.
+
+Another important property to study is the elementary excitations spectrum due to small perturbations of the GS. It is called the Bogoljubov spectrum and yields
+\begin{equation*}
+    E(k) = \hbar \omega(k) = \sqrt{\frac{\hbar^2 k^2}{2m}\left(\frac{\hbar^2 k^2}{2m} + 2mc^2\right)} \approx
+    \begin{cases}
+        \hbar c k \qquad \text{if} \quad \hbar k \ll mc\\
+        \frac{\hbar^2 k^2}{2m} \qquad \text{if} \quad \hbar k \gg mc
+    \end{cases}\, .
+    \label{eq:excit}
+\end{equation*}
+
+Also, the healing length is a quantity that expresses how small can spatial changes of the wavefunction be at most. It is
+\begin{equation*}
+    \xi = \frac{1}{\sqrt{8\pi n a}} = \frac{\hbar}{\sqrt{2m n g}}\, .
+\end{equation*}
 
 \section{Two-component spin mixture}
 When the system is composed of two different species ($a$ and $b$), Eq.\ \eqref{eq:GPE_stat} splits into two coupled stationary GPEs:
@@ -66,11 +81,30 @@ where the first three terms represent the interactions between particles of the 
 \end{equation*}
 The first two conditions ensure that neither $a$ nor $b$ collapse, while the latter expresses the condition for miscibility. Intuitively, if $g_{ab}$ is small with respect to the other constants, it means that the two species do not interact much one with the other, thus letting themselves mix and spatially overlap. On the other hand, if $g_{ab}$ is big (and positive), they strongly repulse and undergo a phase separation. From now on, only repulsive interactions will be considered, so the only possibilities will be immiscible or miscible (no collapse).
 
-In the more general case of a non-uniform trapping potential, the densities depend from the position and the distributions are correlated with the interaction constants. Considering the harmonic trap and the miscible case, if $g_a < g_b$ then the species $a$ will be confined in a small central region, while the species $b$ will occupy more space.
+In the more general case of a non-uniform trapping potential, the densities depend from the position and the distributions are correlated with the interaction constants. Considering the harmonic trap and the miscible case, if $g_a > g_b$ then the species $b$ will be confined in a small central region, while the species $a$ will occupy more space.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/chap1/buoyancy.png}
+    \caption{GPE simulation of a two-component balanced mixture in a harmonic potential. The shaded purple region shows the density distribution of population $a$ and the yellow one the population $b$. Here, a small magnetic field is used to break the left-right simmetry. The total density profile is drawn in black.} 
+    \label{fig:buoy}
+\end{figure}
+This is shown in the lower section of Fig.\ \ref{fig:buoy}, while the upper section shows the immiscible case and the buoyancy (again, $g_a > g_b$). One notes that the total density profile is not Thomas-Fermi anymore when $g_a \neq g_b$.
+
+It is natural to wonder what the excitation spectrum might look like when two components are present, especially when there is spatial overlap between them. The Bogoljubov spectrum of Eq.\ \eqref{eq:excit} is preserved, but now divided into two energy channels, namely spin and density:
+\begin{equation*}
+    E_{d,s}(k) = \hbar \omega_{d,s}(k) = \sqrt{\frac{\hbar^2 k^2}{2m}\left(\frac{\hbar^2 k^2}{2m} + 2mc_{d,s}^2\right)}\, ,
+\end{equation*}
+with the speeds of sound ($+$ for the density and $-$ for the spin) being
+\begin{equation*}
+    c_{d,s}^2 = \frac{(g_a n_a + g_b n_b) \pm \sqrt{(g_a n_a - g_b n_b)^2 + 4g_{ab}^2 n_a n_b}}{2m}\, .
+\end{equation*}
+There are also two distinct healing lengths,
+\begin{equation*}
+    \xi_{d,s} = \frac{\hbar}{\sqrt{2}mc_{d,s}}\, .
+\end{equation*}
 
 \section{Coherently coupled mixture}
 
-\newpage
 \section{Experimental platform}
 The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom ($\mathbf{F} = \mathbf{I} + \mathbf{J}$, takes into account the nuclear spin and the total angular momentum of the electrons) and $m_F$ its projection on the quantization axis. The $\ket{\uparrow}$ state is then coupled to $\ket{1, -1} = \ket{\downarrow}$ through microwave radiation with amplitude $\Omega_R$.
 
