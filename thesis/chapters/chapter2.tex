@@ -54,16 +54,30 @@ Once the width is retrieved, it is useful to order the shots in a sequence by th
 \end{figure}
 An example sequence is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
 
-\subsection{FFT analysis}
-Since we are interested in the dynamics of the bubble, energy propagation is an important feature to focus on. In order to study it, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signal. We will first approach the problem of deriving such a profile using Fast Fourier Transform (FFT), an algorithm that implements the Discrete Fourier Transform (DFT) in an efficient manner. Given the input as a sequence of $N$ discrete values $Z_0,\dots,Z_{N-1}$ sampled with spacing $\Delta x$, by definition the DFT is a series of $N$ discrete values $\mathcal{Z}_0,\dots,\mathcal{Z}_{N-1}$ spaced by $\Delta\nu = 1/(N\Delta x)$ such that
+\subsection{FFT and ACF analysis}
+Since we are interested in the dynamics of the bubble, energy propagation is an important feature to focus on. In order to study it, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signal. 
+
+We will first approach the problem of deriving such a profile using Fast Fourier Transform (FFT), an algorithm that implements the Discrete Fourier Transform (DFT) in an efficient manner. Given the input as a sequence of $N$ discrete values $Z_0,\dots,Z_{N-1}$ sampled with spacing $\Delta x$, by definition the DFT is a series of $N$ discrete values $\mathcal{Z}_0,\dots,\mathcal{Z}_{N-1}$ spaced by $\Delta k = 1/(N\Delta x)$ and convoluted with a complex phase such that
 \begin{equation*}
     \mathcal{Z}_k = \sum_{n=0}^{n=N-1} Z_n e^{-2\pi i \frac{k}{N}n}\, .
 \end{equation*}
 When the input $Z_n$ is real-valued, the transform is too, and it is also symmetric between positive and negative frequencies. The physical world contains only positive frequencies, so we will neglect the negative part of the transform.\footnote{This is achievable in \texttt{Python} using the function \texttt{rfft} instead of \texttt{fft}.}
 
+Another tool that can be used to study the periodic properties of a signal is the autocorrelation function (ACF). Similarly to the DFT, the ACF is also a particular type of convolution, where the signal is convoluted with itself. Taking the same input as before, the output will be a series of values $\mathcal{A}_0,\dots,\mathcal{A}_{2N-2}$ living in the spatial domain such that:
+\begin{equation*}
+    \mathcal{A}_k = \sum_{n=0}^{N-1} Z_n Z^*_{n-k+N-1}\, .
+\end{equation*}
+
+Now, what we shall do is to compute the FFT and the ACF on the data, taking care of the fact that it is probably better to separate the inside region (the bubble) from the outside one and look for periodic signals in both. We will also compute the transforms on the no-bubble shots. An example of the inside region computation is presented in Fig.\ \ref{fig:inside_00}.
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/chap2/inside_fft_acf_day_0_seq_0.png}
+    \caption{Example of FFT and ACF calculated in a sequence. The values for each shot are shown in the left plots, while the averages are on the right.}
+    \label{fig:inside_00}
+\end{figure}
+
+\subsection{Border alignment}
+
 \newpage
-\subsection{Autocorrelation analysis}
-Another tool that can be used to study the periodic properties of a signal is autocorrelation.
-
-
 \section{Density data}
