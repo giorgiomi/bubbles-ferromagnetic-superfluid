@@ -52,8 +52,8 @@ for day in chosen_days:
             noise_fft_magnitudes.append(interpolated_noise_magnitude)
 
             # plt.plot(correlate(shot, shot))
-            # noise_acf = correlate(shot - np.mean(shot), shot - np.mean(shot))
-            noise_acf = correlate(shot, shot, mode='full')
+            noise_acf = correlate(shot - np.mean(shot), shot - np.mean(shot))
+            # noise_acf = correlate(shot, shot, mode='full')
             noise_acf /= np.max(noise_acf)
             # print(noise_acf)
             noise_acf_values.append(noise_acf)
@@ -93,14 +93,14 @@ for day in chosen_days:
             im1 = axs[0, 0].imshow(np.log(noise_fft_magnitudes[:, 1:] + 1e-10), aspect='auto', extent=[noise_freq[1], noise_freq[-1], 0, len(M_noise)-1], origin='lower', cmap='viridis')
             fig.colorbar(im1, ax=axs[0, 0], label='Log Magnitude')
             axs[0, 0].set_title(f"Noise FFT of day {day}, sequence {seq}")
-            axs[0, 0].set_xlabel("Frequency")
+            axs[0, 0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
             axs[0, 0].set_ylabel("Shot number")
 
             # Average FFT
             axs[0, 1].plot(noise_freq[1:], noise_fft_mean[1:], '-', label='FFT on background noise')
             axs[0, 1].annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
-            axs[0, 1].set_title(f"FFT analysis of day {day}, sequence {seq}")
-            axs[0, 1].set_xlabel("f")
+            axs[0, 1].set_title(f"FFT average of day {day}, sequence {seq}")
+            axs[0, 1].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
             axs[0, 1].set_yscale('log')
             axs[0, 1].set_xlim(-0.02, 0.52)
             axs[0, 1].legend()
@@ -115,11 +115,12 @@ for day in chosen_days:
             # Average ACF
             axs[1, 1].plot(lag_grid, noise_acf_mean, '-', label='ACF on background noise')
             axs[1, 1].annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
-            axs[1, 1].set_title(f"ACF analysis of day {day}, sequence {seq}")
+            axs[1, 1].set_title(f"ACF average of day {day}, sequence {seq}")
             axs[1, 1].set_xlabel("Lag")
             axs[1, 1].legend()
 
             plt.tight_layout()
+            # plt.savefig(f"thesis/figures/chap2/noise_fft_acf_day_{day}_seq_{0}.png", dpi=500)
             plt.show()
 
 # Average all FFTs with the same omega
@@ -134,7 +135,7 @@ for omega in sorted_omegas:
     avg_fft = np.mean(fft_list, axis=0)
     axs[0].plot(noise_freq[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$')
 
-axs[0].set_xlabel("f")
+axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
 axs[0].set_yscale('log')
 axs[0].set_xlim(-0.02, 0.52)
 axs[0].legend()
@@ -151,6 +152,7 @@ axs[1].legend()
 axs[1].set_title("Average noise ACFs")
 
 plt.tight_layout()
+# plt.savefig(f"thesis/figures/chap2/noise_fft_acf_avg.png", dpi=500)
 plt.show()
 
 
@@ -166,7 +168,7 @@ fft_matrix = np.array([np.mean(detuning_fft_dict[detuning], axis=0) for detuning
 im1 = axs[0].imshow(np.log(fft_matrix[:, 1:] + 1e-10), aspect='auto', extent=[noise_freq[1], noise_freq[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='viridis')
 fig.colorbar(im1, ax=axs[0], label='Log Magnitude')
 axs[0].set_title("Average noise FFTs")
-axs[0].set_xlabel("Frequency")
+axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
 axs[0].set_ylabel("$\delta$")
 
 # Prepare data for colormap ACFs

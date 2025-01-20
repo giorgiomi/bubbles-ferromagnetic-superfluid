@@ -80,8 +80,8 @@ for day in chosen_days:
                 inside_fft = rfft(inside - np.mean(inside)) ## doing FFT on zero-mean signal
                 inside_spectrum = np.abs(inside_fft)
 
-                # inside_acf = correlate(inside - np.mean(inside), inside - np.mean(inside), mode='full')
-                inside_acf = correlate(inside, inside, mode='full')
+                inside_acf = correlate(inside - np.mean(inside), inside - np.mean(inside), mode='full')
+                # inside_acf = correlate(inside, inside, mode='full')
                 inside_acf /= np.max(inside_acf) # normalize to acf[0] = 1
                 # print(f"len autocorr = {len(inside_acf)}")
 
@@ -127,14 +127,14 @@ for day in chosen_days:
             im1 = axs[0, 0].imshow(np.log(inside_fft_magnitudes[:, 1:]), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], 0, len(Z)-1], origin='lower', cmap='plasma')
             fig.colorbar(im1, ax=axs[0, 0], label='Log Magnitude')
             axs[0, 0].set_title(f"Inside FFT of day {day}, sequence {seq}")
-            axs[0, 0].set_xlabel("Frequency")
+            axs[0, 0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
             axs[0, 0].set_ylabel("Shot number")
 
             # Average FFT
             axs[0, 1].plot(common_freq_grid[1:], inside_fft_mean[1:], '-', label='FFT on background inside')
             axs[0, 1].annotate(f"# of inside shots = {len(Z)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
             axs[0, 1].set_title(f"Inside FFT average of day {day}, sequence {seq}")
-            axs[0, 1].set_xlabel("f")
+            axs[0, 1].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
             axs[0, 1].set_yscale('log')
             axs[0, 1].set_xlim(-0.02, 0.52)
             axs[0, 1].legend()
@@ -154,6 +154,7 @@ for day in chosen_days:
             axs[1, 1].legend()
 
             plt.tight_layout()
+            # plt.savefig(f"thesis/figures/chap2/inside_fft_acf_day_{day}_seq_{seq}.png", dpi=500)
             plt.show()
 
 # FFTs and ACFs as a function of omega
@@ -168,10 +169,12 @@ for omega in sorted_omegas:
 
     acf_list = omega_acf_dict[omega]
     avg_acf = np.mean(acf_list, axis=0)
-    axs[1].plot(common_lag_grid, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
+    positive_lags = common_lag_grid[common_lag_grid >= 0]
+    positive_acf = avg_acf[common_lag_grid >= 0]
+    axs[1].plot(positive_lags, positive_acf, '-', label=fr'$\Omega = {omega}$ Hz')
 
 # Plot FFTs
-axs[0].set_xlabel("f")
+axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
 axs[0].set_yscale('log')
 axs[0].set_xlim(-0.02, 0.52)
 axs[0].legend()
@@ -183,6 +186,7 @@ axs[1].legend()
 axs[1].set_title("Average inside ACFs")
 
 plt.tight_layout()
+# plt.savefig(f"thesis/figures/chap2/inside_fft_avg.png", dpi=500)
 plt.show()
 
 # FFTs and ACFs as a function of detuning
@@ -210,7 +214,7 @@ acf_matrix = np.array(acf_matrix)
 im1 = axs[0].imshow(np.log(fft_matrix), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
 fig.colorbar(im1, ax=axs[0], label='Log Magnitude')
 axs[0].set_title("Average inside FFTs")
-axs[0].set_xlabel("Frequency")
+axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
 axs[0].set_ylabel("$\delta$")
 
 # Plot ACF colormap
