@@ -22,6 +22,7 @@ else:
     exit()
 
 omega_fft_dict = {}
+omega_acf_dict = {}
 
 for day in chosen_days:
     for seq, seqi in enumerate((seqs[day])):
@@ -41,7 +42,7 @@ for day in chosen_days:
         common_noise_freq_grid = rfftfreq(len(M_noise[0]), d=sampling_rate)
 
         noise_fft_magnitudes = []
-        noise_autocorr_values = []
+        noise_acf_values = []
         for shot in M_noise:
             # plt.plot(shot-np.mean(shot))
             # plt.show()
@@ -49,71 +50,98 @@ for day in chosen_days:
             noise_spectrum = np.abs(noise_fft)
             noise_freq_grid = rfftfreq(len(shot), d=1.0)
 
-            # plt.plot(correlate(shot, shot))
-            # noise_autocorr = correlate(shot - np.mean(shot), shot - np.mean(shot))
-            noise_autocorr = correlate(shot, shot)
-            noise_autocorr /= noise_autocorr[0]
-            noise_autocorr_values.append(noise_autocorr)
-            
             # Interpolate onto the common frequency grid
             interpolated_noise_magnitude = np.interp(common_noise_freq_grid, noise_freq_grid, noise_spectrum)
             noise_fft_magnitudes.append(interpolated_noise_magnitude)
+
+            # plt.plot(correlate(shot, shot))
+            # noise_acf = correlate(shot - np.mean(shot), shot - np.mean(shot))
+            noise_acf = correlate(shot, shot, mode='full')
+            noise_acf /= np.max(noise_acf)
+            # print(noise_acf)
+            noise_acf_values.append(noise_acf)
+            lag_grid = np.arange(-len(shot) + 1, len(shot))
 
         noise_fft_magnitudes = np.array(noise_fft_magnitudes)
         noise_fft_mean = np.mean(noise_fft_magnitudes, axis=0)
         noise_freq = common_noise_freq_grid
 
-        noise_autocorr_values = np.array(noise_autocorr_values)
+        noise_acf_values = np.array(noise_acf_values)
+        noise_acf_mean = np.mean(noise_acf_values, axis=0)
 
         # Store FFT results by omega
         if omega not in omega_fft_dict:
             omega_fft_dict[omega] = []
         omega_fft_dict[omega].append(noise_fft_mean)
 
+        # Store ACF results by omega
+        if omega not in omega_acf_dict:
+            omega_acf_dict[omega] = []
+        omega_acf_dict[omega].append(noise_acf_mean)
+
         if int(sys.argv[1]) != -1:
-            # Colormap
-            plt.figure()
-            plt.imshow(np.log(noise_fft_magnitudes + 1e-10), aspect='auto', extent=[noise_freq[0], noise_freq[-1], 0, len(M_noise)], origin='lower', cmap='viridis')
-            plt.colorbar(label='Log Magnitude')
-            plt.title(f"Noise FFT of day {day}, sequence {seq}")
-            plt.xlabel("Frequency")
-            plt.ylabel("Shot number")
-            plt.show()
-            
-            # Average
-            plt.figure()
-            plt.plot(noise_freq, noise_fft_mean, '-', label='FFT on background noise')
-            plt.annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
-            plt.title(f"FFT analysis of day {day}, sequence {seq}")
-            plt.xlabel("f")
-            plt.yscale('log')
-            plt.xlim(-0.02, 0.52)
-            plt.legend()
+            fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+
+            # Colormap FFT
+            im1 = axs[0, 0].imshow(np.log(noise_fft_magnitudes[:, 1:] + 1e-10), aspect='auto', extent=[noise_freq[1], noise_freq[-1], 0, len(M_noise)-1], origin='lower', cmap='viridis')
+            fig.colorbar(im1, ax=axs[0, 0], label='Log Magnitude')
+            axs[0, 0].set_title(f"Noise FFT of day {day}, sequence {seq}")
+            axs[0, 0].set_xlabel("Frequency")
+            axs[0, 0].set_ylabel("Shot number")
+
+            # Average FFT
+            axs[0, 1].plot(noise_freq[1:], noise_fft_mean[1:], '-', label='FFT on background noise')
+            axs[0, 1].annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
+            axs[0, 1].set_title(f"FFT analysis of day {day}, sequence {seq}")
+            axs[0, 1].set_xlabel("f")
+            axs[0, 1].set_yscale('log')
+            axs[0, 1].set_xlim(-0.02, 0.52)
+            axs[0, 1].legend()
+
+            # Colormap ACF
+            im2 = axs[1, 0].imshow(noise_acf_values, aspect='auto', extent=[lag_grid[0], lag_grid[-1], 0, len(M_noise)], origin='lower', cmap='viridis')
+            fig.colorbar(im2, ax=axs[1, 0], label='Log Magnitude')
+            axs[1, 0].set_title(f"Noise ACF of day {day}, sequence {seq}")
+            axs[1, 0].set_xlabel("Lag")
+            axs[1, 0].set_ylabel("Shot number")
+
+            # Average ACF
+            axs[1, 1].plot(lag_grid, noise_acf_mean, '-', label='ACF on background noise')
+            axs[1, 1].annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
+            axs[1, 1].set_title(f"ACF analysis of day {day}, sequence {seq}")
+            axs[1, 1].set_xlabel("Lag")
+            axs[1, 1].legend()
+
+            plt.tight_layout()
             plt.show()
 
 # Average all FFTs with the same omega
-plt.figure()
+fig, axs = plt.subplots(1, 2, figsize=(10, 5))
 
 # Sort the omega keys
 sorted_omegas = sorted(omega_fft_dict.keys())
 
+# Plot FFTs
 for omega in sorted_omegas:
     fft_list = omega_fft_dict[omega]
     avg_fft = np.mean(fft_list, axis=0)
-    plt.plot(noise_freq[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$')
-    
-plt.xlabel("f")
-plt.yscale('log')
-plt.xlim(-0.02, 0.52)
-plt.legend()
-plt.title("Average noise FFTs")
-# plt.savefig("thesis/figures/chap2/noiseFFT.png", dpi=500)
-plt.show()
+    axs[0].plot(noise_freq[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$')
 
+axs[0].set_xlabel("f")
+axs[0].set_yscale('log')
+axs[0].set_xlim(-0.02, 0.52)
+axs[0].legend()
+axs[0].set_title("Average noise FFTs")
 
-## Plot autocorr values
-plt.figure()
-noise_autocorr_mean = np.mean(noise_autocorr_values, axis=0)
-plt.plot(noise_autocorr_mean)
-plt.title("Noise autocorrelation mean")
+# Plot ACFs
+for omega in sorted_omegas:
+    acf_list = omega_acf_dict[omega]
+    avg_acf = np.mean(acf_list, axis=0)
+    axs[1].plot(lag_grid, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
+
+axs[1].set_xlabel("Lag")
+axs[1].legend()
+axs[1].set_title("Average noise ACFs")
+
+plt.tight_layout()
 plt.show()

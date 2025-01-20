@@ -23,6 +23,7 @@ else:
     exit()
 
 omega_fft_dict = {}
+omega_acf_dict = {}
 
 max_length = 0
 for day in chosen_days:
@@ -58,7 +59,7 @@ for day in chosen_days:
         if max_length >= 2*w: continue
 
         inside_fft_magnitudes = []
-        inside_autocorr_values = []
+        inside_acf_values = []
         # cycle through ordered shots from beginning to end
         for i in range(len(Z)):
             y = Z[i] 
@@ -67,14 +68,6 @@ for day in chosen_days:
             right = in_right_sorted[i]
             start = max(0, int(left))
             end = min(len(y), int(right))
-    
-            ## OLD METHOD
-            # center = b_center_sorted[i]
-            # extra_width = 0 # to change where FFT is done
-            # width = b_sizeADV_sorted[i] + extra_width
-            # start = max(0, int(center - width/2))
-            # end = min(len(y), int(center + width/2))
-
             inside = y[start:end]
 
             # plt.plot(y)
@@ -90,10 +83,10 @@ for day in chosen_days:
                 inside_fft = rfft(inside - np.mean(inside)) ## doing FFT on zero-mean signal
                 inside_spectrum = np.abs(inside_fft)
 
-                # inside_autocorr = correlate(inside - np.mean(inside), inside - np.mean(inside), mode='full')
-                inside_autocorr = correlate(inside, inside, mode='full')
-                inside_autocorr /= np.max(inside_autocorr) # normalize to acf[0] = 1
-                # print(f"len autocorr = {len(inside_autocorr)}")
+                # inside_acf = correlate(inside - np.mean(inside), inside - np.mean(inside), mode='full')
+                inside_acf = correlate(inside, inside, mode='full')
+                inside_acf /= np.max(inside_acf) # normalize to acf[0] = 1
+                # print(f"len autocorr = {len(inside_acf)}")
 
                 # plt.plot(freq_grid, inside_spectrum)
                 # plt.title(f"Day {day}, Seq {seq}, Shot {i}")
@@ -105,81 +98,88 @@ for day in chosen_days:
 
                 # Compute the lag grid for this signal and iterpolate
                 lag_grid = np.arange(-len(inside) + 1, len(inside))
-                interpolated_acf = np.interp(common_lag_grid, lag_grid, inside_autocorr)
-                inside_autocorr_values.append(interpolated_acf)
+                interpolated_acf = np.interp(common_lag_grid, lag_grid, inside_acf)
+                inside_acf_values.append(interpolated_acf)
 
         inside_fft_magnitudes = np.array(inside_fft_magnitudes)
         inside_fft_mean = np.mean(inside_fft_magnitudes, axis=0)
         
-        inside_autocorr_values = np.array(inside_autocorr_values)
-        inside_autocorr_mean = np.mean(inside_autocorr_values)
+        inside_acf_values = np.array(inside_acf_values)
+        inside_acf_mean = np.mean(inside_acf_values, axis=0)
 
         # Store the FFT magnitudes by Omega
         if omega not in omega_fft_dict:
             omega_fft_dict[omega] = []
         omega_fft_dict[omega].append(inside_fft_mean)
 
+        # Store the ACF magnitudes by Omega
+        if omega not in omega_acf_dict:
+            omega_acf_dict[omega] = []
+        omega_acf_dict[omega].append(inside_acf_mean)
+
         if int(sys.argv[1]) != -1:
+            fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+
             # Colormap for FFT
-            plt.figure()
-            plt.imshow(np.log(inside_fft_magnitudes[:,1:]), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], 0, len(Z)-1], origin='lower', cmap='viridis')
-            plt.colorbar(label='Log Magnitude')
-            plt.title(f"inside FFT of day {day}, sequence {seq}")
-            plt.xlabel("Frequency")
-            plt.ylabel("Shot number")
-            plt.show()
-            
+            im1 = axs[0, 0].imshow(np.log(inside_fft_magnitudes[:, 1:]), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], 0, len(Z)-1], origin='lower', cmap='plasma')
+            fig.colorbar(im1, ax=axs[0, 0], label='Log Magnitude')
+            axs[0, 0].set_title(f"Inside FFT of day {day}, sequence {seq}")
+            axs[0, 0].set_xlabel("Frequency")
+            axs[0, 0].set_ylabel("Shot number")
+
             # Average FFT
-            plt.figure()
-            plt.plot(common_freq_grid[1:], inside_fft_mean[1:], '-', label='FFT on background inside')
-            plt.annotate(f"# of inside shots = {len(Z)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
-            plt.title(f"FFT analysis of day {day}, sequence {seq}")
-            plt.xlabel("f")
-            plt.yscale('log')
-            plt.xlim(-0.02, 0.52)
-            plt.legend()
-            plt.show()
+            axs[0, 1].plot(common_freq_grid[1:], inside_fft_mean[1:], '-', label='FFT on background inside')
+            axs[0, 1].annotate(f"# of inside shots = {len(Z)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
+            axs[0, 1].set_title(f"Inside FFT average of day {day}, sequence {seq}")
+            axs[0, 1].set_xlabel("f")
+            axs[0, 1].set_yscale('log')
+            axs[0, 1].set_xlim(-0.02, 0.52)
+            axs[0, 1].legend()
 
             # Colormap for autocorrelation
-            plt.figure()
-            plt.imshow(inside_autocorr_values, aspect='auto', extent=[common_lag_grid[0], common_lag_grid[-1], 0, len(Z)-1], origin='lower', cmap='viridis')
-            plt.colorbar(label='Autocorrelation')
-            plt.title(f"inside Autocorrelation of day {day}, sequence {seq}")
-            plt.xlabel("Lag")
-            plt.ylabel("Shot number")
-            plt.show()
-            
+            im2 = axs[1, 0].imshow(inside_acf_values, aspect='auto', extent=[common_lag_grid[0], common_lag_grid[-1], 0, len(Z)-1], origin='lower', cmap='plasma')
+            fig.colorbar(im2, ax=axs[1, 0], label='ACF')
+            axs[1, 0].set_title(f"Inside ACF of day {day}, sequence {seq}")
+            axs[1, 0].set_xlabel("Lag")
+            axs[1, 0].set_ylabel("Shot number")
+
             # Average Autocorrelation
-            plt.figure()
-            plt.plot(common_lag_grid, inside_autocorr_mean, '-', label='Autocorrelation on background inside')
-            plt.annotate(f"# of inside shots = {len(Z)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
-            plt.title(f"Autocorrelation analysis of day {day}, sequence {seq}")
-            plt.xlabel("Lag")
-            plt.legend()
+            axs[1, 1].plot(common_lag_grid, inside_acf_mean, '-', label='ACF on background inside')
+            axs[1, 1].annotate(f"# of inside shots = {len(Z)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
+            axs[1, 1].set_title(f"Inside ACF average of day {day}, sequence {seq}")
+            axs[1, 1].set_xlabel("Lag")
+            axs[1, 1].legend()
+
+            plt.tight_layout()
             plt.show()
 
 # Average all FFTs with the same omega
-plt.figure()
+fig, axs = plt.subplots(1, 2, figsize=(10, 5))
 
 # Sort the omega keys
 sorted_omegas = sorted(omega_fft_dict.keys())
 
+# Plot FFTs
 for omega in sorted_omegas: 
     fft_list = omega_fft_dict[omega]
     avg_fft = np.mean(fft_list, axis=0)
-    plt.plot(common_freq_grid[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$ Hz')
-    
-plt.xlabel("f")
-plt.yscale('log')
-plt.xlim(-0.02, 0.52)
-plt.legend()
-plt.title("Average inside FFTs")
-# plt.savefig("thesis/figures/chap2/insideFFT.png", dpi=500)
-plt.show()
+    axs[0].plot(common_freq_grid[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$ Hz')
 
-## Plot autocorr values
-plt.figure()
-noise_autocorr_mean = np.mean(inside_autocorr_values, axis=0)
-plt.plot(noise_autocorr_mean)
-plt.title("Inside autocorrelation mean")
+axs[0].set_xlabel("f")
+axs[0].set_yscale('log')
+axs[0].set_xlim(-0.02, 0.52)
+axs[0].legend()
+axs[0].set_title("Average inside FFTs")
+
+# Plot ACFs
+for omega in sorted_omegas: 
+    acf_list = omega_acf_dict[omega]
+    avg_acf = np.mean(acf_list, axis=0)
+    axs[1].plot(common_lag_grid, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
+
+axs[1].set_xlabel("lag")
+axs[1].legend()
+axs[1].set_title("Average inside ACFs")
+
+plt.tight_layout()
 plt.show()
