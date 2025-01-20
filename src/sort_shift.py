@@ -17,19 +17,23 @@ for day in chosen_days:
         df_M = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/magnetization.csv")
         df_in_left = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_left.csv")
         df_in_right = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_right.csv")
+        df_out_left = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/out_left.csv")
+        df_out_right = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/out_right.csv")
 
         b_center = df_center.to_numpy().flatten()
         b_sizeADV = df_size.to_numpy().flatten()
         in_left = df_in_left.to_numpy().flatten()
         in_right = df_in_right.to_numpy().flatten()
+        out_left = df_out_left.to_numpy().flatten()
+        out_right = df_out_right.to_numpy().flatten()
         M = df_M.to_numpy()
 
         # Plotting the bubble (unsorted)
-        fig, ax = plt.subplots(figsize=(10, 5), ncols=3, gridspec_kw={'width_ratios': [1, 1, 0.05]})
-        ax[0].pcolormesh(M, vmin = -1, vmax = +1, cmap = 'RdBu')
-        ax[0].set_title('Unsorted shots')
-        ax[0].set_xlabel('$x\ [\mu m]$')
-        ax[0].set_ylabel('shots')
+        # fig, ax = plt.subplots(figsize=(10, 5), ncols=3, gridspec_kw={'width_ratios': [1, 1, 0.05]})
+        # ax[0].pcolormesh(M, vmin = -1, vmax = +1, cmap = 'RdBu')
+        # ax[0].set_title('Unsorted shots')
+        # ax[0].set_xlabel('$x\ [\mu m]$')
+        # ax[0].set_ylabel('shots')
 
         # Sorting the bubble
         Zlist = np.argsort(b_sizeADV)
@@ -38,6 +42,8 @@ for day in chosen_days:
         b_center_sorted = (b_center[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         in_left_sorted = (in_left[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         in_right_sorted = (in_right[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
+        out_left_sorted = (out_left[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
+        out_right_sorted = (out_right[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
 
         # Shifting
         length = 2 * w
@@ -54,6 +60,9 @@ for day in chosen_days:
         # np.savetxt(f"data/processed/day_{day}/seq_{seq}/sizeADV_sorted.csv", b_sizeADV_sorted, delimiter=',')
         # np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_left_sorted.csv", in_left_sorted, delimiter=',')
         # np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_right_sorted.csv", in_right_sorted, delimiter=',')
+        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/out_left_sorted.csv", out_left_sorted, delimiter=',')
+        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/out_right_sorted.csv", out_right_sorted, delimiter=',')
+
 
         # Plotting the bubble (sorted)
         # im = ax[1].pcolormesh(Z_shifted, vmin=-1, vmax=1, cmap='RdBu')

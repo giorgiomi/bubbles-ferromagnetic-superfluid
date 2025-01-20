@@ -99,6 +99,8 @@ for fs in np.arange(len(seqs)): # all seqs
         b_center = []
         b_inside_boundary_left = []
         b_inside_boundary_right = []
+        b_outside_boundary_left = []
+        b_outside_boundary_right = []
         times = np.unique(time) 
         MbList = []
         timeAdvBubble = []
@@ -156,6 +158,9 @@ for fs in np.arange(len(seqs)): # all seqs
 
                     b_inside_boundary_left.append(best_BS_left[1] + 2*best_BS_left[3]) # defines the inside region with BS fit
                     b_inside_boundary_right.append(best_BS_right[1] - 2*best_BS_right[3]) # defines the inside region with BS fit
+                    
+                    b_outside_boundary_left.append(best_BS_left[1] - 2*best_BS_left[3]) # defines the outside region with BS fit
+                    b_outside_boundary_right.append(best_BS_right[1] + 2*best_BS_right[3]) # defines the outside region with BS fit
 
                     #print('Arctan fit working')
                 
@@ -183,6 +188,9 @@ for fs in np.arange(len(seqs)): # all seqs
 
                     b_inside_boundary_left.append(best_GS[1] - best_GS[2] * 0.5) # defines the inside region with GS fit
                     b_inside_boundary_right.append(best_GS[1] + best_GS[2] * 0.5) # defines the inside region with GS fit
+                    
+                    b_outside_boundary_left.append(best_GS[1] - best_GS[2] * 2) # defines the outside region with GS fit
+                    b_outside_boundary_right.append(best_GS[1] + best_GS[2] * 2) # defines the outside region with GS fit
 
             # Over the threshold value, the bubble is not formed, hence everything set to 0
             else: 
@@ -192,15 +200,22 @@ for fs in np.arange(len(seqs)): # all seqs
                 b_center.append(w)
                 b_inside_boundary_left.append(w)
                 b_inside_boundary_right.append(w)
+                b_outside_boundary_left.append(0)
+                b_outside_boundary_right.append(2*w)
         
         b_size = np.array(b_size)
         b_sizeADV = np.array(b_sizeADV) 
         b_center = np.array(b_center)
         b_inside_boundary_left = np.array(b_inside_boundary_left)
         b_inside_boundary_right = np.array(b_inside_boundary_right)
+        b_outside_boundary_left = np.array(b_outside_boundary_left)
+        b_outside_boundary_right = np.array(b_outside_boundary_right)
         # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
         # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
         # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
-        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
+        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
         # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
         # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
+        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/out_left.csv", b_outside_boundary_left, delimiter=',')
+        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/out_right.csv", b_outside_boundary_right, delimiter=',')
+

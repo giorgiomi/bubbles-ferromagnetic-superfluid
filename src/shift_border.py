@@ -56,3 +56,15 @@ for day in chosen_days:
         plt.savefig("thesis/figures/chap2/shot_shifting_border.png", dpi=500)
         plt.show()
 
+        # Plotting all magnetization profiles shifted
+        fig, ax = plt.subplots(figsize=(10, 5))
+        for i in range(len(Z)):
+            ax.plot(np.arange(Z_shifted.shape[1]) - x0, Z_shifted[i], label=f'Shot {i+1}', alpha=0.05)
+        
+        ax.set_title('All magnetization profiles shifted')
+        ax.set_xlabel(r'$\tilde{x}\ [\mu m]$')
+        ax.set_ylabel('Magnetization')
+        # ax.legend()
+        # plt.savefig(f"thesis/figures/chap2/all_shifted_profiles_day_{day}_seq_{seq}.png", dpi=500)
+        plt.show()
+
