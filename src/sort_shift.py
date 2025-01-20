@@ -2,22 +2,13 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
-from util.parameters import import_parameters
-import sys
+from util.parameters import importParameters
+from util.methods import scriptUsage
 
 # Data
-f, seqs, Omega, knT, detuning = import_parameters()
+f, seqs, Omega, knT, detuning = importParameters()
 w = 200
-
-if len(sys.argv) > 1:
-    if int(sys.argv[1]) == -1:
-        chosen_days = np.arange(len(seqs))
-    else:
-        chosen_days = [int(sys.argv[1])]
-else:
-    print(f"Usage: {sys.argv[0]} <chosen_days>\t use chosen_days = -1 for all")
-    exit()
+chosen_days = scriptUsage()
 
 for day in chosen_days:
     for seq, seqi in enumerate((seqs[day])):
@@ -61,8 +52,8 @@ for day in chosen_days:
         # np.savetxt(f"data/processed/day_{day}/seq_{seq}/Z_sorted.csv", Z, delimiter=',')
         # np.savetxt(f"data/processed/day_{day}/seq_{seq}/center_sorted.csv", b_center_sorted, delimiter=',')
         # np.savetxt(f"data/processed/day_{day}/seq_{seq}/sizeADV_sorted.csv", b_sizeADV_sorted, delimiter=',')
-        np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_left_sorted.csv", in_left_sorted, delimiter=',')
-        np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_right_sorted.csv", in_right_sorted, delimiter=',')
+        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_left_sorted.csv", in_left_sorted, delimiter=',')
+        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_right_sorted.csv", in_right_sorted, delimiter=',')
 
         # Plotting the bubble (sorted)
         # im = ax[1].pcolormesh(Z_shifted, vmin=-1, vmax=1, cmap='RdBu')
