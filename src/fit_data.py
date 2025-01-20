@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
-from util.parameters import import_parameters
+from util.parameters import importParameters
 from util.functions import bubble, gauss, bubbleshoulder # fit functions
 
 import os
@@ -12,7 +12,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 ## Data import
-f, seqs, Omega, knT, detuning = import_parameters()
+f, seqs, Omega, knT, detuning = importParameters()
 
 
 ## Data Analysis
@@ -201,5 +201,6 @@ for fs in np.arange(len(seqs)): # all seqs
         # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
         # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
         # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
-        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
-        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
+        np.savetxt(f"data/processed/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
+        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
+        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
