@@ -4,26 +4,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
-
-from util.parameters import import_parameters
+from util.parameters import importParameters
 import sys
+from util.methods import scriptUsage
 
 # Data
-f, seqs, Omega, knT, detuning = import_parameters()
-w = 200
-sampling_rate = 1.0
+f, seqs, Omega, knT, Detuning = importParameters()
+w = 200 # Thomas-Fermi radius, always the same
+sampling_rate = 1.0 # 1/(1 pixel)
 
-if len(sys.argv) > 1:
-    if int(sys.argv[1]) == -1:
-        chosen_days = np.arange(len(seqs))
-    else:
-        chosen_days = [int(sys.argv[1])]
-else:
-    print(f"Usage: {sys.argv[0]} <chosen_days>\t use chosen_days = -1 for all")
-    exit()
+chosen_days = scriptUsage()
 
 omega_fft_dict = {}
 omega_acf_dict = {}
+detuning_fft_dict = {}
+detuning_acf_dict = {}
 
 max_length = 0
 for day in chosen_days:
@@ -47,7 +42,9 @@ for day in chosen_days:
         df_in_left_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_left_sorted.csv", header=None)
         df_in_right_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_right_sorted.csv", header=None)
         df_Z_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/Z_sorted.csv", header=None)
+        
         omega = Omega[day][seq]
+        detuning = Detuning[day][seq]
 
         b_sizeADV_sorted = df_size_sorted.to_numpy().flatten()
         b_center_sorted = df_center_sorted.to_numpy().flatten()
@@ -107,15 +104,21 @@ for day in chosen_days:
         inside_acf_values = np.array(inside_acf_values)
         inside_acf_mean = np.mean(inside_acf_values, axis=0)
 
-        # Store the FFT magnitudes by Omega
+        # Store the FFT and ACF magnitudes by omega
         if omega not in omega_fft_dict:
             omega_fft_dict[omega] = []
         omega_fft_dict[omega].append(inside_fft_mean)
-
-        # Store the ACF magnitudes by Omega
         if omega not in omega_acf_dict:
             omega_acf_dict[omega] = []
         omega_acf_dict[omega].append(inside_acf_mean)
+
+        # Store the FFT and ACF magnitudes by detuning
+        if detuning not in detuning_fft_dict:
+            detuning_fft_dict[detuning] = []
+        detuning_fft_dict[detuning].append(inside_fft_mean)
+        if detuning not in detuning_acf_dict:
+            detuning_acf_dict[detuning] = []
+        detuning_acf_dict[detuning].append(inside_acf_mean)
 
         if int(sys.argv[1]) != -1:
             fig, axs = plt.subplots(2, 2, figsize=(10, 8))
@@ -153,33 +156,69 @@ for day in chosen_days:
             plt.tight_layout()
             plt.show()
 
-# Average all FFTs with the same omega
+# FFTs and ACFs as a function of omega
 fig, axs = plt.subplots(1, 2, figsize=(10, 5))
-
-# Sort the omega keys
 sorted_omegas = sorted(omega_fft_dict.keys())
 
-# Plot FFTs
+# Average FFTs and ACFs with the same omega
 for omega in sorted_omegas: 
     fft_list = omega_fft_dict[omega]
     avg_fft = np.mean(fft_list, axis=0)
     axs[0].plot(common_freq_grid[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$ Hz')
 
+    acf_list = omega_acf_dict[omega]
+    avg_acf = np.mean(acf_list, axis=0)
+    axs[1].plot(common_lag_grid, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
+
+# Plot FFTs
 axs[0].set_xlabel("f")
 axs[0].set_yscale('log')
 axs[0].set_xlim(-0.02, 0.52)
 axs[0].legend()
 axs[0].set_title("Average inside FFTs")
 
-# Plot ACFs
-for omega in sorted_omegas: 
-    acf_list = omega_acf_dict[omega]
-    avg_acf = np.mean(acf_list, axis=0)
-    axs[1].plot(common_lag_grid, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
-
+# Plot ACFs    
 axs[1].set_xlabel("lag")
 axs[1].legend()
 axs[1].set_title("Average inside ACFs")
+
+plt.tight_layout()
+plt.show()
+
+# FFTs and ACFs as a function of detuning
+fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+sorted_detunings = sorted(detuning_fft_dict.keys())
+
+# Average FFTs and ACFs with the same detuning
+# Prepare data for colormap
+fft_matrix = []
+acf_matrix = []
+
+for detuning in sorted_detunings: 
+    fft_list = detuning_fft_dict[detuning]
+    avg_fft = np.mean(fft_list, axis=0)
+    fft_matrix.append(avg_fft[1:])  # Exclude the zero frequency component
+
+    acf_list = detuning_acf_dict[detuning]
+    avg_acf = np.mean(acf_list, axis=0)
+    acf_matrix.append(avg_acf)
+
+fft_matrix = np.array(fft_matrix)
+acf_matrix = np.array(acf_matrix)
+
+# Plot FFT colormap
+im1 = axs[0].imshow(np.log(fft_matrix), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
+fig.colorbar(im1, ax=axs[0], label='Log Magnitude')
+axs[0].set_title("Average inside FFTs")
+axs[0].set_xlabel("Frequency")
+axs[0].set_ylabel("$\delta$")
+
+# Plot ACF colormap
+im2 = axs[1].imshow(acf_matrix, aspect='auto', extent=[common_lag_grid[0], common_lag_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
+fig.colorbar(im2, ax=axs[1], label='ACF')
+axs[1].set_title("Average inside ACFs")
+axs[1].set_xlabel("Lag")
+axs[1].set_ylabel("$\delta$")
 
 plt.tight_layout()
 plt.show()

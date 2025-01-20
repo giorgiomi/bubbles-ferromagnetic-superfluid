@@ -4,25 +4,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
-
-from util.parameters import import_parameters
+from util.parameters import importParameters
 import sys
+from util.methods import scriptUsage
 
 # Data
-f, seqs, Omega, knT, detuning = import_parameters()
+f, seqs, Omega, knT, Detuning = importParameters()
 w = 200
 
-if len(sys.argv) > 1:
-    if int(sys.argv[1]) == -1:
-        chosen_days = np.arange(len(seqs))
-    else:
-        chosen_days = [int(sys.argv[1])]
-else:
-    print(f"Usage: {sys.argv[0]} <chosen_days>\t use chosen_days = -1 for all")
-    exit()
+chosen_days = scriptUsage()
 
 omega_fft_dict = {}
 omega_acf_dict = {}
+
+detuning_fft_dict = {}
+detuning_acf_dict = {}
 
 for day in chosen_days:
     for seq, seqi in enumerate((seqs[day])):
@@ -32,6 +28,7 @@ for day in chosen_days:
         b_sizeADV = df_size.to_numpy().flatten()
         M = df_M.to_numpy()
         omega = Omega[day][seq]
+        detuning = Detuning[day][seq]
         # print(f"Omega = {omega}")
 
         # FFT on background noise
@@ -78,6 +75,16 @@ for day in chosen_days:
         if omega not in omega_acf_dict:
             omega_acf_dict[omega] = []
         omega_acf_dict[omega].append(noise_acf_mean)
+
+        # Store FFT results by detuning
+        if detuning not in detuning_fft_dict:
+            detuning_fft_dict[detuning] = []
+        detuning_fft_dict[detuning].append(noise_fft_mean)
+
+        # Store ACF results by detuning
+        if detuning not in detuning_acf_dict:
+            detuning_acf_dict[detuning] = []
+        detuning_acf_dict[detuning].append(noise_acf_mean)
 
         if int(sys.argv[1]) != -1:
             fig, axs = plt.subplots(2, 2, figsize=(10, 8))
@@ -142,6 +149,33 @@ for omega in sorted_omegas:
 axs[1].set_xlabel("Lag")
 axs[1].legend()
 axs[1].set_title("Average noise ACFs")
+
+plt.tight_layout()
+plt.show()
+
+
+
+# Average all FFTs with the same detuning
+fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+
+# Sort the detuning keys
+sorted_detunings = sorted(detuning_fft_dict.keys())
+
+# Prepare data for colormap FFTs
+fft_matrix = np.array([np.mean(detuning_fft_dict[detuning], axis=0) for detuning in sorted_detunings])
+im1 = axs[0].imshow(np.log(fft_matrix[:, 1:] + 1e-10), aspect='auto', extent=[noise_freq[1], noise_freq[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='viridis')
+fig.colorbar(im1, ax=axs[0], label='Log Magnitude')
+axs[0].set_title("Average noise FFTs")
+axs[0].set_xlabel("Frequency")
+axs[0].set_ylabel("$\delta$")
+
+# Prepare data for colormap ACFs
+acf_matrix = np.array([np.mean(detuning_acf_dict[detuning], axis=0) for detuning in sorted_detunings])
+im2 = axs[1].imshow(acf_matrix, aspect='auto', extent=[lag_grid[0], lag_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='viridis')
+fig.colorbar(im2, ax=axs[1], label='Magnitude')
+axs[1].set_title("Average noise ACFs")
+axs[1].set_xlabel("Lag")
+axs[1].set_ylabel("$\delta$")
 
 plt.tight_layout()
 plt.show()

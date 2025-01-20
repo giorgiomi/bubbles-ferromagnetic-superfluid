@@ -1,6 +1,6 @@
 import numpy as np
 
-def import_parameters():
+def importParameters():
     # Importing data from raw
     f = [r"data/raw/08/seq_89.hdf", # database of a certain day
         r"data/raw/08/seq_2.hdf",
