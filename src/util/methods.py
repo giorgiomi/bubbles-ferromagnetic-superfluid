@@ -2,6 +2,8 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from util.parameters import importParameters
+from scipy.fft import rfft, rfftfreq
+from scipy.signal import correlate
 
 f, seqs, Omega, knT, detuning = importParameters()
 
@@ -55,3 +57,25 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
     if save_flag:
         plt.savefig(f"thesis/figures/chap2/{region}_fft_acf_day_{day}_seq_{seq}.png", dpi=500)
     return fig
+
+def computeFFT_ACF(zero_mean_flag, data, CFG, fft_magnitudes, acf_values):
+    if zero_mean_flag:
+        noise_fft = rfft(data - np.mean(data)) ## doing FFT on zero-mean signal
+        noise_acf = correlate(data - np.mean(data), data - np.mean(data), mode='full')
+    else:
+        noise_fft = rfft(data) ## doing FFT on true signal
+        noise_acf = correlate(data, data, mode='full')
+    
+    noise_spectrum = np.abs(noise_fft)
+    noise_acf /= np.max(noise_acf)
+    noise_freq_grid = rfftfreq(len(data), d=1.0)
+
+    # Interpolate onto the common frequency grid
+    interpolated_noise_magnitude = np.interp(CFG, noise_freq_grid, noise_spectrum)
+    fft_magnitudes.append(interpolated_noise_magnitude)
+    
+    # Interpolate onto the common lag grid
+    acf_values.append(noise_acf)
+    lag_grid = np.arange(-len(data) + 1, len(data))
+
+    return fft_magnitudes, acf_values, lag_grid
