@@ -68,14 +68,14 @@ Another tool that can be used to study the periodic properties of a signal is th
     \mathcal{A}_k = \sum_{n=0}^{N-1} Z_n Z^*_{n-k+N-1}\, .
 \end{equation*}
 
-Now, what we shall do is to compute the FFT and the ACF on the data, taking care of the fact that it is probably better to separate the inside region (the bubble) from the outside one and look for periodic signals in both. We will also compute the transforms on the no-bubble shots. An example of the inside region computation is presented in Fig.\ \ref{fig:inside_00}.
-
+Now, what we shall do is to compute the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one and look for periodic signals in both. We will also compute the transforms on the no-bubble shots. An example of the inside region analysis is presented in Fig.\ \ref{fig:inside_00}.
 \begin{figure}[t!]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/chap2/inside_fft_acf_day_0_seq_0.png}
-    \caption{Example of FFT and ACF calculated in a sequence. The values for each shot are shown in the left plots, while the averages are on the right.}
+    \caption{Example of FFT and ACF calculated in a sequence. The values for each shot are shown in the left plots with colormaps, while the averages are on the right. FFT magnitudes are plotted in log scale.}
     \label{fig:inside_00}
 \end{figure}
+One can probably (with a good eye) already see in the colormap plot that two or three vertical bands extend over all shots and appear at the same frequencies. This ensures that the FFT averaging is rightful.
 
 \subsection{Border alignment}
 

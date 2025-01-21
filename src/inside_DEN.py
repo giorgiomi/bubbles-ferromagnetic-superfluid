@@ -16,7 +16,7 @@ sampling_rate = 1.0 # 1/(1 pixel)
 chosen_days = scriptUsage()
 
 # Print script purpose
-print("\nAnalyzing FFT and ACF on INSIDE REGION with magnetization signal\n")
+print("\nAnalyzing FFT and ACF on INSIDE REGION with density signal\n")
 
 # Ask the user for FFT and ACF on true or zero mean signal
 zero_mean_flag = int(input("Enter 1 for zero-mean signal FFT and ACF, 0 for true signal: "))
@@ -47,7 +47,7 @@ for day in chosen_days:
         df_center_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/center_sorted.csv", header=None)
         df_in_left_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_left_sorted.csv", header=None)
         df_in_right_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_right_sorted.csv", header=None)
-        df_Z_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/Z_sorted.csv", header=None)
+        df_D_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/density_sorted.csv", header=None)
         
         omega = Omega[day][seq]
         detuning = Detuning[day][seq]
@@ -56,7 +56,7 @@ for day in chosen_days:
         b_center_sorted = df_center_sorted.to_numpy().flatten()
         in_left_sorted = df_in_left_sorted.to_numpy().flatten()
         in_right_sorted = df_in_right_sorted.to_numpy().flatten()
-        Z = df_Z_sorted.to_numpy()
+        D = df_D_sorted.to_numpy()
 
         # FFT on bubble (inside)
         if max_length >= 2*w: continue
@@ -64,8 +64,8 @@ for day in chosen_days:
         inside_fft_magnitudes = []
         inside_acf_values = []
         # cycle through ordered shots from beginning to end
-        for i in range(len(Z)):
-            y = Z[i] 
+        for i in range(len(D)):
+            y = D[i] 
             ## NEW METHOD, with inside estimation
             left = in_left_sorted[i]
             right = in_right_sorted[i]
@@ -83,13 +83,13 @@ for day in chosen_days:
             # print(day, seq, i, N)
             if N > 0:
                 freq_grid = rfftfreq(N, d=sampling_rate)
-                if zero_mean_flag:
-                    inside_fft = rfft(inside - np.mean(inside)) ## doing FFT on zero-mean signal
+                if zero_mean_flag == 1:
+                    inside_fft = rfft(inside - np.mean(inside))  # FFT on zero-mean signal
                     inside_acf = correlate(inside - np.mean(inside), inside - np.mean(inside), mode='full')
                 else:
-                    inside_fft = rfft(inside) ## doing FFT on true signal
+                    inside_fft = rfft(inside)  # FFT on true signal
                     inside_acf = correlate(inside, inside, mode='full')
-                
+
                 inside_spectrum = np.abs(inside_fft)
                 inside_acf /= np.max(inside_acf) # normalize to acf[0] = 1
                 # print(f"len autocorr = {len(inside_acf)}")
@@ -130,9 +130,9 @@ for day in chosen_days:
         detuning_acf_dict[detuning].append(inside_acf_mean)
 
         if int(sys.argv[1]) != -1:
-            fig = quadPlot(day, seq, Z, "inside", common_freq_grid, common_lag_grid, 
+            fig = quadPlot(day, seq, D, "inside", common_freq_grid, common_lag_grid, 
                      inside_fft_magnitudes, inside_fft_mean, inside_acf_values, inside_acf_mean, 0)
-            fig.canvas.manager.set_window_title('Magnetization data')
+            fig.canvas.manager.set_window_title('Density data')
             plt.show()
 
 # FFTs and ACFs as a function of omega
@@ -156,12 +156,12 @@ axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
 axs[0].set_yscale('log')
 axs[0].set_xlim(-0.02, 0.52)
 axs[0].legend()
-axs[0].set_title("Average inside FFTs")
+axs[0].set_title("Average inside FFTs (density)")
 
 # Plot ACFs    
 axs[1].set_xlabel("lag")
 axs[1].legend()
-axs[1].set_title("Average inside ACFs")
+axs[1].set_title("Average inside ACFs (density)")
 
 plt.tight_layout()
 # plt.savefig(f"thesis/figures/chap2/inside_fft_avg.png", dpi=500)
@@ -191,14 +191,14 @@ acf_matrix = np.array(acf_matrix)
 # Plot FFT colormap
 im1 = axs[0].imshow(np.log(fft_matrix), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
 fig.colorbar(im1, ax=axs[0], label='Log Magnitude')
-axs[0].set_title("Average inside FFTs")
+axs[0].set_title("Average inside FFTs (density)")
 axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
 axs[0].set_ylabel("$\delta$")
 
 # Plot ACF colormap
 im2 = axs[1].imshow(acf_matrix, aspect='auto', extent=[common_lag_grid[0], common_lag_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
 fig.colorbar(im2, ax=axs[1], label='ACF')
-axs[1].set_title("Average inside ACFs")
+axs[1].set_title("Average inside ACFs (density)")
 axs[1].set_xlabel("Lag")
 axs[1].set_ylabel("$\delta$")
 

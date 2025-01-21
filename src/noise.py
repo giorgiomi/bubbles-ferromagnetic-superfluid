@@ -6,13 +6,19 @@ from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
 from util.parameters import importParameters
 import sys
-from util.methods import scriptUsage
+from util.methods import scriptUsage, quadPlot
 
 # Data
 f, seqs, Omega, knT, Detuning = importParameters()
 w = 200
 
 chosen_days = scriptUsage()
+
+# Print script purpose
+print("\nAnalyzing FFT and ACF on NOISE with magnetization signal\n")
+
+# Ask the user for FFT and ACF on true or zero mean signal
+zero_mean_flag = int(input("Enter 1 for zero-mean signal FFT and ACF, 0 for true signal: "))
 
 omega_fft_dict = {}
 omega_acf_dict = {}
@@ -41,21 +47,22 @@ for day in chosen_days:
         noise_fft_magnitudes = []
         noise_acf_values = []
         for shot in M_noise:
-            # plt.plot(shot-np.mean(shot))
-            # plt.show()
-            noise_fft = rfft(shot - np.mean(shot)) ## doing FFT on zero-mean signal
+            if zero_mean_flag:
+                noise_fft = rfft(shot - np.mean(shot)) ## doing FFT on zero-mean signal
+                noise_acf = correlate(shot - np.mean(shot), shot - np.mean(shot), mode='full')
+            else:
+                noise_fft = rfft(shot) ## doing FFT on true signal
+                noise_acf = correlate(shot, shot, mode='full')
+            
             noise_spectrum = np.abs(noise_fft)
+            noise_acf /= np.max(noise_acf)
             noise_freq_grid = rfftfreq(len(shot), d=1.0)
 
             # Interpolate onto the common frequency grid
             interpolated_noise_magnitude = np.interp(common_noise_freq_grid, noise_freq_grid, noise_spectrum)
             noise_fft_magnitudes.append(interpolated_noise_magnitude)
-
-            # plt.plot(correlate(shot, shot))
-            noise_acf = correlate(shot - np.mean(shot), shot - np.mean(shot))
-            # noise_acf = correlate(shot, shot, mode='full')
-            noise_acf /= np.max(noise_acf)
-            # print(noise_acf)
+            
+            # Interpolate onto the common lag grid
             noise_acf_values.append(noise_acf)
             lag_grid = np.arange(-len(shot) + 1, len(shot))
 
@@ -87,40 +94,9 @@ for day in chosen_days:
         detuning_acf_dict[detuning].append(noise_acf_mean)
 
         if int(sys.argv[1]) != -1:
-            fig, axs = plt.subplots(2, 2, figsize=(10, 8))
-
-            # Colormap FFT
-            im1 = axs[0, 0].imshow(np.log(noise_fft_magnitudes[:, 1:] + 1e-10), aspect='auto', extent=[noise_freq[1], noise_freq[-1], 0, len(M_noise)-1], origin='lower', cmap='viridis')
-            fig.colorbar(im1, ax=axs[0, 0], label='Log Magnitude')
-            axs[0, 0].set_title(f"Noise FFT of day {day}, sequence {seq}")
-            axs[0, 0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
-            axs[0, 0].set_ylabel("Shot number")
-
-            # Average FFT
-            axs[0, 1].plot(noise_freq[1:], noise_fft_mean[1:], '-', label='FFT on background noise')
-            axs[0, 1].annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
-            axs[0, 1].set_title(f"FFT average of day {day}, sequence {seq}")
-            axs[0, 1].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
-            axs[0, 1].set_yscale('log')
-            axs[0, 1].set_xlim(-0.02, 0.52)
-            axs[0, 1].legend()
-
-            # Colormap ACF
-            im2 = axs[1, 0].imshow(noise_acf_values, aspect='auto', extent=[lag_grid[0], lag_grid[-1], 0, len(M_noise)], origin='lower', cmap='viridis')
-            fig.colorbar(im2, ax=axs[1, 0], label='Log Magnitude')
-            axs[1, 0].set_title(f"Noise ACF of day {day}, sequence {seq}")
-            axs[1, 0].set_xlabel("Lag")
-            axs[1, 0].set_ylabel("Shot number")
-
-            # Average ACF
-            axs[1, 1].plot(lag_grid, noise_acf_mean, '-', label='ACF on background noise')
-            axs[1, 1].annotate(f"# of noise shots = {len(M_noise)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
-            axs[1, 1].set_title(f"ACF average of day {day}, sequence {seq}")
-            axs[1, 1].set_xlabel("Lag")
-            axs[1, 1].legend()
-
-            plt.tight_layout()
-            # plt.savefig(f"thesis/figures/chap2/noise_fft_acf_day_{day}_seq_{0}.png", dpi=500)
+            fig = quadPlot(day, seq, M_noise, "noise", noise_freq, lag_grid, 
+                     noise_fft_magnitudes, noise_fft_mean, noise_acf_values, noise_acf_mean, 0)
+            fig.canvas.manager.set_window_title('Magnetization data')
             plt.show()
 
 # Average all FFTs with the same omega

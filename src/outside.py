@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.signal import correlate
-from util.methods import scriptUsage
+from util.methods import scriptUsage, quadPlot
 from scipy.fft import rfft, rfftfreq
 from util.parameters import importParameters
 
@@ -14,6 +14,12 @@ w = 200 # Thomas-Fermi radius, always the same
 sampling_rate = 1.0 # 1/(1 pixel)
 
 chosen_days = scriptUsage()
+
+# Print script purpose
+print("\nAnalyzing FFT and ACF on OUTSIDE REGION with magnetization signal\n")
+
+# Ask the user for FFT and ACF on true or zero mean signal
+zero_mean_flag = int(input("Enter 1 for zero-mean signal FFT and ACF, 0 for true signal: "))
 
 omega_fft_dict = {}
 omega_acf_dict = {}
@@ -85,16 +91,15 @@ for day in chosen_days:
                 #---------------------------------------------------------------------------------------------------
                 # compute FFT and ACF of the left
                 freq_grid_left = rfftfreq(N_left, d=sampling_rate)
-                outside_left_fft = rfft(outside_left - np.mean(outside_left)) ## doing FFT on zero-mean signal
+                if zero_mean_flag:
+                    outside_left_fft = rfft(outside_left - np.mean(outside_left)) ## doing FFT on zero-mean signal
+                    outside_left_acf = correlate(outside_left - np.mean(outside_left), outside_left - np.mean(outside_left), mode='full')
+                else:
+                    outside_left_fft = rfft(outside_left) ## doing FFT on true signal
+                    outside_left_acf = correlate(outside_left, outside_left, mode='full')
+                
                 outside_left_spectrum = np.abs(outside_left_fft)
-
-                # outside_left_acf = correlate(outside_left - np.mean(outside_left), outside_left - np.mean(outside_left), mode='full')
-                outside_left_acf = correlate(outside_left, outside_left, mode='full')
                 outside_left_acf /= np.max(outside_left_acf) # normalize to acf[0] = 1
-
-                # plt.plot(freq_grid, outside_left_spectrum)
-                # plt.title(f"Day {day}, Seq {seq}, Shot {i}")
-                # plt.show()
                 
                 # Interpolate onto the common frequency grid
                 interpolated_magnitude = np.interp(common_freq_grid, freq_grid_left, outside_left_spectrum)
@@ -108,16 +113,15 @@ for day in chosen_days:
                 #---------------------------------------------------------------------------------------------------
                 # compute FFT and ACF of the right
                 freq_grid_right = rfftfreq(N_right, d=sampling_rate)
-                outside_right_fft = rfft(outside_right - np.mean(outside_right)) ## doing FFT on zero-mean signal
+                if zero_mean_flag:
+                    outside_right_fft = rfft(outside_right - np.mean(outside_right)) ## doing FFT on zero-mean signal
+                    outside_right_acf = correlate(outside_right - np.mean(outside_right), outside_right - np.mean(outside_right), mode='full')
+                else:
+                    outside_right_fft = rfft(outside_right) ## doing FFT on true signal
+                    outside_right_acf = correlate(outside_right, outside_right, mode='full')
+                
                 outside_right_spectrum = np.abs(outside_right_fft)
-
-                outside_right_acf = correlate(outside_right - np.mean(outside_right), outside_right - np.mean(outside_right), mode='full')
-                # outside_right_acf = correlate(outside_right, outside_right, mode='full')
                 outside_right_acf /= np.max(outside_right_acf) # normalize to acf[0] = 1
-
-                # plt.plot(freq_grid, outside_right_spectrum)
-                # plt.title(f"Day {day}, Seq {seq}, Shot {i}")
-                # plt.show()
                 
                 # Interpolate onto the common frequency grid
                 interpolated_magnitude = np.interp(common_freq_grid, freq_grid_right, outside_right_spectrum)
@@ -155,40 +159,9 @@ for day in chosen_days:
         detuning_acf_dict[detuning].append(outside_acf_mean)
 
         if int(sys.argv[1]) != -1:
-            fig, axs = plt.subplots(2, 2, figsize=(10, 8))
-
-            # Colormap for FFT
-            im1 = axs[0, 0].imshow(np.log(outside_fft_magnitudes[:, 1:]), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], 0, len(Z)-1], origin='lower', cmap='plasma')
-            fig.colorbar(im1, ax=axs[0, 0], label='Log Magnitude')
-            axs[0, 0].set_title(f"outside FFT of day {day}, sequence {seq}")
-            axs[0, 0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
-            axs[0, 0].set_ylabel("Shot number")
-
-            # Average FFT
-            axs[0, 1].plot(common_freq_grid[1:], outside_fft_mean[1:], '-', label='FFT on background outside')
-            axs[0, 1].annotate(f"# of outside shots = {len(Z)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
-            axs[0, 1].set_title(f"outside FFT average of day {day}, sequence {seq}")
-            axs[0, 1].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
-            axs[0, 1].set_yscale('log')
-            axs[0, 1].set_xlim(-0.02, 0.52)
-            axs[0, 1].legend()
-
-            # Colormap for autocorrelation
-            im2 = axs[1, 0].imshow(outside_acf_values, aspect='auto', extent=[common_lag_grid[0], common_lag_grid[-1], 0, len(Z)-1], origin='lower', cmap='plasma')
-            fig.colorbar(im2, ax=axs[1, 0], label='ACF')
-            axs[1, 0].set_title(f"outside ACF of day {day}, sequence {seq}")
-            axs[1, 0].set_xlabel("Lag")
-            axs[1, 0].set_ylabel("Shot number")
-
-            # Average Autocorrelation
-            axs[1, 1].plot(common_lag_grid, outside_acf_mean, '-', label='ACF on background outside')
-            axs[1, 1].annotate(f"# of outside shots = {len(Z)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
-            axs[1, 1].set_title(f"outside ACF average of day {day}, sequence {seq}")
-            axs[1, 1].set_xlabel("Lag")
-            axs[1, 1].legend()
-
-            plt.tight_layout()
-            # plt.savefig(f"thesis/figures/chap2/outside_fft_acf_day_{day}_seq_{0}.png", dpi=500)
+            fig = quadPlot(day, seq, Z, "outside", common_freq_grid, common_lag_grid, 
+                     outside_fft_magnitudes, outside_fft_mean, outside_acf_values, outside_acf_mean, 0)
+            fig.canvas.manager.set_window_title('Magnetization data')
             plt.show()
 
 # FFTs and ACFs as a function of omega
