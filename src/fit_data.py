@@ -144,7 +144,8 @@ for fs in sel_days: # all seqs
                     Mi_right = M[i][int((round(best_2arctan[2])) - s_size) : int(round(best_2arctan[2])) + s_size]
                     best_BS_right, covar_BS_right = curve_fit(bubbleshoulder, xx_right, Mi_right, p0 = init_BS_right)
 
-                    if not save_flag:
+                    if not save_flag and best_BS_left[3] < 3:
+                        print(f"{best_BS_left[1]:.2f} +/- {best_BS_left[3]:.2f}")
                         # Plot bubble and bubbleshoulder fit
                         plt.plot(xx, M[i], label="Data")
                         plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
