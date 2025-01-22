@@ -6,15 +6,16 @@ from util.parameters import importParameters
 from util.methods import scriptUsage
 
 # Data
-f, seqs, Omega, knT, detuning = importParameters()
+f, seqs, Omega, knT, detuning, sel_days, sel_seq = importParameters()
 w = 200
 chosen_days = scriptUsage()
 
-for day in chosen_days:
-    for seq, seqi in enumerate((seqs[day])):
-        df_center = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/center.csv")
-        df_size = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/sizeADV.csv")
-        df_D = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/density.csv")
+for day in sel_days:
+    for seq in sel_seq[day]:
+        seqi = seqs[day][seq]
+        df_center = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center.csv")
+        df_size = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV.csv")
+        df_D = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/density.csv")
 
 
         b_center = df_center.to_numpy().flatten()
@@ -43,7 +44,7 @@ for day in chosen_days:
             D_shifted[i, (int(max_shift + int(shift[i]))) : (int(max_shift) + int(shift[i]) + length)] = D[i]
         
         # save Z, Z_shifted on file
-        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/density_sorted.csv", D, delimiter=',')
+        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/density_sorted.csv", D, delimiter=',')
 
         # Plotting the bubble (sorted)
         # im = ax[1].pcolormesh(D_shifted, vmin=0, vmax=800, cmap='Purples')

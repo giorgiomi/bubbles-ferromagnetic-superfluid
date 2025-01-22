@@ -9,7 +9,7 @@ from scipy.fft import rfft, rfftfreq
 from util.parameters import importParameters
 
 # Data
-f, seqs, Omega, knT, Detuning = importParameters()
+f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
 w = 200 # Thomas-Fermi radius, always the same
 sampling_rate = 1.0 # 1/(1 pixel)
 
@@ -27,10 +27,11 @@ detuning_fft_dict = {}
 detuning_acf_dict = {}
 
 max_length = 0
-for day in chosen_days:
-    for seq, seqi in enumerate((seqs[day])):
-        df_out_left_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/out_left_sorted.csv", header=None)
-        df_out_right_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/out_right_sorted.csv", header=None)
+for day in sel_days:
+    for seq in sel_seq[day]:
+        seqi = seqs[day][seq]
+        df_out_left_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_left_sorted.csv", header=None)
+        df_out_right_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_right_sorted.csv", header=None)
 
         out_left_sorted = df_out_left_sorted.to_numpy().flatten()
         out_right_sorted = df_out_right_sorted.to_numpy().flatten()
@@ -46,11 +47,11 @@ common_lag_grid = np.arange(-max_length+1, max_length)
 
 for day in chosen_days:
     for seq, seqi in enumerate((seqs[day])):
-        df_size_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
-        df_center_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/center_sorted.csv", header=None)
-        df_out_left_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/out_left_sorted.csv", header=None)
-        df_out_right_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/out_right_sorted.csv", header=None)
-        df_Z_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/Z_sorted.csv", header=None)
+        df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
+        df_center_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv", header=None)
+        df_out_left_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_left_sorted.csv", header=None)
+        df_out_right_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_right_sorted.csv", header=None)
+        df_Z_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/Z_sorted.csv", header=None)
         
         omega = Omega[day][seq]
         detuning = Detuning[day][seq]

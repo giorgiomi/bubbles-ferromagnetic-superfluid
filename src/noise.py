@@ -9,7 +9,7 @@ import sys
 from util.methods import scriptUsage, quadPlot
 
 # Data
-f, seqs, Omega, knT, Detuning = importParameters()
+f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
 w = 200
 
 chosen_days = scriptUsage()
@@ -26,11 +26,12 @@ omega_acf_dict = {}
 detuning_fft_dict = {}
 detuning_acf_dict = {}
 
-for day in chosen_days:
-    for seq, seqi in enumerate((seqs[day])):
+for day in sel_days:
+    for seq in sel_seq[day]:
+        seqi = seqs[day][seq]
         # data
-        df_size = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/sizeADV.csv")
-        df_M = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/magnetization.csv")
+        df_size = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV.csv")
+        df_M = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/magnetization.csv")
         b_sizeADV = df_size.to_numpy().flatten()
         M = df_M.to_numpy()
         omega = Omega[day][seq]

@@ -12,7 +12,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 ## Data import
-f, seqs, Omega, knT, detuning = importParameters()
+f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters()
 
 
 ## Data Analysis
@@ -25,16 +25,18 @@ s_size = 30 # half size of the region to fit the shoulder
 threshold = -0.2 # used to discriminate the bubble
 
 # Cycle through days
-for fs in np.arange(len(seqs)): # all seqs
-# for fs in [0]: # only the first seq
-    if not os.path.exists(f"data/processed/day_{fs}"):
-        os.mkdir(f"data/processed/day_{fs}") # create a folder for the day
+for fs in sel_days: # all seqs
+    if not os.path.exists(f"data/selected/day_{fs}"):
+        os.mkdir(f"data/selected/day_{fs}") # create a folder for the day
     df12_ = pd.read_hdf(f[fs]) # importing sequence
 
     #Cycle through sequences
-    for ei, ai in enumerate((seqs[fs])):
-        if not os.path.exists(f"data/processed/day_{fs}/seq_{ei}"):
-            os.mkdir(f"data/processed/day_{fs}/seq_{ei}") # create a folder for the sequence
+    # for ei, ai in enumerate((seqs[fs])):
+    for ei in sel_seqs[fs]:
+        ai = seqs[fs][ei]
+        # print(fs, ei)
+        if not os.path.exists(f"data/selected/day_{fs}/seq_{ei}"):
+            os.mkdir(f"data/selected/day_{fs}/seq_{ei}") # create a folder for the sequence
 
         m1 = [] # magnetization UP
         m2 = [] # magnetization DOWN
@@ -141,16 +143,16 @@ for fs in np.arange(len(seqs)): # all seqs
                     # b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2) - 150) # why 150?
 
                     # Plot bubble and bubbleshoulder fit
-                    plt.plot(xx, M[i], label="Data")
-                    plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
-                    plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
-                    plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
-                    plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
-                    plt.xlabel('$x\ [\mu m]$')
-                    plt.ylabel('$Z(x)$')
-                    plt.legend()
-                    # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
-                    plt.show()
+                    # plt.plot(xx, M[i], label="Data")
+                    # plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
+                    # plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
+                    # plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
+                    # plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
+                    # plt.xlabel('$x\ [\mu m]$')
+                    # plt.ylabel('$Z(x)$')
+                    # plt.legend()
+                    # # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
+                    # plt.show()
 
                     b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2))
                     b_size.append(best_2arctan[2] - best_2arctan[1])
@@ -171,14 +173,14 @@ for fs in np.arange(len(seqs)): # all seqs
                     best_GS, covar_GS = curve_fit(gauss, xx, M[i], p0 = [2, w, 10, .7])
 
                     # Plot gaussian fit
-                    plt.plot(xx, M[i], label="Data")
-                    plt.plot(xx, gauss(xx, *best_GS), label="Gaussian fit")
-                    plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
-                    plt.xlabel('$x\ [\mu m]$')
-                    plt.ylabel('$Z(x)$')
-                    plt.legend()
-                    plt.savefig('thesis/figures/chap2/gaussian_fit.png', dpi=500)
-                    plt.show()
+                    # plt.plot(xx, M[i], label="Data")
+                    # plt.plot(xx, gauss(xx, *best_GS), label="Gaussian fit")
+                    # plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
+                    # plt.xlabel('$x\ [\mu m]$')
+                    # plt.ylabel('$Z(x)$')
+                    # plt.legend()
+                    # plt.savefig('thesis/figures/chap2/gaussian_fit.png', dpi=500)
+                    # plt.show()
 
                     # Bubble center and size
                     b_size.append(best_GS[2] * 2.355)
@@ -210,12 +212,12 @@ for fs in np.arange(len(seqs)): # all seqs
         b_inside_boundary_right = np.array(b_inside_boundary_right)
         b_outside_boundary_left = np.array(b_outside_boundary_left)
         b_outside_boundary_right = np.array(b_outside_boundary_right)
-        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
-        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
-        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
-        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
-        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
-        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
-        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/out_left.csv", b_outside_boundary_left, delimiter=',')
-        # np.savetxt(f"data/processed/day_{fs}/seq_{ei}/out_right.csv", b_outside_boundary_right, delimiter=',')
+        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
+        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
+        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
+        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
+        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
+        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
+        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/out_left.csv", b_outside_boundary_left, delimiter=',')
+        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/out_right.csv", b_outside_boundary_right, delimiter=',')
 

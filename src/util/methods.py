@@ -5,16 +5,19 @@ from util.parameters import importParameters
 from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
 
-f, seqs, Omega, knT, detuning = importParameters()
+f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters()
 
 def scriptUsage():
     if len(sys.argv) > 1:
         if int(sys.argv[1]) == -1:
-            chosen_days = np.arange(len(seqs))
+            chosen_days = sel_days
         else:
             chosen_days = [int(sys.argv[1])]
+            if chosen_days[0] not in sel_days:
+                print(f"Day {chosen_days[0]} is no good, please use one in {sel_days}")
+                exit()
     else:
-        print(f"Usage: python3 {sys.argv[0]} <chosen_days>\t\t (use chosen_days = -1 for all)")
+        print(f"Usage: python3 {sys.argv[0]} <chosen_days>\t\t (use chosen_days = -1 for all selected)")
         exit()
         
     return chosen_days

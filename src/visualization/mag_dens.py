@@ -13,14 +13,15 @@ from util.methods import scriptUsage
 
 
 # Data
-f, seqs, Omega, knT, detuning = importParameters()
+f, seqs, Omega, knT, detuning, sel_days, sel_seq = importParameters()
 w = 200
 
 chosen_days = scriptUsage()
 
-for day in chosen_days:
+for day in sel_days:
 #for day in np.arange(len(seqs)):
-    for seq, seqi in enumerate((seqs[day])):
+    for seq in sel_seq[day]:
+        seqi = seqs[day][seq]
         df_center = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/center.csv")
         df_size = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/sizeADV.csv")
         df_M = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/magnetization.csv")
@@ -40,7 +41,7 @@ for day in chosen_days:
         D = df_D.to_numpy()
         n_shots = len(b_center)
 
-        for i in range(19, n_shots):
+        for i in range(0, n_shots):
             fig, axs = plt.subplots(2, 1, figsize=(10, 8))
 
             # Magnetization profile

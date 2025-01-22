@@ -6,15 +6,16 @@ from util.parameters import importParameters
 from util.methods import scriptUsage
 
 # Data
-f, seqs, Omega, knT, detuning = importParameters()
+f, seqs, Omega, knT, detuning, sel_days, sel_seq = importParameters()
 w = 200
 chosen_days = scriptUsage()
 
-for day in chosen_days:
-    for seq, seqi in enumerate((seqs[day])):
-        df_center_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/center_sorted.csv")
-        df_size_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/sizeADV_sorted.csv")
-        df_Z_sorted = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/Z_sorted.csv")
+for day in sel_days:
+    for seq in sel_seq[day]:
+        seqi = seqs[day][seq]
+        df_center_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv")
+        df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv")
+        df_Z_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/Z_sorted.csv")
 
         b_center = df_center_sorted.to_numpy().flatten()
         b_size = df_size_sorted.to_numpy().flatten()

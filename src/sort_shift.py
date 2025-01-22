@@ -6,19 +6,21 @@ from util.parameters import importParameters
 from util.methods import scriptUsage
 
 # Data
-f, seqs, Omega, knT, detuning = importParameters()
+f, seqs, Omega, knT, detuning, sel_days, sel_seq = importParameters()
 w = 200
 chosen_days = scriptUsage()
 
-for day in chosen_days:
-    for seq, seqi in enumerate((seqs[day])):
-        df_center = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/center.csv")
-        df_size = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/sizeADV.csv")
-        df_M = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/magnetization.csv")
-        df_in_left = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_left.csv")
-        df_in_right = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/in_right.csv")
-        df_out_left = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/out_left.csv")
-        df_out_right = pd.read_csv(f"data/processed/day_{day}/seq_{seq}/out_right.csv")
+for day in sel_days:
+    # for seq, seqi in enumerate((seqs[day])):
+    for seq in sel_seq[day]:
+        seqi = seqs[day][seq]
+        df_center = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center.csv")
+        df_size = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV.csv")
+        df_M = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/magnetization.csv")
+        df_in_left = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_left.csv")
+        df_in_right = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_right.csv")
+        df_out_left = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_left.csv")
+        df_out_right = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_right.csv")
 
         b_center = df_center.to_numpy().flatten()
         b_sizeADV = df_size.to_numpy().flatten()
@@ -54,14 +56,14 @@ for day in chosen_days:
             Z_shifted[i, (int(max_shift + int(shift[i]))) : (int(max_shift) + int(shift[i]) + length)] = Z[i]
         
         # save Z, Z_shifted on file
-        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/Z_shifted.csv", Z_shifted, delimiter=',')
-        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/Z_sorted.csv", Z, delimiter=',')
-        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/center_sorted.csv", b_center_sorted, delimiter=',')
-        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/sizeADV_sorted.csv", b_sizeADV_sorted, delimiter=',')
-        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_left_sorted.csv", in_left_sorted, delimiter=',')
-        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/in_right_sorted.csv", in_right_sorted, delimiter=',')
-        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/out_left_sorted.csv", out_left_sorted, delimiter=',')
-        # np.savetxt(f"data/processed/day_{day}/seq_{seq}/out_right_sorted.csv", out_right_sorted, delimiter=',')
+        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/Z_shifted.csv", Z_shifted, delimiter=',')
+        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/Z_sorted.csv", Z, delimiter=',')
+        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv", b_center_sorted, delimiter=',')
+        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", b_sizeADV_sorted, delimiter=',')
+        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/in_left_sorted.csv", in_left_sorted, delimiter=',')
+        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/in_right_sorted.csv", in_right_sorted, delimiter=',')
+        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/out_left_sorted.csv", out_left_sorted, delimiter=',')
+        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/out_right_sorted.csv", out_right_sorted, delimiter=',')
 
 
         # Plotting the bubble (sorted)

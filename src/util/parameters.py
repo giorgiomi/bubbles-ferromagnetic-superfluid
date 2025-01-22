@@ -31,6 +31,22 @@ def importParameters():
             [[15],[16],[17,18]],
             [[22,23,29,30],[24,25]]]
 
+    # Choosing better sequences
+    selected_days = [0, 1, 2, 3, 6, 7, 8, 9, 10, 12]
+    selected_seqs = [[0, 1, 2, 3],
+                     [0, 1, 2],
+                     [0, 1],
+                     [0, 1],
+                     [], 
+                     [],
+                     [0, 4],
+                     [0, 1],
+                     [0, 1],
+                     [0, 1],
+                     [0],
+                     [],
+                     [1]]
+
     # A lot of tuning parameters
     Conv=2700
 
@@ -151,4 +167,4 @@ def importParameters():
     detuningOm = detuningCal/sum(Omega,[])
     detuningOmEnd = detuningEnd/sum(Omega,[])
 
-    return f, seqs, Omega, knT, detuning
+    return f, seqs, Omega, knT, detuning, selected_days, selected_seqs
