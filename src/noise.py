@@ -27,6 +27,8 @@ omega_acf_dict = {}
 detuning_fft_dict = {}
 detuning_acf_dict = {}
 
+lag_grid = np.arange(-window_len, window_len+1)
+
 for day in chosen_days:
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
@@ -49,8 +51,7 @@ for day in chosen_days:
         noise_fft_magnitudes = []
         noise_acf_values = []
         for shot in M_noise:
-            lag_grid = np.arange(-len(shot) + 1, len(shot))
-            noise_fft_magnitudes, noise_acf_values = computeFFT_ACF(zero_mean_flag, shot, common_noise_freq_grid, lag_grid, noise_fft_magnitudes, noise_acf_values)
+            noise_fft_magnitudes, noise_acf_values = computeFFT_ACF(zero_mean_flag, shot, common_noise_freq_grid, lag_grid, noise_fft_magnitudes, noise_acf_values, window_len)
 
         noise_fft_magnitudes = np.array(noise_fft_magnitudes)
         noise_fft_mean = np.mean(noise_fft_magnitudes, axis=0)

@@ -83,7 +83,6 @@ for day in chosen_days:
 
             # compute FFT of the inside
             N = len(inside)
-            # print(day, seq, i, N)
             if N > 0:
                 inside_fft_magnitudes, inside_acf_values = computeFFT_ACF(zero_mean_flag, inside, CFG, CLG, inside_fft_magnitudes, inside_acf_values, window_len)
 
@@ -199,9 +198,7 @@ for idx, detuning in enumerate(sorted_detunings):
 
     acf_list = detuning_acf_dict[detuning]
     avg_acf = np.mean(acf_list, axis=0)
-    positive_lags = CLG[CLG >= 0]
-    positive_acf = avg_acf[CLG >= 0]
-    axs[1].plot(positive_lags, positive_acf, label=f'Detuning {detuning}', color=color)
+    axs[1].plot(CLG, avg_acf, label=f'Detuning {detuning}', color=color)
 
 # Plot FFTs
 axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")

@@ -6,12 +6,13 @@ from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
 from util.parameters import importParameters
 import sys
-from util.methods import scriptUsage, quadPlot
+from util.methods import scriptUsage, quadPlot, computeFFT_ACF
 
 # Data
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
 w = 200 # Thomas-Fermi radius, always the same
 sampling_rate = 1.0 # 1/(1 pixel)
+window_len = 40
 
 chosen_days = scriptUsage()
 
@@ -37,10 +38,10 @@ for day in chosen_days:
             max_length = max_size
 
 # Common frequency grid for FFT
-common_freq_grid = rfftfreq(max_length, d=sampling_rate)
+CFG = rfftfreq(max_length, d=sampling_rate)
 
 # Common lag grid for ACF
-common_lag_grid = np.arange(-max_length+1, max_length)
+CLG = np.arange(-window_len, window_len)
 
 for day in chosen_days:
     for seq in sel_seq[day]:
@@ -84,30 +85,7 @@ for day in chosen_days:
             N = len(inside)
             # print(day, seq, i, N)
             if N > 0:
-                freq_grid = rfftfreq(N, d=sampling_rate)
-                if zero_mean_flag == 1:
-                    inside_fft = rfft(inside - np.mean(inside))  # FFT on zero-mean signal
-                    inside_acf = correlate(inside - np.mean(inside), inside - np.mean(inside), mode='full')
-                else:
-                    inside_fft = rfft(inside)  # FFT on true signal
-                    inside_acf = correlate(inside, inside, mode='full')
-
-                inside_spectrum = np.abs(inside_fft)
-                inside_acf /= np.max(inside_acf) # normalize to acf[0] = 1
-                # print(f"len autocorr = {len(inside_acf)}")
-
-                # plt.plot(freq_grid, inside_spectrum)
-                # plt.title(f"Day {day}, Seq {seq}, Shot {i}")
-                # plt.show()
-                
-                # Interpolate onto the common frequency grid
-                interpolated_magnitude = np.interp(common_freq_grid, freq_grid, inside_spectrum)
-                inside_fft_magnitudes.append(interpolated_magnitude)
-
-                # Compute the lag grid for this signal and iterpolate
-                lag_grid = np.arange(-len(inside) + 1, len(inside))
-                interpolated_acf = np.interp(common_lag_grid, lag_grid, inside_acf)
-                inside_acf_values.append(interpolated_acf)
+                inside_fft_magnitudes, inside_acf_values = computeFFT_ACF(zero_mean_flag, inside, CFG, CLG, inside_fft_magnitudes, inside_acf_values, window_len)
 
         inside_fft_magnitudes = np.array(inside_fft_magnitudes)
         inside_fft_mean = np.mean(inside_fft_magnitudes, axis=0)
@@ -132,7 +110,7 @@ for day in chosen_days:
         detuning_acf_dict[detuning].append(inside_acf_mean)
 
         if int(sys.argv[1]) != -1:
-            fig = quadPlot(day, seq, D, "inside", common_freq_grid, common_lag_grid, 
+            fig = quadPlot(day, seq, D, "inside", CFG, CLG, 
                      inside_fft_magnitudes, inside_fft_mean, inside_acf_values, inside_acf_mean, 0)
             fig.canvas.manager.set_window_title('Density data')
             plt.show()
@@ -145,13 +123,11 @@ sorted_omegas = sorted(omega_fft_dict.keys())
 for omega in sorted_omegas: 
     fft_list = omega_fft_dict[omega]
     avg_fft = np.mean(fft_list, axis=0)
-    axs[0].plot(common_freq_grid[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$ Hz')
+    axs[0].plot(CFG[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$ Hz')
 
     acf_list = omega_acf_dict[omega]
     avg_acf = np.mean(acf_list, axis=0)
-    positive_lags = common_lag_grid[common_lag_grid >= 0]
-    positive_acf = avg_acf[common_lag_grid >= 0]
-    axs[1].plot(positive_lags, positive_acf, '-', label=fr'$\Omega = {omega}$ Hz')
+    axs[1].plot(CLG, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
 
 # Plot FFTs
 axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
@@ -191,14 +167,14 @@ fft_matrix = np.array(fft_matrix)
 acf_matrix = np.array(acf_matrix)
 
 # Plot FFT colormap
-im1 = axs[0].imshow(np.log(fft_matrix), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
+im1 = axs[0].imshow(np.log(fft_matrix), aspect='auto', extent=[CFG[1], CFG[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
 fig.colorbar(im1, ax=axs[0], label='Log Magnitude')
 axs[0].set_title("Average inside FFTs (density)")
 axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
 axs[0].set_ylabel("$\delta$")
 
 # Plot ACF colormap
-im2 = axs[1].imshow(acf_matrix, aspect='auto', extent=[common_lag_grid[0], common_lag_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
+im2 = axs[1].imshow(acf_matrix, aspect='auto', extent=[CLG[0], CLG[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
 fig.colorbar(im2, ax=axs[1], label='ACF')
 axs[1].set_title("Average inside ACFs (density)")
 axs[1].set_xlabel("Lag")

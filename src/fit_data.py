@@ -14,6 +14,12 @@ warnings.filterwarnings('ignore')
 ## Data import
 f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters()
 
+# Print script purpose
+print("\nFitting data\n")
+
+# Ask the user for FFT and ACF on true or zero mean signal
+save_flag = int(input("Enter 0 for just plotting or 1 for just saving: "))
+
 
 ## Data Analysis
 
@@ -122,6 +128,7 @@ for fs in sel_days: # all seqs
                 try:
                     # Fitting with bubble function
                     best_2arctan, covar_2arctan = curve_fit(bubble, xx, M[i], p0 = init_vals)
+                    chi_squared = np.sum((M[i] - bubble(xx, *best_2arctan)) ** 2)
 
                     # Initial values for bubbleshoulder fit
                     init_BS_left = [best_2arctan[0] * 0.7, best_2arctan[1], best_2arctan[3], best_2arctan[4]]
@@ -137,22 +144,20 @@ for fs in sel_days: # all seqs
                     Mi_right = M[i][int((round(best_2arctan[2])) - s_size) : int(round(best_2arctan[2])) + s_size]
                     best_BS_right, covar_BS_right = curve_fit(bubbleshoulder, xx_right, Mi_right, p0 = init_BS_right)
 
-                    # Bubble center and size
-                    # print(f"b_center = {int(best_BS_right[1] / 2 + best_BS_left[1] / 2) - 150}")
-                    # print(f"b_size = {best_2arctan[2] - best_2arctan[1]}")
-                    # b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2) - 150) # why 150?
-
-                    # Plot bubble and bubbleshoulder fit
-                    # plt.plot(xx, M[i], label="Data")
-                    # plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
-                    # plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
-                    # plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
-                    # plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
-                    # plt.xlabel('$x\ [\mu m]$')
-                    # plt.ylabel('$Z(x)$')
-                    # plt.legend()
-                    # # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
-                    # plt.show()
+                    if not save_flag:
+                        # Plot bubble and bubbleshoulder fit
+                        plt.plot(xx, M[i], label="Data")
+                        plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
+                        plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
+                        plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
+                        plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
+                        plt.text(0.7, 0.1, f'Chi-squared: {chi_squared:.2f}', transform=plt.gca().transAxes,
+                                 fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white'))
+                        plt.xlabel('$x\ [\mu m]$')
+                        plt.ylabel('$Z(x)$')
+                        plt.legend()
+                        # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
+                        plt.show()
 
                     b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2))
                     b_size.append(best_2arctan[2] - best_2arctan[1])
@@ -171,16 +176,20 @@ for fs in sel_days: # all seqs
 
                     # Gaussian fit
                     best_GS, covar_GS = curve_fit(gauss, xx, M[i], p0 = [2, w, 10, .7])
+                    chi_squared = np.sum((M[i] - gauss(xx, *best_GS)) ** 2)
 
-                    # Plot gaussian fit
-                    # plt.plot(xx, M[i], label="Data")
-                    # plt.plot(xx, gauss(xx, *best_GS), label="Gaussian fit")
-                    # plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
-                    # plt.xlabel('$x\ [\mu m]$')
-                    # plt.ylabel('$Z(x)$')
-                    # plt.legend()
-                    # plt.savefig('thesis/figures/chap2/gaussian_fit.png', dpi=500)
-                    # plt.show()
+                    if not save_flag:
+                        # Plot gaussian fit
+                        plt.plot(xx, M[i], label="Data")
+                        plt.plot(xx, gauss(xx, *best_GS), label="Gaussian fit")
+                        plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
+                        plt.text(0.7, 0.1, f'Chi-squared: {chi_squared:.2f}', transform=plt.gca().transAxes,
+                                 fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white'))
+                        plt.xlabel('$x\ [\mu m]$')
+                        plt.ylabel('$Z(x)$')
+                        plt.legend()
+                        plt.savefig('thesis/figures/chap2/gaussian_fit.png', dpi=500)
+                        plt.show()
 
                     # Bubble center and size
                     b_size.append(best_GS[2] * 2.355)
@@ -212,12 +221,15 @@ for fs in sel_days: # all seqs
         b_inside_boundary_right = np.array(b_inside_boundary_right)
         b_outside_boundary_left = np.array(b_outside_boundary_left)
         b_outside_boundary_right = np.array(b_outside_boundary_right)
-        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
-        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
-        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
-        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
-        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
-        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
-        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/out_left.csv", b_outside_boundary_left, delimiter=',')
-        np.savetxt(f"data/selected/day_{fs}/seq_{ei}/out_right.csv", b_outside_boundary_right, delimiter=',')
+
+        if save_flag:
+            print(f"\rSaving fitted data on data/selected/day_{fs}/seq_{ei}/", end="")
+            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
+            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
+            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
+            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
+            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
+            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
+            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/out_left.csv", b_outside_boundary_left, delimiter=',')
+            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/out_right.csv", b_outside_boundary_right, delimiter=',')
 
