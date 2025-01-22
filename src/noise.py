@@ -11,6 +11,7 @@ from util.methods import scriptUsage, quadPlot, computeFFT_ACF
 # Data
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
 w = 200
+window_len = 40
 
 chosen_days = scriptUsage()
 

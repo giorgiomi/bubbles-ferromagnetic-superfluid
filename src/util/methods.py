@@ -78,7 +78,7 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
         plt.savefig(f"thesis/figures/chap2/{region}_fft_acf_day_{day}_seq_{seq}.png", dpi=500)
     return fig
 
-def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values):
+def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values, w_len):
     '''
         Computes FFT and ACF
         `zero_mean_flag`: 0 for true data, 1 for 0-mean data
@@ -91,11 +91,11 @@ def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values):
     '''
     if zero_mean_flag:
         fft = rfft(data - np.mean(data)) ## doing FFT on zero-mean signal
-        acf = correlate(data - np.mean(data), data - np.mean(data), mode='full')
+        acf, lags = myCorrelate(data - np.mean(data), w_len)
     else:
         fft = rfft(data) ## doing FFT on true signal
-        acf = correlate(data, data, mode='full')
-    
+        acf, lags = myCorrelate(data, w_len)
+
     # Interpolate onto the common frequency grid
     spectrum = np.abs(fft)
     freq_grid = rfftfreq(len(data), d=1.0)
@@ -104,8 +104,32 @@ def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values):
 
     # Compute the lag grid for this signal and iterpolate
     acf /= np.max(acf)
-    lag_grid = np.arange(-len(data) + 1, len(data))
-    interpolated_acf = np.interp(CLG, lag_grid, acf)
+
+    # plt.figure()
+    # plt.plot(lags, acf)
+    # plt.ylim(0, 1)
+    # plt.show()
+
+    interpolated_acf = np.interp(CLG, lags, acf)
     acf_values.append(interpolated_acf)
 
     return fft_magnitudes, acf_values
+
+def myCorrelate(data, window_len=40):
+    N = len(data)
+    if N <= window_len:
+        start = 0
+        end = N-1
+    else:
+        start = int((N - window_len)/2)
+        end = int((N + window_len)/2)
+    # print(start, end)
+    ACF = [0] * (window_len * 2 + 1)
+    lags = np.arange(-window_len, window_len+1)
+    for k in lags:
+        for j in range(start, end+1):
+            if j+k >= N or j+k < 0:
+                continue
+            ACF[k + window_len] += data[j]*data[j+k]
+    return ACF, lags
+    

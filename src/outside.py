@@ -12,6 +12,7 @@ from util.parameters import importParameters
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
 w = 200 # Thomas-Fermi radius, always the same
 sampling_rate = 1.0 # 1/(1 pixel)
+window_len = 40
 
 chosen_days = scriptUsage()
 
@@ -43,7 +44,7 @@ for day in chosen_days:
 CFG = rfftfreq(max_length, d=sampling_rate)
 
 # Common lag grid for ACF
-CLG = np.arange(-max_length+1, max_length)
+CLG = np.arange(-window_len, window_len+1)
 
 for day in chosen_days:
     for seq in sel_seq[day]:
