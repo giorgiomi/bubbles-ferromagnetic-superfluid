@@ -10,7 +10,7 @@ f, seqs, Omega, knT, detuning, sel_days, sel_seq = importParameters()
 w = 200
 chosen_days = scriptUsage()
 
-for day in sel_days:
+for day in chosen_days:
     # for seq, seqi in enumerate((seqs[day])):
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
@@ -31,11 +31,11 @@ for day in sel_days:
         M = df_M.to_numpy()
 
         # Plotting the bubble (unsorted)
-        # fig, ax = plt.subplots(figsize=(10, 5), ncols=3, gridspec_kw={'width_ratios': [1, 1, 0.05]})
-        # ax[0].pcolormesh(M, vmin = -1, vmax = +1, cmap = 'RdBu')
-        # ax[0].set_title('Unsorted shots')
-        # ax[0].set_xlabel('$x\ [\mu m]$')
-        # ax[0].set_ylabel('shots')
+        fig, ax = plt.subplots(figsize=(10, 5), ncols=3, gridspec_kw={'width_ratios': [1, 1, 0.05]})
+        ax[0].pcolormesh(M, vmin = -1, vmax = +1, cmap = 'RdBu')
+        ax[0].set_title('Unsorted shots')
+        ax[0].set_xlabel('$x\ [\mu m]$')
+        ax[0].set_ylabel('shots')
 
         # Sorting the bubble
         Zlist = np.argsort(b_sizeADV)
@@ -67,12 +67,12 @@ for day in sel_days:
 
 
         # Plotting the bubble (sorted)
-        # im = ax[1].pcolormesh(Z_shifted, vmin=-1, vmax=1, cmap='RdBu')
-        # cbar = fig.colorbar(im, cax=ax[2])
-        # cbar.set_label('M', rotation=270)
-        # ax[1].set_title('Sorted shots')
-        # ax[1].set_xlabel('x')
-        # fig.suptitle(f"Experiment realization of day {day}, sequence {seq}")
-        # # plt.savefig("thesis/figures/chap2/shot_sorting.png", dpi=500)
-        # plt.show()
+        im = ax[1].pcolormesh(Z_shifted, vmin=-1, vmax=1, cmap='RdBu')
+        cbar = fig.colorbar(im, cax=ax[2])
+        cbar.set_label('M', rotation=270)
+        ax[1].set_title('Sorted shots')
+        ax[1].set_xlabel('x')
+        fig.suptitle(f"Experiment realization of day {day}, sequence {seq}")
+        # plt.savefig("thesis/figures/chap2/shot_sorting.png", dpi=500)
+        plt.show()
 

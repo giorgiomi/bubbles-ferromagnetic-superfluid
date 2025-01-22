@@ -27,7 +27,7 @@ detuning_fft_dict = {}
 detuning_acf_dict = {}
 
 max_length = 0
-for day in sel_days:
+for day in chosen_days:
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
         df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
@@ -43,7 +43,8 @@ common_freq_grid = rfftfreq(max_length, d=sampling_rate)
 common_lag_grid = np.arange(-max_length+1, max_length)
 
 for day in chosen_days:
-    for seq, seqi in enumerate((seqs[day])):
+    for seq in sel_seq[day]:
+        seqi = seqs[day][seq]
         df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
         df_center_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv", header=None)
         df_in_left_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_left_sorted.csv", header=None)

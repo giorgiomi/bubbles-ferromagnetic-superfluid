@@ -6,7 +6,7 @@ from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
 from util.parameters import importParameters
 import sys
-from util.methods import scriptUsage, quadPlot
+from util.methods import scriptUsage, quadPlot, computeFFT_ACF
 
 # Data
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
@@ -26,7 +26,7 @@ omega_acf_dict = {}
 detuning_fft_dict = {}
 detuning_acf_dict = {}
 
-for day in sel_days:
+for day in chosen_days:
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
         # data
@@ -48,24 +48,8 @@ for day in sel_days:
         noise_fft_magnitudes = []
         noise_acf_values = []
         for shot in M_noise:
-            if zero_mean_flag:
-                noise_fft = rfft(shot - np.mean(shot)) ## doing FFT on zero-mean signal
-                noise_acf = correlate(shot - np.mean(shot), shot - np.mean(shot), mode='full')
-            else:
-                noise_fft = rfft(shot) ## doing FFT on true signal
-                noise_acf = correlate(shot, shot, mode='full')
-            
-            noise_spectrum = np.abs(noise_fft)
-            noise_acf /= np.max(noise_acf)
-            noise_freq_grid = rfftfreq(len(shot), d=1.0)
-
-            # Interpolate onto the common frequency grid
-            interpolated_noise_magnitude = np.interp(common_noise_freq_grid, noise_freq_grid, noise_spectrum)
-            noise_fft_magnitudes.append(interpolated_noise_magnitude)
-            
-            # Interpolate onto the common lag grid
-            noise_acf_values.append(noise_acf)
             lag_grid = np.arange(-len(shot) + 1, len(shot))
+            noise_fft_magnitudes, noise_acf_values = computeFFT_ACF(zero_mean_flag, shot, common_noise_freq_grid, lag_grid, noise_fft_magnitudes, noise_acf_values)
 
         noise_fft_magnitudes = np.array(noise_fft_magnitudes)
         noise_fft_mean = np.mean(noise_fft_magnitudes, axis=0)

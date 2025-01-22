@@ -10,7 +10,7 @@ f, seqs, Omega, knT, detuning, sel_days, sel_seq = importParameters()
 w = 200
 chosen_days = scriptUsage()
 
-for day in sel_days:
+for day in chosen_days:
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
         df_center = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center.csv")

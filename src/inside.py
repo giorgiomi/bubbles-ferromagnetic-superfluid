@@ -6,7 +6,7 @@ from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
 from util.parameters import importParameters
 import sys
-from util.methods import scriptUsage, quadPlot
+from util.methods import scriptUsage, quadPlot, computeFFT_ACF
 
 # Data
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
@@ -27,7 +27,7 @@ detuning_fft_dict = {}
 detuning_acf_dict = {}
 
 max_length = 0
-for day in sel_days:
+for day in chosen_days:
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
         df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
@@ -43,7 +43,8 @@ common_freq_grid = rfftfreq(max_length, d=sampling_rate)
 common_lag_grid = np.arange(-max_length+1, max_length)
 
 for day in chosen_days:
-    for seq, seqi in enumerate((seqs[day])):
+    for seq in sel_seq[day]:
+        seqi = seqs[day][seq]
         df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
         df_center_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv", header=None)
         df_in_left_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_left_sorted.csv", header=None)
@@ -83,30 +84,7 @@ for day in chosen_days:
             N = len(inside)
             # print(day, seq, i, N)
             if N > 0:
-                freq_grid = rfftfreq(N, d=sampling_rate)
-                if zero_mean_flag:
-                    inside_fft = rfft(inside - np.mean(inside)) ## doing FFT on zero-mean signal
-                    inside_acf = correlate(inside - np.mean(inside), inside - np.mean(inside), mode='full')
-                else:
-                    inside_fft = rfft(inside) ## doing FFT on true signal
-                    inside_acf = correlate(inside, inside, mode='full')
-                
-                inside_spectrum = np.abs(inside_fft)
-                inside_acf /= np.max(inside_acf) # normalize to acf[0] = 1
-                # print(f"len autocorr = {len(inside_acf)}")
-
-                # plt.plot(freq_grid, inside_spectrum)
-                # plt.title(f"Day {day}, Seq {seq}, Shot {i}")
-                # plt.show()
-                
-                # Interpolate onto the common frequency grid
-                interpolated_magnitude = np.interp(common_freq_grid, freq_grid, inside_spectrum)
-                inside_fft_magnitudes.append(interpolated_magnitude)
-
-                # Compute the lag grid for this signal and iterpolate
-                lag_grid = np.arange(-len(inside) + 1, len(inside))
-                interpolated_acf = np.interp(common_lag_grid, lag_grid, inside_acf)
-                inside_acf_values.append(interpolated_acf)
+                inside_fft_magnitudes, inside_acf_values = computeFFT_ACF(zero_mean_flag, inside, common_freq_grid, common_lag_grid, inside_fft_magnitudes, inside_acf_values)
 
         inside_fft_magnitudes = np.array(inside_fft_magnitudes)
         inside_fft_mean = np.mean(inside_fft_magnitudes, axis=0)
@@ -204,4 +182,41 @@ axs[1].set_xlabel("Lag")
 axs[1].set_ylabel("$\delta$")
 
 plt.tight_layout()
+plt.show()
+
+# Plot simple line plots to visualize the frequency dependence on the detuning
+fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+
+import matplotlib.cm as cm
+
+# Prepare data for line plots
+colors = cm.viridis(np.linspace(0, 1, len(sorted_detunings)))
+
+for idx, detuning in enumerate(sorted_detunings):
+    color = colors[idx]
+    fft_list = detuning_fft_dict[detuning]
+    avg_fft = np.mean(fft_list, axis=0)
+    axs[0].plot(common_freq_grid[1:], avg_fft[1:], label=f'Detuning {detuning}', color=color)
+
+    acf_list = detuning_acf_dict[detuning]
+    avg_acf = np.mean(acf_list, axis=0)
+    positive_lags = common_lag_grid[common_lag_grid >= 0]
+    positive_acf = avg_acf[common_lag_grid >= 0]
+    axs[1].plot(positive_lags, positive_acf, label=f'Detuning {detuning}', color=color)
+
+# Plot FFTs
+axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
+axs[0].set_yscale('log')
+axs[0].set_xlim(-0.02, 0.52)
+axs[0].set_title("FFT Magnitude vs Detuning")
+
+# Plot ACFs
+axs[1].set_xlabel("Lag")
+axs[1].set_title("ACF vs Detuning")
+
+# Add color bar
+sm = plt.cm.ScalarMappable(cmap=cm.viridis, norm=plt.Normalize(vmin=min(sorted_detunings), vmax=max(sorted_detunings)))
+sm.set_array([])
+fig.colorbar(sm, ax=axs, orientation='vertical', label='Detuning')
+
 plt.show()

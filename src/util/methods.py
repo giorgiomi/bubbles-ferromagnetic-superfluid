@@ -8,6 +8,9 @@ from scipy.signal import correlate
 f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters()
 
 def scriptUsage():
+    '''
+        Tells the user how to insert command line parameters when running the script
+    '''
     if len(sys.argv) > 1:
         if int(sys.argv[1]) == -1:
             chosen_days = sel_days
@@ -24,6 +27,20 @@ def scriptUsage():
 
 
 def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_mean, save_flag):
+    '''
+        Draws a 2x2 plor showing FFT and ACF of the entire sequence and the average values
+        day: day
+        seq: sequence
+        data: magnetization values
+        region: "noise" or "inside" or "outside"
+        CFG: Common Frequency Grid
+        CLG: Common Lag Grid
+        FFT_mag: FFT magnitudes (matrix)
+        FFT_mean: FFT average values (array)
+        ACF_val: ACF values (matrix)
+        ACF_mean: ACF average values (array)
+        save_flag: 0 for no, 1 for yes
+    '''
     fig, axs = plt.subplots(2, 2, figsize=(10, 8))
 
     # Colormap for FFT
@@ -61,24 +78,34 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
         plt.savefig(f"thesis/figures/chap2/{region}_fft_acf_day_{day}_seq_{seq}.png", dpi=500)
     return fig
 
-def computeFFT_ACF(zero_mean_flag, data, CFG, fft_magnitudes, acf_values):
+def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values):
+    '''
+        Computes FFT and ACF
+        `zero_mean_flag`: 0 for true data, 1 for 0-mean data
+        `data`: magnetization values
+        `CFG`: Common Frequency Grid
+        `CLG`: Common Lag Grid
+        `FFT_mag`: FFT magnitudes (matrix)
+        `ACF_val`: ACF values (matrix)
+
+    '''
     if zero_mean_flag:
-        noise_fft = rfft(data - np.mean(data)) ## doing FFT on zero-mean signal
-        noise_acf = correlate(data - np.mean(data), data - np.mean(data), mode='full')
+        fft = rfft(data - np.mean(data)) ## doing FFT on zero-mean signal
+        acf = correlate(data - np.mean(data), data - np.mean(data), mode='full')
     else:
-        noise_fft = rfft(data) ## doing FFT on true signal
-        noise_acf = correlate(data, data, mode='full')
+        fft = rfft(data) ## doing FFT on true signal
+        acf = correlate(data, data, mode='full')
     
-    noise_spectrum = np.abs(noise_fft)
-    noise_acf /= np.max(noise_acf)
-    noise_freq_grid = rfftfreq(len(data), d=1.0)
-
     # Interpolate onto the common frequency grid
-    interpolated_noise_magnitude = np.interp(CFG, noise_freq_grid, noise_spectrum)
+    spectrum = np.abs(fft)
+    freq_grid = rfftfreq(len(data), d=1.0)
+    interpolated_noise_magnitude = np.interp(CFG, freq_grid, spectrum)
     fft_magnitudes.append(interpolated_noise_magnitude)
-    
-    # Interpolate onto the common lag grid
-    acf_values.append(noise_acf)
-    lag_grid = np.arange(-len(data) + 1, len(data))
 
-    return fft_magnitudes, acf_values, lag_grid
+    # Compute the lag grid for this signal and iterpolate
+    acf /= np.max(acf)
+    lag_grid = np.arange(-len(data) + 1, len(data))
+    interpolated_acf = np.interp(CLG, lag_grid, acf)
+    acf_values.append(interpolated_acf)
+
+    return fft_magnitudes, acf_values

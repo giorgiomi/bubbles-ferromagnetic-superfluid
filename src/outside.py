@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.signal import correlate
-from util.methods import scriptUsage, quadPlot
+from util.methods import scriptUsage, quadPlot, computeFFT_ACF
 from scipy.fft import rfft, rfftfreq
 from util.parameters import importParameters
 
@@ -27,7 +27,7 @@ detuning_fft_dict = {}
 detuning_acf_dict = {}
 
 max_length = 0
-for day in sel_days:
+for day in chosen_days:
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
         df_out_left_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_left_sorted.csv", header=None)
@@ -40,13 +40,14 @@ for day in sel_days:
             max_length = max_size
 
 # Common frequency grid for FFT
-common_freq_grid = rfftfreq(max_length, d=sampling_rate)
+CFG = rfftfreq(max_length, d=sampling_rate)
 
 # Common lag grid for ACF
-common_lag_grid = np.arange(-max_length+1, max_length)
+CLG = np.arange(-max_length+1, max_length)
 
 for day in chosen_days:
-    for seq, seqi in enumerate((seqs[day])):
+    for seq in sel_seq[day]:
+        seqi = seqs[day][seq]
         df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
         df_center_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv", header=None)
         df_out_left_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_left_sorted.csv", header=None)
@@ -89,49 +90,11 @@ for day in chosen_days:
             N_right= len(outside_right)
 
             if N_left > 0 and N_right > 0:
-                #---------------------------------------------------------------------------------------------------
                 # compute FFT and ACF of the left
-                freq_grid_left = rfftfreq(N_left, d=sampling_rate)
-                if zero_mean_flag:
-                    outside_left_fft = rfft(outside_left - np.mean(outside_left)) ## doing FFT on zero-mean signal
-                    outside_left_acf = correlate(outside_left - np.mean(outside_left), outside_left - np.mean(outside_left), mode='full')
-                else:
-                    outside_left_fft = rfft(outside_left) ## doing FFT on true signal
-                    outside_left_acf = correlate(outside_left, outside_left, mode='full')
-                
-                outside_left_spectrum = np.abs(outside_left_fft)
-                outside_left_acf /= np.max(outside_left_acf) # normalize to acf[0] = 1
-                
-                # Interpolate onto the common frequency grid
-                interpolated_magnitude = np.interp(common_freq_grid, freq_grid_left, outside_left_spectrum)
-                outside_left_fft_magnitudes.append(interpolated_magnitude)
+                outside_left_fft_magnitudes, outside_left_acf_values = computeFFT_ACF(zero_mean_flag, outside_left, CFG, CLG, outside_left_fft_magnitudes, outside_left_acf_values)
 
-                # Compute the lag grid for this signal and iterpolate
-                lag_grid = np.arange(-N_left + 1, N_left)
-                interpolated_acf = np.interp(common_lag_grid, lag_grid, outside_left_acf)
-                outside_left_acf_values.append(interpolated_acf)
-
-                #---------------------------------------------------------------------------------------------------
                 # compute FFT and ACF of the right
-                freq_grid_right = rfftfreq(N_right, d=sampling_rate)
-                if zero_mean_flag:
-                    outside_right_fft = rfft(outside_right - np.mean(outside_right)) ## doing FFT on zero-mean signal
-                    outside_right_acf = correlate(outside_right - np.mean(outside_right), outside_right - np.mean(outside_right), mode='full')
-                else:
-                    outside_right_fft = rfft(outside_right) ## doing FFT on true signal
-                    outside_right_acf = correlate(outside_right, outside_right, mode='full')
-                
-                outside_right_spectrum = np.abs(outside_right_fft)
-                outside_right_acf /= np.max(outside_right_acf) # normalize to acf[0] = 1
-                
-                # Interpolate onto the common frequency grid
-                interpolated_magnitude = np.interp(common_freq_grid, freq_grid_right, outside_right_spectrum)
-                outside_right_fft_magnitudes.append(interpolated_magnitude)
-
-                # Compute the lag grid for this signal and iterpolate
-                lag_grid = np.arange(-N_right + 1, N_right)
-                interpolated_acf = np.interp(common_lag_grid, lag_grid, outside_right_acf)
-                outside_right_acf_values.append(interpolated_acf)
+                outside_right_fft_magnitudes, outside_right_acf_values = computeFFT_ACF(zero_mean_flag, outside_right, CFG, CLG, outside_right_fft_magnitudes, outside_right_acf_values)
 
         outside_left_fft_magnitudes = np.array(outside_left_fft_magnitudes)
         outside_right_fft_magnitudes = np.array(outside_right_fft_magnitudes)
@@ -160,7 +123,7 @@ for day in chosen_days:
         detuning_acf_dict[detuning].append(outside_acf_mean)
 
         if int(sys.argv[1]) != -1:
-            fig = quadPlot(day, seq, Z, "outside", common_freq_grid, common_lag_grid, 
+            fig = quadPlot(day, seq, Z, "outside", CFG, CLG, 
                      outside_fft_magnitudes, outside_fft_mean, outside_acf_values, outside_acf_mean, 0)
             fig.canvas.manager.set_window_title('Magnetization data')
             plt.show()
@@ -173,11 +136,11 @@ sorted_omegas = sorted(omega_fft_dict.keys())
 for omega in sorted_omegas: 
     fft_list = omega_fft_dict[omega]
     avg_fft = np.mean(fft_list, axis=0)
-    axs[0].plot(common_freq_grid[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$ Hz')
+    axs[0].plot(CFG[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$ Hz')
 
     acf_list = omega_acf_dict[omega]
     avg_acf = np.mean(acf_list, axis=0)
-    axs[1].plot(common_lag_grid, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
+    axs[1].plot(CLG, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
 
 # Plot FFTs
 axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
@@ -217,14 +180,14 @@ fft_matrix = np.array(fft_matrix)
 acf_matrix = np.array(acf_matrix)
 
 # Plot FFT colormap
-im1 = axs[0].imshow(np.log(fft_matrix), aspect='auto', extent=[common_freq_grid[1], common_freq_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
+im1 = axs[0].imshow(np.log(fft_matrix), aspect='auto', extent=[CFG[1], CFG[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
 fig.colorbar(im1, ax=axs[0], label='Log Magnitude')
 axs[0].set_title("Average outside FFTs")
 axs[0].set_xlabel(r"$k/(2\pi) [1/\mu m]$")
 axs[0].set_ylabel("$\delta$")
 
 # Plot ACF colormap
-im2 = axs[1].imshow(acf_matrix, aspect='auto', extent=[common_lag_grid[0], common_lag_grid[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
+im2 = axs[1].imshow(acf_matrix, aspect='auto', extent=[CLG[0], CLG[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
 fig.colorbar(im2, ax=axs[1], label='ACF')
 axs[1].set_title("Average outside ACFs")
 axs[1].set_xlabel("Lag")
