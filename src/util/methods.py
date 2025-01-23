@@ -44,18 +44,18 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
     fig, axs = plt.subplots(2, 2, figsize=(10, 8))
 
     # Colormap for FFT
-    im1 = axs[0, 0].imshow(np.log(FFT_mag[:, 1:]), aspect='auto', extent=[CFG[1], CFG[-1], 0, len(data)-1], origin='lower', cmap='plasma')
-    fig.colorbar(im1, ax=axs[0, 0], label='Log Magnitude')
+    im1 = axs[0, 0].imshow(FFT_mag, aspect='auto', extent=[CFG[0], CFG[-1], 0, len(data)], origin='lower', cmap='plasma')
+    fig.colorbar(im1, ax=axs[0, 0], label='Magnitude')
     axs[0, 0].set_title(region + f" FFT of day {day}, sequence {seq}")
     axs[0, 0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
     axs[0, 0].set_ylabel("Shot number")
 
     # Average FFT
-    axs[0, 1].plot(CFG[1:], FFT_mean[1:], '-', label='FFT on background inside')
+    axs[0, 1].plot(CFG, FFT_mean, '-', label='FFT on background inside')
     # axs[0, 1].annotate(f"# of inside shots = {len(data)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
     axs[0, 1].set_title(region + f" FFT average of day {day}, sequence {seq}")
     axs[0, 1].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
-    axs[0, 1].set_yscale('log')
+    # axs[0, 1].set_yscale('log')
     axs[0, 1].set_xlim(-0.02, 0.52)
     # axs[0, 1].legend()
 
@@ -76,6 +76,36 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
     plt.tight_layout()
     if save_flag:
         plt.savefig(f"thesis/figures/chap2/{region}_fft_acf_day_{day}_seq_{seq}.png", dpi=500)
+    return fig
+
+def doublePlot(o_fft_d, o_acf_d, CFG, CLG, region):
+    # FFTs and ACFs as a function of omega
+    fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+    sorted_omegas = sorted(o_fft_d.keys())
+
+    # Average FFTs and ACFs with the same omega
+    for omega in sorted_omegas: 
+        fft_list = o_fft_d[omega]
+        avg_fft = np.mean(fft_list, axis=0)
+        axs[0].plot(CFG, avg_fft, '-', label=fr'$\Omega = {omega}$ Hz')
+
+        acf_list = o_acf_d[omega]
+        avg_acf = np.mean(acf_list, axis=0)
+        axs[1].plot(CLG, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
+
+    # Plot FFTs
+    axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
+    axs[0].set_xlim(-0.02, 0.52)
+    axs[0].legend()
+    axs[0].set_title(f"Average {region} FFTs")
+
+    # Plot ACFs    
+    axs[1].set_xlabel("lag")
+    axs[1].legend()
+    axs[1].set_title(f"Average {region} ACFs")
+
+    plt.tight_layout()
+    # plt.savefig(f"thesis/figures/chap2/inside_fft_avg.png", dpi=500)
     return fig
 
 def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values, w_len):

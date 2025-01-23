@@ -10,24 +10,21 @@ f, seqs, Omega, knT, detuning, sel_days, sel_seq = importParameters()
 w = 200
 chosen_days = scriptUsage()
 
+# Print script purpose
+print("\nSorting density data with bubble width (and shifting)\n")
+
+# Ask the user for FFT and ACF on true or zero mean signal
+save_flag = int(input("Enter 0 for just plotting or 1 for just saving: "))
+
 for day in chosen_days:
     for seq in sel_seq[day]:
-        seqi = seqs[day][seq]
         df_center = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center.csv")
         df_size = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV.csv")
         df_D = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/density.csv")
 
-
         b_center = df_center.to_numpy().flatten()
         b_sizeADV = df_size.to_numpy().flatten()
         D = df_D.to_numpy()
-
-        # Plotting the bubble (unsorted)
-        # fig, ax = plt.subplots(figsize=(10, 5), ncols=3, gridspec_kw={'width_ratios': [1, 1, 0.05]})
-        # ax[0].pcolormesh(D, vmin = 0, vmax = +800, cmap = 'Purples')
-        # ax[0].set_title('Unsorted shots')
-        # ax[0].set_xlabel('$x\ [\mu m]$')
-        # ax[0].set_ylabel('shots')
 
         # Sorting the bubble
         Zlist = np.argsort(b_sizeADV)
@@ -43,16 +40,24 @@ for day in chosen_days:
         for i in np.arange(len(D_shifted)):
             D_shifted[i, (int(max_shift + int(shift[i]))) : (int(max_shift) + int(shift[i]) + length)] = D[i]
         
-        # save Z, Z_shifted on file
-        # np.savetxt(f"data/selected/day_{day}/seq_{seq}/density_sorted.csv", D, delimiter=',')
+        if save_flag:
+            # save Z, Z_shifted on file
+            np.savetxt(f"data/selected/day_{day}/seq_{seq}/density_sorted.csv", D, delimiter=',')
+        else:
+            # Plotting the bubble (unsorted)
+            fig, ax = plt.subplots(figsize=(10, 5), ncols=3, gridspec_kw={'width_ratios': [1, 1, 0.05]})
+            ax[0].pcolormesh(D, vmin = 0, vmax = +800, cmap = 'Purples')
+            ax[0].set_title('Unsorted shots')
+            ax[0].set_xlabel('$x\ [\mu m]$')
+            ax[0].set_ylabel('shots')
 
-        # Plotting the bubble (sorted)
-        # im = ax[1].pcolormesh(D_shifted, vmin=0, vmax=800, cmap='Purples')
-        # cbar = fig.colorbar(im, cax=ax[2])
-        # cbar.set_label('D')
-        # ax[1].set_title('Sorted shots')
-        # ax[1].set_xlabel('x')
-        # fig.suptitle(f"Experiment realization of day {day}, sequence {seq}")
-        # # plt.savefig("thesis/figures/chap2/shot_sorting.png", dpi=500)
-        # plt.show()
+            # Plotting the bubble (sorted)
+            im = ax[1].pcolormesh(D_shifted, vmin=0, vmax=800, cmap='Purples')
+            cbar = fig.colorbar(im, cax=ax[2])
+            cbar.set_label('D')
+            ax[1].set_title('Sorted shots')
+            ax[1].set_xlabel('x')
+            fig.suptitle(f"Experiment realization of day {day}, sequence {seq}")
+            # plt.savefig("thesis/figures/chap2/shot_sorting.png", dpi=500)
+            plt.show()
 

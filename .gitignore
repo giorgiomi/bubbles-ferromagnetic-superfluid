@@ -13,6 +13,7 @@
 # python
 __pycache__
 *test.py
+FFTplot.py
 
 # data
 *.csv

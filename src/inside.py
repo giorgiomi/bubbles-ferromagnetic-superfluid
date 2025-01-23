@@ -6,7 +6,7 @@ from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
 from util.parameters import importParameters
 import sys
-from util.methods import scriptUsage, quadPlot, computeFFT_ACF
+from util.methods import scriptUsage, quadPlot, computeFFT_ACF, doublePlot
 
 # Data
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
@@ -77,7 +77,7 @@ for day in chosen_days:
             inside = y[start:end]
 
             # plt.plot(y)
-            # plt.plot(np.arange(start, end), inside)
+            # plt.plot(np.arange(start, end), inside - np.mean(inside))
             # plt.title(f"Day {day}, Seq {seq}, Shot {i}")
             # plt.show()
 
@@ -114,34 +114,8 @@ for day in chosen_days:
             fig.canvas.manager.set_window_title('Magnetization data')
             plt.show()
 
-# FFTs and ACFs as a function of omega
-fig, axs = plt.subplots(1, 2, figsize=(10, 5))
-sorted_omegas = sorted(omega_fft_dict.keys())
-
-# Average FFTs and ACFs with the same omega
-for omega in sorted_omegas: 
-    fft_list = omega_fft_dict[omega]
-    avg_fft = np.mean(fft_list, axis=0)
-    axs[0].plot(CFG[1:], avg_fft[1:], '-', label=fr'$\Omega = {omega}$ Hz')
-
-    acf_list = omega_acf_dict[omega]
-    avg_acf = np.mean(acf_list, axis=0)
-    axs[1].plot(CLG, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
-
-# Plot FFTs
-axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
-axs[0].set_yscale('log')
-axs[0].set_xlim(-0.02, 0.52)
-axs[0].legend()
-axs[0].set_title("Average inside FFTs")
-
-# Plot ACFs    
-axs[1].set_xlabel("lag")
-axs[1].legend()
-axs[1].set_title("Average inside ACFs")
-
-plt.tight_layout()
-# plt.savefig(f"thesis/figures/chap2/inside_fft_avg.png", dpi=500)
+fig = doublePlot(omega_fft_dict, omega_acf_dict, CFG, CLG, "inside")
+fig.canvas.manager.set_window_title('Magnetization data')
 plt.show()
 
 # FFTs and ACFs as a function of detuning
@@ -166,8 +140,8 @@ fft_matrix = np.array(fft_matrix)
 acf_matrix = np.array(acf_matrix)
 
 # Plot FFT colormap
-im1 = axs[0].imshow(np.log(fft_matrix), aspect='auto', extent=[CFG[1], CFG[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
-fig.colorbar(im1, ax=axs[0], label='Log Magnitude')
+im1 = axs[0].imshow(fft_matrix, aspect='auto', extent=[CFG[0], CFG[-1], sorted_detunings[0], sorted_detunings[-1]], origin='lower', cmap='plasma')
+fig.colorbar(im1, ax=axs[0], label='Magnitude')
 axs[0].set_title("Average inside FFTs")
 axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
 axs[0].set_ylabel("$\delta$")
@@ -202,7 +176,7 @@ for idx, detuning in enumerate(sorted_detunings):
 
 # Plot FFTs
 axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
-axs[0].set_yscale('log')
+# axs[0].set_yscale('log')
 axs[0].set_xlim(-0.02, 0.52)
 axs[0].set_title("FFT Magnitude vs Detuning")
 
