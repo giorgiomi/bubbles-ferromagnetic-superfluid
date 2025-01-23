@@ -128,14 +128,26 @@ for day in chosen_days:
         # plt.show()
 
         # Plotting all magnetization profiles shifted
-        # fig, ax = plt.subplots(figsize=(10, 5))
-        # for i in range(len(Z)):
-        #     ax.plot(np.arange(Z_shifted_right.shape[1]), Z_shifted_right[i], alpha=0.05)
-        # ax.plot(np.arange(Z_shifted_right.shape[1]), np.mean(Z_shifted_right, axis=0), label='mean')
+        fig, ax = plt.subplots(figsize=(10, 5), ncols=2, sharey=True)
         
-        # ax.set_title('All magnetization profiles shifted')
-        # ax.set_xlabel(r'$\tilde{x}\ [\mu m]$')
-        # ax.set_ylabel('Magnetization')
-        # ax.legend()
-        # # plt.savefig(f"thesis/figures/chap2/all_shifted_profiles_day_{day}_seq_{seq}.png", dpi=500)
-        # plt.show()
+        # Plotting all magnetization profiles shifted to the left
+        for i in range(len(Z_shifted_left)):
+            ax[0].plot(np.arange(Z_shifted_left.shape[1]), Z_shifted_left[i], alpha=0.05)
+        ax[0].plot(np.arange(Z_shifted_left.shape[1]), np.mean(Z_shifted_left, axis=0), label='mean', color='black')
+        ax[0].set_title('All magnetization profiles shifted left')
+        ax[0].set_xlabel(r'$\tilde{x}\ [\mu m]$')
+        ax[0].set_ylabel('Magnetization')
+        ax[0].set_xlim(0, 250)
+        ax[0].legend()
+
+        # Plotting all magnetization profiles shifted to the right
+        for i in range(len(Z_shifted_right)):
+            ax[1].plot(np.arange(Z_shifted_right.shape[1]), Z_shifted_right[i], alpha=0.05)
+        ax[1].plot(np.arange(Z_shifted_right.shape[1]), np.mean(Z_shifted_right, axis=0), label='mean', color='black')
+        ax[1].set_title('All magnetization profiles shifted right')
+        ax[1].set_xlabel(r'$\tilde{x}\ [\mu m]$')
+        ax[1].set_xlim(150, 400)
+        ax[1].legend()
+
+        fig.suptitle(f"All magnetization profiles shifted for day {day}, sequence {seq}")
+        plt.show()

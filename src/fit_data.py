@@ -144,8 +144,8 @@ for fs in sel_days: # all seqs
                     Mi_right = M[i][int((round(best_2arctan[2])) - s_size) : int(round(best_2arctan[2])) + s_size]
                     best_BS_right, covar_BS_right = curve_fit(bubbleshoulder, xx_right, Mi_right, p0 = init_BS_right)
 
-                    if not save_flag and ei == 3:
-                        # print(f"{best_BS_left[1]:.2f} +/- {best_BS_left[3]:.2f}")
+                    if not save_flag and best_BS_left[3] < 4 and best_BS_left[3] > 0: 
+                        print(f"{best_BS_left[1]:.2f} +/- {best_BS_left[3]:.2f}")
                         # Plot bubble and bubbleshoulder fit
                         plt.plot(xx, M[i], label="Data")
                         plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
@@ -160,15 +160,26 @@ for fs in sel_days: # all seqs
                         # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
                         plt.show()
 
-                    b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2))
-                    b_size.append(best_2arctan[2] - best_2arctan[1])
-                    b_sizeADV.append(best_BS_right[1] - best_BS_left[1])
+                    # Selection on shots
+                    # if best_BS_left[3] < 4 and best_BS_left[3] > 0:
+                    if True:
+                        b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2))
+                        b_size.append(best_2arctan[2] - best_2arctan[1])
+                        b_sizeADV.append(best_BS_right[1] - best_BS_left[1])
 
-                    b_inside_boundary_left.append(best_BS_left[1] + 2*best_BS_left[3]) # defines the inside region with BS fit
-                    b_inside_boundary_right.append(best_BS_right[1] - 2*best_BS_right[3]) # defines the inside region with BS fit
-                    
-                    b_outside_boundary_left.append(best_BS_left[1] - 2*best_BS_left[3]) # defines the outside region with BS fit
-                    b_outside_boundary_right.append(best_BS_right[1] + 2*best_BS_right[3]) # defines the outside region with BS fit
+                        b_inside_boundary_left.append(best_BS_left[1] + 2*best_BS_left[3]) # defines the inside region with BS fit
+                        b_inside_boundary_right.append(best_BS_right[1] - 2*best_BS_right[3]) # defines the inside region with BS fit
+                        
+                        b_outside_boundary_left.append(best_BS_left[1] - 2*best_BS_left[3]) # defines the outside region with BS fit
+                        b_outside_boundary_right.append(best_BS_right[1] + 2*best_BS_right[3]) # defines the outside region with BS fit
+                    else:
+                        b_size.append(0)
+                        b_sizeADV.append(0)
+                        b_center.append(w)
+                        b_inside_boundary_left.append(w)
+                        b_inside_boundary_right.append(w)
+                        b_outside_boundary_left.append(0)
+                        b_outside_boundary_right.append(2*w)
 
                     #print('Arctan fit working')
                 

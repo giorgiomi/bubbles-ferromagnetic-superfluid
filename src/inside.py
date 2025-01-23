@@ -122,10 +122,12 @@ for day in chosen_days:
             fig = quadPlot(day, seq, Z, "inside", CFG, CLG, 
                      inside_fft_magnitudes, inside_fft_mean, inside_acf_values, inside_acf_mean, 0)
             fig.canvas.manager.set_window_title('Magnetization data')
+            # plt.savefig(f"thesis/figures/chap2/inside_day_{day}_seq_{seq}.png", dpi=500)
             plt.show()
 
 fig = doublePlot(omega_fft_dict, omega_acf_dict, CFG, CLG, "inside")
 fig.canvas.manager.set_window_title('Magnetization data')
+# plt.savefig(f"thesis/figures/chap2/inside_fft_avg.png", dpi=500)
 plt.show()
 
 # FFTs and ACFs as a function of detuning

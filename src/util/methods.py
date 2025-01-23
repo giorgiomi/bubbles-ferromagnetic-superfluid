@@ -105,7 +105,6 @@ def doublePlot(o_fft_d, o_acf_d, CFG, CLG, region):
     axs[1].set_title(f"Average {region} ACFs")
 
     plt.tight_layout()
-    # plt.savefig(f"thesis/figures/chap2/inside_fft_avg.png", dpi=500)
     return fig
 
 def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values, w_len):
