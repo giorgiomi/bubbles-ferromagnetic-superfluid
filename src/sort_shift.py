@@ -21,6 +21,7 @@ for day in chosen_days:
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
         df_center = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center.csv")
+        df_time = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/time.csv")
         df_size = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV.csv")
         df_M = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/magnetization.csv")
         df_in_left = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_left.csv")
@@ -29,6 +30,7 @@ for day in chosen_days:
         df_out_right = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_right.csv")
 
         b_center = df_center.to_numpy().flatten()
+        time = df_time.to_numpy().flatten()
         b_sizeADV = df_size.to_numpy().flatten()
         in_left = df_in_left.to_numpy().flatten()
         in_right = df_in_right.to_numpy().flatten()
@@ -41,6 +43,7 @@ for day in chosen_days:
         Z = (M[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         b_sizeADV_sorted = (b_sizeADV[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         b_center_sorted = (b_center[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
+        time_sorted = (time[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         in_left_sorted = (in_left[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         in_right_sorted = (in_right[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
         out_left_sorted = (out_left[Zlist])[np.where(b_sizeADV[Zlist] > 0)]
@@ -60,6 +63,7 @@ for day in chosen_days:
             np.savetxt(f"data/selected/day_{day}/seq_{seq}/Z_shifted.csv", Z_shifted, delimiter=',')
             np.savetxt(f"data/selected/day_{day}/seq_{seq}/Z_sorted.csv", Z, delimiter=',')
             np.savetxt(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv", b_center_sorted, delimiter=',')
+            np.savetxt(f"data/selected/day_{day}/seq_{seq}/time_sorted.csv", time_sorted, delimiter=',')
             np.savetxt(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", b_sizeADV_sorted, delimiter=',')
             np.savetxt(f"data/selected/day_{day}/seq_{seq}/in_left_sorted.csv", in_left_sorted, delimiter=',')
             np.savetxt(f"data/selected/day_{day}/seq_{seq}/in_right_sorted.csv", in_right_sorted, delimiter=',')

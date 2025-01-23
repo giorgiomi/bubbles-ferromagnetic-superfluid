@@ -48,6 +48,7 @@ for day in chosen_days:
         seqi = seqs[day][seq]
         df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
         df_center_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv", header=None)
+        df_time_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/time_sorted.csv", header=None)
         df_in_left_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_left_sorted.csv", header=None)
         df_in_right_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_right_sorted.csv", header=None)
         df_Z_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/Z_sorted.csv", header=None)
@@ -57,15 +58,18 @@ for day in chosen_days:
 
         b_sizeADV_sorted = df_size_sorted.to_numpy().flatten()
         b_center_sorted = df_center_sorted.to_numpy().flatten()
+        time_sorted = df_time_sorted.to_numpy().flatten()
         in_left_sorted = df_in_left_sorted.to_numpy().flatten()
         in_right_sorted = df_in_right_sorted.to_numpy().flatten()
         Z = df_Z_sorted.to_numpy()
+        # Z = Z[int(len(Z)/4):int(len(Z)*3/4)]
 
         # FFT on bubble (inside)
         if max_length >= 2*w: continue
 
         inside_fft_magnitudes = []
         inside_acf_values = []
+        max_freqs = []
         # cycle through ordered shots from beginning to end
         for i in range(len(Z)):
             y = Z[i] 
@@ -84,13 +88,19 @@ for day in chosen_days:
             # compute FFT of the inside
             N = len(inside)
             if N > 0:
-                inside_fft_magnitudes, inside_acf_values = computeFFT_ACF(zero_mean_flag, inside, CFG, CLG, inside_fft_magnitudes, inside_acf_values, window_len)
+                inside_fft_magnitudes, inside_acf_values, max_freq = computeFFT_ACF(zero_mean_flag, inside, CFG, CLG, inside_fft_magnitudes, inside_acf_values, window_len)
+                max_freqs.append(max_freq)
 
         inside_fft_magnitudes = np.array(inside_fft_magnitudes)
         inside_fft_mean = np.mean(inside_fft_magnitudes, axis=0)
+        max_freqs = np.array(max_freqs)
         
         inside_acf_values = np.array(inside_acf_values)
         inside_acf_mean = np.mean(inside_acf_values, axis=0)
+
+        # plt.figure()
+        # plt.plot(time_sorted, max_freqs, '.')
+        # plt.show()
 
         # Store the FFT and ACF magnitudes by omega
         if omega not in omega_fft_dict:

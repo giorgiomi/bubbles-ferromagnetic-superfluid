@@ -130,15 +130,16 @@ def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values, w
     spectrum = np.abs(fft)
     spectrum /= np.max(spectrum) # normalization
     freq_grid = rfftfreq(len(data), d=1.0)
-    interpolated_noise_magnitude = np.interp(CFG, freq_grid, spectrum)
-    fft_magnitudes.append(interpolated_noise_magnitude)
+    interpolated_magnitude = np.interp(CFG, freq_grid, spectrum)
+    max_freq = CFG[np.argmax(interpolated_magnitude)]
+    fft_magnitudes.append(interpolated_magnitude)
 
     # Compute the lag grid for this signal and iterpolate
     acf /= np.max(acf)
     interpolated_acf = np.interp(CLG, lags, acf)
     acf_values.append(interpolated_acf)
 
-    return fft_magnitudes, acf_values
+    return fft_magnitudes, acf_values, max_freq
 
 def myCorrelate(data, window_len=40):
     N = len(data)

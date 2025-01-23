@@ -15,7 +15,7 @@ warnings.filterwarnings('ignore')
 f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters()
 
 # Print script purpose
-print("\nFitting data\n")
+print("\nFitting data, throwing away gaussian fits\n")
 
 # Ask the user for FFT and ACF on true or zero mean signal
 save_flag = int(input("Enter 0 for just plotting or 1 for just saving: "))
@@ -235,6 +235,7 @@ for fs in sel_days: # all seqs
         if save_flag:
             print(f"\rSaving fitted data on data/selected/day_{fs}/seq_{ei}/", end="")
             np.savetxt(f"data/selected/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
+            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/time.csv", time, delimiter=',')
             np.savetxt(f"data/selected/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
             np.savetxt(f"data/selected/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
             np.savetxt(f"data/selected/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
