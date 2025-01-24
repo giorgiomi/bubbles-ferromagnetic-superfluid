@@ -20,7 +20,7 @@ The GPE can be written in its stationary form as
     \right] \psi(x) = \mu \psi(x)\, ,
     \label{eq:GPE_stat}
 \end{equation}
-where $\mu$ is the chemical potential and accounts for the energy contribution of a single particle. Spatial properties of the condensate can arise from this equation, especially in the case of $N \gg 1$ and when the interaction term is dominating. By neglecting the kinetic energy term from Eq.\ \eqref{eq:GPE_stat}, one easily gets the stationary solution
+where $\mu \approx \pdv{E}{N}$ is the chemical potential and accounts for the energy contribution of a single particle. Spatial properties of the condensate can arise from this equation, especially in the case of $N \gg 1$ and when the interaction term is dominating. By neglecting the kinetic energy term from Eq.\ \eqref{eq:GPE_stat}, one easily gets the stationary solution
 \[
     |\psi(x)|^2 = n(x) = \frac{\mu - V(x)}{g}\, ,
 \]
@@ -111,16 +111,15 @@ When the system is composed of two species of the same atom, such as two hyperfi
 \end{equation*}
 where the coupling frequency $\omega_{\rm cpl}$ differs from the transition frequency between the state $\omega_{ab}$ by a parameter $\delta$ called \textit{detuning}.
 
-\section{Experimental platform}
-The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom ($\mathbf{F} = \mathbf{I} + \mathbf{J}$, takes into account the nuclear spin and the total angular momentum of the electrons) and $m_F$ its projection on the quantization axis. The $\ket{\uparrow}$ state is then coupled to $\ket{1, -1} = \ket{\downarrow}$ through microwave radiation with amplitude $\Omega_R$. The relevant scattering lengths concerning the two states are $a_\uparrow = 64.3 a_0$, $a_\downarrow = 54.5 a_0$ and $a_{\uparrow\downarrow} = 64.3 a_0$.
+\section{False vacuum decay}
+Given the asymmetric double well describing the mean-field energy landscape of the condensate (Fig.\ \ref{fig:FVD}), the metastable state A in which all atoms are in the state $\ket{\uparrow}$ is called False Vacuum (FV), since it is not the true ground state.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/chap1/FVD.png}
+    \caption{Mean field energy and bubble formation.}
+    \label{fig:FVD}
+\end{figure}
+The possibility of tunneling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain wall) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunneling can occur resonantly from A to B. Once happened, the system is not in a metastable state anymore, hence the decaying into C, the True Vacuum (TV), via bubble expansion.\footnote{Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails.}
 
-The trapping potential is harmonic in all three directions, but strongly asymmetric concerning the radial ($\rho$) and axial ($x$) directions. In fact, the trapping frequencies are respectively $\nu_\rho = 2\ \unit{\kilo\hertz}$ and $\nu_x = 20\ \unit{\hertz}$, yielding an elongated system (cigar-shaped) with inhomogeneous density. The spatial size of the system is given by the Thomas-Fermi radii $R_\rho = 2\ \unit{\micro\meter}$ and $R_x = 200\ \unit{\micro\meter}$. This particular setup is helpful for suppressing the radial spin dynamics of the condensate and thus being able to study its longitudinal properties.
+What is interesting to study is the energy dissipation of the decay during the expansion. The key point is that since the coherent coupling prohibits the system to emit photons, the energy must dissipate through the spin and/or density channel, possibly with waves. Investigating this phenomenon is the purpose of this thesis' data analysis.
 
-In order to extract the density distribution, the two spin states are treated independently one from another, and two imaging sequences are obtained at the end of each experimental realization. Then, an integration along the transverse direction is performed, obtaining two 1D density profiles $n_\uparrow(x)$ and $n_\downarrow(x)$, from which one can extract the relative magnetization
-\begin{equation}
-    Z(x) = \frac{n_\uparrow(x) - n_\downarrow(x)}{n_\uparrow(x) + n_\downarrow(x)}\, .
-    \label{eq:magnetization}
-\end{equation}
-
-It is possible to study the two-component system by separating the treatment on the density ($n = n_\uparrow + n_\downarrow$) and the spin ($nZ = n_\uparrow - n_\downarrow$) degrees of of freedom. 
-While the density is described by a continuity equation, the spin behaviour is ruled by a magnetic mean-field Hamiltionian, that presents a first-order phase transition in the central region of the system when $\Omega_R < |k|n$, where $k \propto \Delta a$. At fixed values of $\Omega_R$, the experiment can be tuned by the parameter $\delta$, expressing the \textit{detuning}. In general, the mean-field energy landscape $E(Z)$ is described by an asymmetric double-well, that becomes symmetric for $\delta = 0$. In the case of $\delta > 0$, the energy is minimized by positive values of $Z$, and the absolute minimum will correspond to \cite{zenesini2024false}

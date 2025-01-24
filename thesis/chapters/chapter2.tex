@@ -1,9 +1,25 @@
+In this chapter we will talk about the experimental platform in which the experiment was carried out and we will then proceed with the FFT and ACF data analysis.
+
+\section{Experimental platform}
+The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom ($\mathbf{F} = \mathbf{I} + \mathbf{J}$, takes into account the nuclear spin and the total angular momentum of the electrons) and $m_F$ its projection on the quantization axis. The $\ket{\uparrow}$ state is then coupled to $\ket{1, -1} = \ket{\downarrow}$ through microwave radiation with amplitude $\Omega_R$. The relevant scattering lengths concerning the two states are $a_\uparrow = 64.3 a_0$, $a_\downarrow = 54.5 a_0$ and $a_{\uparrow\downarrow} = 64.3 a_0$.
+
+The trapping potential is harmonic in all three directions, but strongly asymmetric concerning the radial ($\rho$) and axial ($x$) directions. In fact, the trapping frequencies are respectively $\nu_\rho = 2\ \unit{\kilo\hertz}$ and $\nu_x = 20\ \unit{\hertz}$, yielding an elongated system (cigar-shaped) with inhomogeneous density. The spatial size of the system is given by the Thomas-Fermi radii $R_\rho = 2\ \unit{\micro\meter}$ and $R_x = 200\ \unit{\micro\meter}$. This particular setup is helpful for suppressing the radial spin dynamics of the condensate and thus being able to study its longitudinal properties.
+
+In order to extract the density distribution, the two spin states are treated independently one from another, and two imaging sequences are obtained at the end of each experimental realization. Then, an integration along the transverse direction is performed, obtaining two 1D density profiles $n_\uparrow(x)$ and $n_\downarrow(x)$, from which one can extract the relative magnetization
+\begin{equation}
+    Z(x) = \frac{n_\uparrow(x) - n_\downarrow(x)}{n_\uparrow(x) + n_\downarrow(x)}\, .
+    \label{eq:magnetization}
+\end{equation}
+
+It is possible to study the two-component system by separating the treatment on the density ($n = n_\uparrow + n_\downarrow$) and the spin ($nZ = n_\uparrow - n_\downarrow$) degrees of of freedom. 
+While the density is described by a continuity equation, the spin behaviour is ruled by a magnetic mean-field Hamiltionian, that presents a first-order phase transition in the central region of the system when $\Omega_R < |k|n$, where $k \propto \Delta a$. At fixed values of $\Omega_R$, the experiment can be tuned by the parameter $\delta$, expressing the \textit{detuning}. In general, the mean-field energy landscape $E(Z)$ is described by an asymmetric double-well, that becomes symmetric for $\delta = 0$. In the case of $\delta < 0$, the energy is minimized by negative values of $Z$. 
+
+\section{Data}
 Raw data is organized in a hierarchical system. At a fixed instant, the condensate's measured data are called a \textit{shot} (it refers to the imaging process). Each shot is part of a series of them that can be analyzed as the time evolution of a single system: this series is called a \textit{sequence}. Eventually, during a \textit{day} of measurements, many sequences may be collected, and a selection of them will be studied in the following analysis. For each sequence, the experimental data contains also the radiation coupling $\Omega_R$ in a range between 200 and 800 \unit{\hertz} (it changes from one day of measurements to another) and the detuning $\delta$.
 
 A shot contains all the information on the system at a certain instant, including the two population densities, $n_\uparrow(x)$ for to the atoms in the state $\ket{\uparrow}$ and $n_\downarrow(x)$ for the atoms in the state $\ket{\downarrow}$, distributed on a length scale from 0 to 400 pixels. The spatial resolution of the image is $1\ \text{pixel}\ = 1\ \unit{\micro\meter}$, so the two length units will be often used interchangeably. The magnetization data $Z(x)$ is calculated with Eq.\ \eqref{eq:magnetization} and, by definition, composed of a series of values ranging from $-1$ to $1$.
 
-\section{Magnetization data}
-Our focus here is to study the magnetization of the system, developing a method to analyze the effects of its bubble formation.
+Our focus here is to study the magnetization of the system, developing a method to analyze the effects of its bubble formation, and then proceed with the density behaviour.
 
 \subsection{Bubble parameters and shot sorting}
 In order to study the bubble dynamics, the most interesting parameters to retrieve from a shot are the bubble center $x_0$ and width $\sigma_B$. However, not all shots contain a bubble, namely the ones taken when the bubble was not formed yet. We can easily classify the two types of shots by computing the magnetization average in the central region and using a threshold value of $Z_{\rm thr} = -0.2$. The no-bubble shots will be useful later, when dealing with the noise frequency spectrum.
@@ -69,15 +85,18 @@ Another tool that can be used to study the periodic properties of a signal is th
 \end{equation*}
 
 Now, what we shall do is to compute the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one and look for periodic signals in both. We will also compute the transforms on the no-bubble shots. An example of the inside region analysis is presented in Fig.\ \ref{fig:inside_00}.
-\begin{figure}[t!]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=0.75\textwidth]{figures/chap2/inside_fft_acf_day_0_seq_0.png}
-    \caption{Example of FFT and ACF calculated in a sequence. The values for each shot are shown in the left plots with colormaps, while the averages are on the right. FFT magnitudes are plotted in log scale.}
+    \includegraphics[width=0.75\textwidth]{figures/chap2/inside_day_0_seq_0.png}
+    \caption{Example of FFT and ACF calculated in a sequence. The values for each shot are shown in the left plots with colormaps, while the averages are on the right.}
     \label{fig:inside_00}
 \end{figure}
 One can probably (with a good eye) already see in the colormap plot that two or three vertical bands extend over all shots and appear at the same frequencies. This ensures that the FFT averaging is rightful.
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/chap2/inside_fft_avg.png}
+    \caption{FFT and ACF profiles averaged over all sequences with the same radiation coupling $\Omega_R$.}
+    \label{fig:inside_avg}
+\end{figure}
 
 \subsection{Border alignment}
-
-\newpage
-\section{Density data}
