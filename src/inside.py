@@ -12,7 +12,7 @@ from util.methods import scriptUsage, quadPlot, computeFFT_ACF, doublePlot
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
 w = 200 # Thomas-Fermi radius, always the same
 sampling_rate = 1.0 # 1/(1 pixel)
-window_len = 40
+window_len = 30
 
 chosen_days = scriptUsage()
 
@@ -41,7 +41,7 @@ for day in chosen_days:
 CFG = rfftfreq(max_length, d=sampling_rate)
 
 # Common lag grid for ACF
-CLG = np.arange(-window_len, window_len+1)
+CLG = np.arange(0, window_len+1)
 
 for day in chosen_days:
     for seq in sel_seq[day]:
@@ -63,15 +63,15 @@ for day in chosen_days:
         in_right_sorted = df_in_right_sorted.to_numpy().flatten()
         Z = df_Z_sorted.to_numpy()
 
-        # filter Z based on shot order
+        # # filter Z based on shot order
         # Z = Z[int(len(Z)/4):int(len(Z)*3/4)]
 
         # filter Z based on size between 150 and 200
-        # filtered_Z = []
-        # for i in range(len(b_sizeADV_sorted)):
-        #     if 100 <= b_sizeADV_sorted[i] <= 200:
-        #         filtered_Z.append(Z[i])
-        # Z = np.array(filtered_Z)
+        filtered_Z = []
+        for i in range(len(b_sizeADV_sorted)):
+            if b_sizeADV_sorted[i] > 3 * window_len:
+                filtered_Z.append(Z[i])
+        Z = np.array(filtered_Z)
 
         # FFT on bubble (inside)
         if max_length >= 2*w: continue
@@ -189,7 +189,7 @@ for idx, detuning in enumerate(sorted_detunings):
     color = colors[idx]
     fft_list = detuning_fft_dict[detuning]
     avg_fft = np.mean(fft_list, axis=0)
-    axs[0].plot(CFG[1:], avg_fft[1:], label=f'Detuning {detuning}', color=color)
+    axs[0].plot(CFG, avg_fft, label=f'Detuning {detuning}', color=color)
 
     acf_list = detuning_acf_dict[detuning]
     avg_acf = np.mean(acf_list, axis=0)

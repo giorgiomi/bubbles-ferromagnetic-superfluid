@@ -156,5 +156,9 @@ def myCorrelate(data, window_len=40):
             if j+k >= N or j+k < 0:
                 continue
             ACF[k + window_len] += data[j]*data[j+k]
-    return ACF, lags
+    new_ACF = [0] * (window_len + 1)
+    new_lags = np.arange(0, window_len+1)
+    for k in new_lags:
+        new_ACF[k] = (ACF[window_len + k] + ACF[window_len - k])/2
+    return new_ACF, new_lags
     
