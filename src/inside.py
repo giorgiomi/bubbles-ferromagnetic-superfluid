@@ -62,7 +62,16 @@ for day in chosen_days:
         in_left_sorted = df_in_left_sorted.to_numpy().flatten()
         in_right_sorted = df_in_right_sorted.to_numpy().flatten()
         Z = df_Z_sorted.to_numpy()
+
+        # filter Z based on shot order
         # Z = Z[int(len(Z)/4):int(len(Z)*3/4)]
+
+        # filter Z based on size between 150 and 200
+        # filtered_Z = []
+        # for i in range(len(b_sizeADV_sorted)):
+        #     if 100 <= b_sizeADV_sorted[i] <= 200:
+        #         filtered_Z.append(Z[i])
+        # Z = np.array(filtered_Z)
 
         # FFT on bubble (inside)
         if max_length >= 2*w: continue
