@@ -127,7 +127,7 @@ def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values, w
 
     # Interpolate onto the common frequency grid
     spectrum = np.abs(fft)
-    spectrum /= np.max(spectrum) # normalization
+    # spectrum /= np.max(spectrum) # normalization
     freq_grid = rfftfreq(len(data), d=1.0)
     interpolated_magnitude = np.interp(CFG, freq_grid, spectrum)
     max_freq = CFG[np.argmax(interpolated_magnitude)]
@@ -138,7 +138,7 @@ def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values, w
     interpolated_acf = np.interp(CLG, lags, acf)
     acf_values.append(interpolated_acf)
 
-    return fft_magnitudes, acf_values, max_freq
+    return fft_magnitudes, acf_values, interpolated_magnitude, interpolated_acf
 
 def myCorrelate(data, window_len=40):
     N = len(data)
