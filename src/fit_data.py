@@ -11,14 +11,21 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
-## Data import
-f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters()
-
 # Print script purpose
 print("\nFitting data, throwing away gaussian fits\n")
 
 # Ask the user for FFT and ACF on true or zero mean signal
 save_flag = int(input("Enter 0 for just plotting or 1 for just saving: "))
+
+# Ask the user for selected or processed
+selected_flag = int(input("Enter 1 for selected, 0 for processed: "))
+if selected_flag: 
+    str = "selected"
+else: 
+    str = "processed"
+
+# Data import
+f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters(selected_flag)
 
 
 ## Data Analysis
@@ -32,8 +39,8 @@ threshold = -0.2 # used to discriminate the bubble
 
 # Cycle through days
 for fs in sel_days: # all seqs
-    if not os.path.exists(f"data/selected/day_{fs}"):
-        os.mkdir(f"data/selected/day_{fs}") # create a folder for the day
+    if not os.path.exists(f"data/{str}/day_{fs}"):
+        os.mkdir(f"data/{str}/day_{fs}") # create a folder for the day
     df12_ = pd.read_hdf(f[fs]) # importing sequence
 
     #Cycle through sequences
@@ -41,8 +48,8 @@ for fs in sel_days: # all seqs
     for ei in sel_seqs[fs]:
         ai = seqs[fs][ei]
         # print(fs, ei)
-        if not os.path.exists(f"data/selected/day_{fs}/seq_{ei}"):
-            os.mkdir(f"data/selected/day_{fs}/seq_{ei}") # create a folder for the sequence
+        if not os.path.exists(f"data/{str}/day_{fs}/seq_{ei}"):
+            os.mkdir(f"data/{str}/day_{fs}/seq_{ei}") # create a folder for the sequence
 
         m1 = [] # magnetization UP
         m2 = [] # magnetization DOWN
@@ -244,14 +251,14 @@ for fs in sel_days: # all seqs
         b_outside_boundary_right = np.array(b_outside_boundary_right)
 
         if save_flag:
-            print(f"\rSaving fitted data on data/selected/day_{fs}/seq_{ei}/", end="")
-            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
-            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/time.csv", time, delimiter=',')
-            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
-            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
-            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
-            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
-            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
-            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/out_left.csv", b_outside_boundary_left, delimiter=',')
-            np.savetxt(f"data/selected/day_{fs}/seq_{ei}/out_right.csv", b_outside_boundary_right, delimiter=',')
+            print(f"\rSaving fitted data on data/{str}/day_{fs}/seq_{ei}/", end="")
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/time.csv", time, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/out_left.csv", b_outside_boundary_left, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/out_right.csv", b_outside_boundary_right, delimiter=',')
 

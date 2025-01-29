@@ -5,7 +5,8 @@ from util.parameters import importParameters
 from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
 
-f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters()
+selected_flag = int(input("Enter 1 for selected, 0 for all: "))
+f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters(selected_flag)
 
 def scriptUsage():
     '''
@@ -120,10 +121,14 @@ def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values, w
     '''
     if zero_mean_flag:
         fft = rfft(data - np.mean(data)) ## doing FFT on zero-mean signal
-        acf, lags = myCorrelate(data - np.mean(data), w_len)
+        # acf, lags = myCorrelate(data - np.mean(data), w_len)
+        acf = AZcorr(data, int(w_len), 1)
     else:
         fft = rfft(data) ## doing FFT on true signal
-        acf, lags = myCorrelate(data, w_len)
+        # acf, lags = myCorrelate(data, w_len)
+        acf = AZcorr(data, int(w_len), 0)
+
+    lags = np.arange(0, int(w_len)+1)
 
     # Interpolate onto the common frequency grid
     spectrum = np.abs(fft)
@@ -134,11 +139,12 @@ def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values, w
     fft_magnitudes.append(interpolated_magnitude)
 
     # Compute the lag grid for this signal and iterpolate
-    acf /= np.max(acf)
-    interpolated_acf = np.interp(CLG, lags, acf)
-    acf_values.append(interpolated_acf)
+    # acf /= np.max(acf)
+    # print(len(CLG), len(lags), len(acf))
+    # interpolated_acf = np.interp(CLG, lags, acf)
+    acf_values.append(acf)
 
-    return fft_magnitudes, acf_values, interpolated_magnitude, interpolated_acf
+    return fft_magnitudes, acf_values, interpolated_magnitude, acf
 
 def myCorrelate(data, window_len=40):
     N = len(data)
@@ -162,3 +168,20 @@ def myCorrelate(data, window_len=40):
         new_ACF[k] = (ACF[window_len + k] + ACF[window_len - k])/2
     return new_ACF, new_lags
     
+def AZcorr(x, win, cc):
+    rr = []
+    cen = int(np.shape(x)[0]/2)
+    # print(cen)
+    if cc == 1:
+        x = np.array(x)-np.mean(np.array(x)[cen-win:cen+win])
+    if cc == 0:
+        x = x
+    for i in np.arange(win+1):
+        aap = sum(x[cen-win:cen+win]*x[cen-win:cen+win])
+        bbp = sum(x[cen-win+i:cen+win+i]*x[cen-win+i:cen+win+i])
+        ccp = sum(x[cen-win:cen+win]*x[cen-win+i:cen+win+i])
+        aam = sum(x[cen-win:cen+win]*x[cen-win:cen+win])
+        bbm = sum(x[cen-win-i:cen+win-i]*x[cen-win-i:cen+win-i])
+        ccm = sum(x[cen-win:cen+win]*x[cen-win-i:cen+win-i])
+        rr.append(ccp/np.sqrt(aap*bbp)/2+ccm/np.sqrt(aam*bbm)/2)
+    return rr
