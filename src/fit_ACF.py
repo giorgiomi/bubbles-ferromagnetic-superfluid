@@ -76,12 +76,13 @@ fft_size_means = {start_size: np.mean(fft_magnitudes_size[size_fft == start_size
 acf_size_means = {start_size: np.mean(acf_values_size[size_fft == start_size], axis=0) for start_size in size_blocks if start_size in size_fft}
 
 # Fit the ACF means to the Gaussian correlation function
+# Note: tried with cosine, work to be done
 trunc_index = 20
 fit_params = {}
 fit_errors = {}
 for start_size, acf_mean in acf_size_means.items():
     try:
-        popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1])
+        popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1, 2])
         fit_params[start_size] = popt
         fit_errors[start_size] = np.sqrt(np.diag(pcorr))
     except RuntimeError:
