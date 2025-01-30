@@ -1,4 +1,4 @@
-# This script is used to analyze the data inside the bubble
+# This script is used to analyze the data outside the bubble
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +16,7 @@ sampling_rate = 1.0 # 1/(1 pixel)
 window_len = 20
 
 # Print script purpose
-print("\nAnalyzing FFT and ACF on INSIDE REGION with gathered data\n")
+print("\nAnalyzing FFT and ACF on OUTSIDE REGION with gathered data\n")
 
 # Ask the user for FFT and ACF on true or zero mean signal
 zero_mean_flag = input("Enter 1 for zero-mean signal FFT and ACF, 0 for true signal: ")
@@ -62,9 +62,10 @@ if gather_flag == 'omega':
             for i, shot in enumerate(shots_in_block):
                 s = size[omega == omega_val][i]
                 c = center[omega == omega_val][i]
-                inside = shot[int(c-s/2+10):int(c+s/2-10)]
-                if len(inside) > 4*window_len:
-                    fft_magnitudes_omega, acf_values_omega, int_mag, int_acf = computeFFT_ACF(zero_mean_flag, inside, CFG, CLG, fft_magnitudes_omega, acf_values_omega, window_len)
+                left = shot[:int(c-s/2-10)]
+                right = shot[int(c+s/2+10):]
+                if len(right) > 4*window_len:
+                    fft_magnitudes_omega, acf_values_omega, int_mag, int_acf = computeFFT_ACF(zero_mean_flag, right, CFG, CLG, fft_magnitudes_omega, acf_values_omega, window_len)
                     omega_new.append(omega_val)
 
     omega_fft = np.array(omega_new)

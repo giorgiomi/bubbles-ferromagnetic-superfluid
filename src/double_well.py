@@ -19,9 +19,12 @@ def V_MF_prime(Z, param):
 def find_minima(param):
     result1 = minimize_scalar(V_MF, bounds=(-1, 0), args=(param,), method='bounded')
     result2 = minimize_scalar(V_MF, bounds=(0, 1), args=(param,), method='bounded')
-    return (result1.x, result1.fun), (result2.x, result2.fun)
+    # Check if the results are zero, if so, find another minimum
+    if result1.x < 1e-5:
+        result1 = minimize_scalar(V_MF, bounds=(-1, -0.5), args=(param,), method='bounded')
+    return (result1.x, result1.fun), (result2.x, result2.fun), np.abs(result2.fun - result1.fun)
 
-par = [2, 1, -5 , 1]
+par = [2, 1, -1150/2700, 1]
 delta_values = np.linspace(-1, 1, 100)
 omega_values = np.linspace(0.5, 1.5, 100)
 diff_min_values_delta = []
@@ -30,15 +33,13 @@ diff_min_values_omega = []
 # Calculate difference in minima as a function of delta
 for delta in delta_values:
     par[1] = delta
-    min1, min2 = find_minima(par)
-    diff_min = np.abs(min2[1] - min1[1])
+    min1, min2, diff_min = find_minima(par)
     diff_min_values_delta.append(diff_min)
 
 # Calculate difference in minima as a function of omega
 for omega in omega_values:
     par[0] = omega
-    min1, min2 = find_minima(par)
-    diff_min = np.abs(min2[1] - min1[1])
+    min1, min2, diff_min = find_minima(par)
     diff_min_values_omega.append(diff_min)
 
 # Create subplots
@@ -59,8 +60,9 @@ axs[1].set_title('Difference in Minima as a Function of $\omega$')
 plt.tight_layout()
 plt.show()
 
-par = [1.9, 1.2, -5 , 1]
-min1, min2 = find_minima(par)
+par = [300, 200, -1, 1150]
+print(np.sqrt(300*(1150-300)))
+min1, min2, _ = find_minima(par)
 plt.figure()
 Z = np.linspace(-1, 1, 1000)
 plt.plot(Z, V_MF(Z, par) - min2[1], color='tab:gray')
