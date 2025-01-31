@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from util.parameters import importParameters
 from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
+from scipy.optimize import curve_fit
+from util.functions import corrGauss
 
 selected_flag = int(input("Enter 1 for selected, 0 for all: "))
 f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters(selected_flag)
@@ -185,3 +187,248 @@ def AZcorr(x, win, cc):
         ccm = sum(x[cen-win:cen+win]*x[cen-win-i:cen+win-i])
         rr.append(ccp/np.sqrt(aap*bbp)/2+ccm/np.sqrt(aam*bbm)/2)
     return rr
+
+def groupFitACF_inside(cat_str, cat_data, n_blocks, Z, size, center, window_len, ZMF):
+    '''
+        `cat_str`: [omega/size/time/detuning/dE] in string format
+        `cat_data`: data array
+        `n_blocks`: number of blocks to divide the category
+        `Z`: magnetization profile shots
+        `size`: size array
+        `center`: center array
+        `ZMF`: Zero-Mean Flag (1 for zero-mean)
+    '''
+    CLG = np.arange(window_len+1)
+    ## GATHER BY CAT
+    if cat_str != 'omega':
+        # Define cat blocks (e.g., every 10 units of cat)
+        cat_block_size = (np.max(cat_data) - np.min(cat_data))/n_blocks
+        cat_blocks = np.arange(min(cat_data), max(cat_data) + cat_block_size, cat_block_size)
+    else:
+        cat_blocks = np.unique(cat_data)
+
+    fig, ax = plt.subplots(figsize=(10, 5), ncols=2)
+    ax[0].pcolormesh(Z, vmin = -1, vmax = +1, cmap = 'RdBu')
+    ax[0].set_xlabel('$x\ [\mu m]$')
+    ax[0].set_ylabel('shots')
+
+    # Sort Z by cat
+    sorted_indices = np.argsort(cat_data)
+    Z_sorted = Z[sorted_indices]
+
+    # Display the ordered shots
+    ax[1].pcolormesh(Z_sorted, vmin=-1, vmax=1, cmap='RdBu')
+    ax[1].set_xlabel('$x\ [\mu m]$')
+    ax[1].set_ylabel('shots')
+
+    # Add vertical lines to indicate the different blocks
+    if cat_str != 'omega':
+        for start_cat in cat_blocks:
+            end_cat = start_cat + cat_block_size
+            block_indices = np.where((cat_data >= start_cat) & (cat_data < end_cat))[0]
+            if len(block_indices) > 0:
+                ax[1].axhline(y=block_indices[-1], color='k', linestyle='--', linewidth=0.5)
+    else:
+        for cat_val in cat_blocks:
+            block_indices = np.where(cat_data == cat_val)[0]
+            if len(block_indices) > 0:
+                ax[1].axhline(y=block_indices[-1], color='k', linestyle='--', linewidth=0.5)
+
+    plt.show()
+
+    # Initialize lists to store ACF results for each cat block
+    acf_values = []
+    cat_new = []
+
+    # Group shots by cat block and compute FFT and ACF
+    if cat_str != 'omega':
+        for start_cat in cat_blocks:
+            end_cat = start_cat + cat_block_size
+            shots_in_block = Z[(cat_data >= start_cat) & (cat_data < end_cat)]
+            if len(shots_in_block) > 0:
+                for i, shot in enumerate(shots_in_block):
+                    s = size[(cat_data >= start_cat) & (cat_data < end_cat)][i]
+                    c = center[(cat_data >= start_cat) & (cat_data < end_cat)][i]
+                    inside = shot[int(c-s/2+10):int(c+s/2-10)]
+                    if len(inside) > 4*window_len:
+                        if ZMF:
+                            acf = AZcorr(inside, int(window_len), 1)
+                        else:
+                            acf = AZcorr(inside, int(window_len), 0)
+                        acf_values.append(acf)
+                        cat_new.append(start_cat)
+    else:
+        for cat_val in cat_blocks:
+            shots_in_block = Z[cat_data == cat_val]
+            if len(shots_in_block) > 0:
+                for i, shot in enumerate(shots_in_block):
+                    s = size[cat_data == cat_val][i]
+                    c = center[cat_data == cat_val][i]
+                    inside = shot[int(c-s/2+10):int(c+s/2-10)]
+                    if len(inside) > 4*window_len:
+                        if ZMF:
+                            acf = AZcorr(inside, int(window_len), 1)
+                        else:
+                            acf = AZcorr(inside, int(window_len), 0)
+                        acf_values.append(acf)
+                        cat_new.append(cat_val)
+
+    acf_values = np.array(acf_values)
+    cat_new = np.array(cat_new)
+
+    # Compute mean ACF for each cat block
+    acf_means = {start_cat: np.mean(acf_values[cat_new == start_cat], axis=0) for start_cat in cat_blocks if start_cat in cat_new}
+
+    # Fit the ACF means to the Gaussian correlation function
+    trunc_index = window_len
+    fit_params = {}
+    fit_errors = {}
+    for start_cat, acf_mean in acf_means.items():
+        try:
+            popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1])
+            fit_params[start_cat] = popt
+            fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
+        except RuntimeError:
+            print(f"Fit failed for {cat_str} block {start_cat}")
+
+    # Plot the results
+    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+
+    # Plot ACF means and fits
+    colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
+
+    for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
+        ax[0].plot(CLG[:trunc_index], acf_mean[:trunc_index], color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
+        if start_cat in fit_params:
+            fitted_curve = corrGauss(CLG[:trunc_index], *fit_params[start_cat])
+            ax[0].plot(CLG[:trunc_index], fitted_curve, linestyle='--', color=color)
+    ax[0].set_title(f'Mean ACF and fits by {cat_str} block')
+    ax[0].set_xlabel('Lag')
+    ax[0].set_ylabel('ACF')
+    ax[0].legend()
+    # ax[0].legend()
+
+    # Plot the first fit parameter (l1) vs cat
+    cats = list(fit_params.keys())
+    l1_values = [params[0] for params in fit_params.values()]
+    dl1_values = [err[0] for err in fit_errors.values()]
+
+    ax[1].errorbar(cats, l1_values, yerr=dl1_values, marker='o', linestyle='none', capsize=2)
+    ax[1].set_title(f'First Fit Parameter ($l_1$) vs {cat_str}')
+    ax[1].set_xlabel(f'{cat_str}')
+    ax[1].set_ylabel('l1')
+    # ax[1].set_yscale('log')
+
+    plt.tight_layout()
+    plt.show()
+
+def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len, ZMF):
+    '''
+        `cat_str`: [omega/size/time/detuning/dE] in string format
+        `cat_data`: data array
+        `n_blocks`: number of blocks to divide the category
+        `Z`: magnetization profile shots
+        `size`: size array
+        `center`: center array
+        `ZMF`: Zero-Mean Flag (1 for zero-mean)
+    '''
+    CLG = np.arange(window_len+1)
+    ## GATHER BY CAT
+    if cat_str != 'omega':
+        # Define cat blocks (e.g., every 10 units of cat)
+        cat_block_size = (np.max(cat_data) - np.min(cat_data))/n_blocks
+        cat_blocks = np.arange(min(cat_data), max(cat_data) + cat_block_size, cat_block_size)
+    else:
+        cat_blocks = np.unique(cat_data)
+
+    # Initialize lists to store ACF results for each cat block
+    acf_values = []
+    cat_new = []
+
+    # Group shots by cat block and compute FFT and ACF
+    if cat_str != 'omega':
+        for start_cat in cat_blocks:
+            end_cat = start_cat + cat_block_size
+            shots_in_block = Z[(cat_data >= start_cat) & (cat_data < end_cat)]
+            if len(shots_in_block) > 0:
+                for i, shot in enumerate(shots_in_block):
+                    s = size[(cat_data >= start_cat) & (cat_data < end_cat)][i]
+                    c = center[(cat_data >= start_cat) & (cat_data < end_cat)][i]
+                    left = shot[:int(c-s/2-10)]
+                    right = shot[int(c+s/2+10):]
+                    if len(left) > 4*window_len and len(right) > 4*window_len:
+                        if ZMF:
+                            acf_left = AZcorr(left, int(window_len), 1)
+                            acf_right = AZcorr(right, int(window_len), 1)
+                        else:
+                            acf_left = AZcorr(left, int(window_len), 0)
+                            acf_right = AZcorr(right, int(window_len), 0)
+                        acf_values.append(0.5*(np.array(acf_left) + np.array(acf_right)))
+                        cat_new.append(start_cat)
+    else:
+        for cat_val in cat_blocks:
+            shots_in_block = Z[cat_data == cat_val]
+            if len(shots_in_block) > 0:
+                for i, shot in enumerate(shots_in_block):
+                    s = size[cat_data == cat_val][i]
+                    c = center[cat_data == cat_val][i]
+                    left = shot[:int(c-s/2-10)]
+                    right = shot[int(c+s/2+10):]
+                    if len(left) > 4*window_len and len(right) > 4*window_len:
+                        if ZMF:
+                            acf_left = AZcorr(left, int(window_len), 1)
+                            acf_right = AZcorr(right, int(window_len), 1)
+                        else:
+                            acf_left = AZcorr(left, int(window_len), 0)
+                            acf_right = AZcorr(right, int(window_len), 0)
+                        acf_values.append(0.5*(np.array(acf_left) + np.array(acf_right)))
+                        cat_new.append(cat_val)
+
+    acf_values = np.array(acf_values)
+    cat_new = np.array(cat_new)
+
+    # Compute mean ACF for each cat block
+    acf_means = {start_cat: np.mean(acf_values[cat_new == start_cat], axis=0) for start_cat in cat_blocks if start_cat in cat_new}
+
+    # Fit the ACF means to the Gaussian correlation function
+    trunc_index = window_len
+    fit_params = {}
+    fit_errors = {}
+    for start_cat, acf_mean in acf_means.items():
+        try:
+            popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1])
+            fit_params[start_cat] = popt
+            fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
+        except RuntimeError:
+            print(f"Fit failed for {cat_str} block {start_cat}")
+
+    # Plot the results
+    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+
+    # Plot ACF means and fits
+    colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
+
+    for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
+        ax[0].plot(CLG[:trunc_index], acf_mean[:trunc_index], color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
+        if start_cat in fit_params:
+            fitted_curve = corrGauss(CLG[:trunc_index], *fit_params[start_cat])
+            ax[0].plot(CLG[:trunc_index], fitted_curve, linestyle='--', color=color)
+    ax[0].set_title(f'Mean ACF and fits by {cat_str} block')
+    ax[0].set_xlabel('Lag')
+    ax[0].set_ylabel('ACF')
+    ax[0].legend()
+    # ax[0].legend()
+
+    # Plot the first fit parameter (l1) vs cat
+    cats = list(fit_params.keys())
+    l1_values = [params[0] for params in fit_params.values()]
+    dl1_values = [err[0] for err in fit_errors.values()]
+
+    ax[1].errorbar(cats, l1_values, yerr=dl1_values, marker='o', linestyle='none', capsize=2)
+    ax[1].set_title(f'First Fit Parameter ($l_1$) vs {cat_str}')
+    ax[1].set_xlabel(f'{cat_str}')
+    ax[1].set_ylabel('l1')
+    # ax[1].set_yscale('log')
+
+    plt.tight_layout()
+    plt.show()
