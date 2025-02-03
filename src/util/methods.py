@@ -3,16 +3,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from util.parameters import importParameters
 from scipy.fft import rfft, rfftfreq
-from scipy.signal import correlate
 from scipy.optimize import curve_fit
 from util.functions import corrGauss, corrExp
 
-selected_flag = int(input("Enter 1 for selected, 0 for all: "))
-f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters(selected_flag)
+# selected_flag = int(input("Enter 1 for selected, 0 for all: "))
+# f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters(selected_flag)
 
-def scriptUsage():
+def scriptUsage(sel_days):
     '''
-        Tells the user how to insert command line parameters when running the script
+        Tells the user how to insert command line parameters when running the script.
+        Parameters:
+        sel_days (list): A list of valid days that can be selected.
+        Returns:
+        list: A list containing the chosen days based on the command line input.
+        Behavior:
+        - If a command line argument is provided:
+            - If the argument is -1, all days in sel_days are chosen.
+            - Otherwise, the argument is treated as a single day to be chosen.
+            - If the chosen day is not in sel_days, an error message is printed and the script exits.
+        - If no command line argument is provided, a usage message is printed and the script exits.
     '''
     if len(sys.argv) > 1:
         if int(sys.argv[1]) == -1:
@@ -66,14 +75,14 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
     im2 = axs[1, 0].imshow(ACF_val, aspect='auto', extent=[CLG[0], CLG[-1], 0, len(data)-1], origin='lower', cmap='plasma')
     fig.colorbar(im2, ax=axs[1, 0], label='ACF')
     axs[1, 0].set_title(region + f" ACF of day {day}, sequence {seq}")
-    axs[1, 0].set_xlabel("Lag")
+    axs[1, 0].set_xlabel("$\Delta x$")
     axs[1, 0].set_ylabel("Shot number")
 
     # Average Autocorrelation
     axs[1, 1].plot(CLG, ACF_mean, '-', label='ACF on background inside')
     # axs[1, 1].annotate(f"# of inside shots = {len(data)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
     axs[1, 1].set_title(region + f" ACF average of day {day}, sequence {seq}")
-    axs[1, 1].set_xlabel("Lag")
+    axs[1, 1].set_xlabel("$\Delta x$")
     # axs[1, 1].legend()
 
     plt.tight_layout()
@@ -103,7 +112,7 @@ def doublePlot(o_fft_d, o_acf_d, CFG, CLG, region):
     axs[0].set_title(f"Average {region} FFTs")
 
     # Plot ACFs    
-    axs[1].set_xlabel("lag")
+    axs[1].set_xlabel("$\Delta x$")
     axs[1].legend()
     axs[1].set_title(f"Average {region} ACFs")
 
@@ -334,15 +343,14 @@ def groupFitACF(cat_str, cat_data, n_shots, Z, size, center, window_len, ZMF, re
     acf_means = {start_cat: np.mean(acf_values[cat_new == start_cat], axis=0) for start_cat in cat_blocks if start_cat in cat_new}
 
     # Fit the ACF means to the Gaussian correlation function
-    trunc_index = window_len
     fit_params = {}
     fit_errors = {}
     for start_cat, acf_mean in acf_means.items():
         try:
             if region == 'inside':
-                popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[2, -0.1])
+                popt, pcorr = curve_fit(corrGauss, CLG, acf_mean, p0=[2, -0.1])
             elif region == 'outside':
-                popt, pcorr = curve_fit(corrExp, CLG[:trunc_index], acf_mean[:trunc_index], p0=[2, -0.1])
+                popt, pcorr = curve_fit(corrExp, CLG, acf_mean, p0=[2, -0.1])
             fit_params[start_cat] = popt
             fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
         except RuntimeError:
@@ -355,15 +363,18 @@ def groupFitACF(cat_str, cat_data, n_shots, Z, size, center, window_len, ZMF, re
     colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
 
     for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
-        ax[0].plot(CLG[:trunc_index], acf_mean[:trunc_index], color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
+        ax[0].plot(CLG, acf_mean, color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
         if start_cat in fit_params:
-            fitted_curve = corrGauss(CLG[:trunc_index], *fit_params[start_cat])
-            ax[0].plot(CLG[:trunc_index], fitted_curve, linestyle='--', color=color)
+            if region == 'inside':
+                fitted_curve = corrGauss(CLG, *fit_params[start_cat])
+            elif region == 'outside':
+                fitted_curve = corrExp(CLG, *fit_params[start_cat])
+            ax[0].plot(CLG, fitted_curve, linestyle='--', color=color)
     ax[0].set_title(f'Mean ACF and fits by {cat_str} block')
-    ax[0].set_xlabel('Lag')
+    ax[0].set_xlabel('$\Delta x$')
     ax[0].set_ylabel('ACF')
-    ax[0].legend()
-    # ax[0].legend()
+    ax[0].legend(fontsize='small')
+    ax[0].set_xticks(np.arange(0, 21, 2))
 
     # Plot the first fit parameter (l1) vs cat
     cats = list(fit_params.keys())
@@ -384,9 +395,10 @@ def groupFitACF(cat_str, cat_data, n_shots, Z, size, center, window_len, ZMF, re
         bin_widths = [b[1] - b[0] for b in bins]
 
         ax[1].bar(bin_centers, l1_values, yerr=dl1_values, width=bin_widths, align='center', capsize=2, edgecolor='navy', error_kw=dict(ecolor='navy'))
-    ax[1].set_title(f'First Fit Parameter ($l_1$) vs {cat_str}')
+    ax[1].set_title(f'First Fit Parameter ($\ell_1$) vs {cat_str}')
     ax[1].set_xlabel(f'{cat_str}')
-    ax[1].set_ylabel('l1')
+    ax[1].set_ylabel('$\ell_1$')
+    ax[1].set_ylim(min(l1_values) - 0.5, None)
     # ax[1].set_xscale('log')
 
     plt.tight_layout()

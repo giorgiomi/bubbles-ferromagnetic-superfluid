@@ -49,3 +49,6 @@ np.savetxt(f"data/gathered/omega.csv", omegas, delimiter=',')
 np.savetxt(f"data/gathered/Z.csv", Zs, delimiter=',')
 if selected_flag:
     np.savetxt(f"data/gathered/detuning.csv", dets, delimiter=',')
+    np.savetxt(f"data/gathered/selected.csv", [1])
+else:
+    np.savetxt(f"data/gathered/selected.csv", [0])
