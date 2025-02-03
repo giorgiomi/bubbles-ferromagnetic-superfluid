@@ -9,7 +9,7 @@ w = 200 # Thomas-Fermi radius, always the same
 # Print script purpose
 print("\nGather all bubbles (size > 0) with same Omega and delta\n")
 
-selected_flag = int(input("Enter 1 for selected, 0 for processed: "))
+selected_flag = int(input("Enter 1 for selected, 0 for all: "))
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters(selected_flag)
 if selected_flag: 
     str = "selected"

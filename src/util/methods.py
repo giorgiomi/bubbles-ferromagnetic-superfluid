@@ -5,7 +5,7 @@ from util.parameters import importParameters
 from scipy.fft import rfft, rfftfreq
 from scipy.signal import correlate
 from scipy.optimize import curve_fit
-from util.functions import corrGauss
+from util.functions import corrGauss, corrExp
 
 selected_flag = int(input("Enter 1 for selected, 0 for all: "))
 f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters(selected_flag)
@@ -310,7 +310,7 @@ def groupFitACF_inside(cat_str, cat_data, n_shots, Z, size, center, window_len, 
     fit_errors = {}
     for start_cat, acf_mean in acf_means.items():
         try:
-            popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1, 1.7])
+            popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1])
             fit_params[start_cat] = popt
             fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
         except RuntimeError:
@@ -338,17 +338,20 @@ def groupFitACF_inside(cat_str, cat_data, n_shots, Z, size, center, window_len, 
     l1_values = [params[0] for params in fit_params.values()]
     dl1_values = [err[0] for err in fit_errors.values()]
 
-    # Create bins from start_cat to end_cat for each block
-    bins = []
-    for i in range(len(cats) - 1):
-        bins.append((cats[i], cats[i + 1]))
-    bins.append((cats[-1], cats[-1] + 1))  # Last bin
+    if cat_str == 'omega':
+        ax[1].errorbar(cats, l1_values, yerr=dl1_values, fmt='o', capsize=5)
+    else:
+        # Create bins from start_cat to end_cat for each block
+        bins = []
+        for i in range(len(cats) - 1):
+            bins.append((cats[i], cats[i + 1]))
+        bins.append((cats[-1], cats[-1] + 1))  # Last bin
 
-    # Plot histogram
-    bin_centers = [(b[0] + b[1]) / 2 for b in bins]
-    bin_widths = [b[1] - b[0] for b in bins]
+        # Plot histogram
+        bin_centers = [(b[0] + b[1]) / 2 for b in bins]
+        bin_widths = [b[1] - b[0] for b in bins]
 
-    ax[1].bar(bin_centers, l1_values, yerr=dl1_values, width=bin_widths, align='center', capsize=2)
+        ax[1].bar(bin_centers, l1_values, yerr=dl1_values, width=bin_widths, align='center', capsize=2, edgecolor='navy', error_kw=dict(ecolor='navy'))
     ax[1].set_title(f'First Fit Parameter ($l_1$) vs {cat_str}')
     ax[1].set_xlabel(f'{cat_str}')
     ax[1].set_ylabel('l1')
@@ -396,6 +399,36 @@ def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len
         # print(cat_block_sizes)
     else:
         cat_blocks = np.unique(cat_data)
+
+    fig, ax = plt.subplots(figsize=(10, 5), ncols=2)
+    ax[0].pcolormesh(Z, vmin=-1, vmax=+1, cmap='RdBu')
+    ax[0].set_xlabel('$x\ [\mu m]$')
+    ax[0].set_ylabel('shots')
+
+    # Sort Z by cat
+    sorted_indices = np.argsort(cat_data)
+    Z_sorted = Z[sorted_indices]
+
+    # Display the ordered shots
+    ax[1].pcolormesh(Z_sorted, vmin=-1, vmax=1, cmap='RdBu')
+    ax[1].set_xlabel('$x\ [\mu m]$')
+    ax[1].set_ylabel('shots')
+
+    # Add horizontal lines to indicate the different blocks
+    if cat_str != 'omega':
+        for i, start_cat in enumerate(cat_blocks):
+            end_cat = start_cat + cat_block_sizes[i]
+            block_indices = np.where((cat_data[sorted_indices] >= start_cat) & (cat_data[sorted_indices] < end_cat))[0]
+            # print(start_cat, end_cat, len(block_indices))
+            if len(block_indices) > 0:
+                ax[1].axhline(y=block_indices[-1], color='k', linestyle='--', linewidth=0.5)
+    else:
+        for cat_val in cat_blocks:
+            block_indices = np.where(cat_data[sorted_indices] == cat_val)[0]
+            if len(block_indices) > 0:
+                ax[1].axhline(y=block_indices[-1], color='k', linestyle='--', linewidth=0.5)
+
+    plt.show()
 
     # Initialize lists to store ACF results for each cat block
     acf_values = []
@@ -446,13 +479,13 @@ def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len
     # Compute mean ACF for each cat block
     acf_means = {start_cat: np.mean(acf_values[cat_new == start_cat], axis=0) for start_cat in cat_blocks if start_cat in cat_new}
 
-    # Fit the ACF means to the Gaussian correlation function
+    # Fit the ACF means to the Exp correlation function
     trunc_index = window_len
     fit_params = {}
     fit_errors = {}
     for start_cat, acf_mean in acf_means.items():
         try:
-            popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1, 1.7])
+            popt, pcorr = curve_fit(corrExp, CLG[:trunc_index], acf_mean[:trunc_index], p0=[2, -0.1])
             fit_params[start_cat] = popt
             fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
         except RuntimeError:
@@ -467,7 +500,7 @@ def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len
     for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
         ax[0].plot(CLG[:trunc_index], acf_mean[:trunc_index], color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
         if start_cat in fit_params:
-            fitted_curve = corrGauss(CLG[:trunc_index], *fit_params[start_cat])
+            fitted_curve = corrExp(CLG[:trunc_index], *fit_params[start_cat])
             ax[0].plot(CLG[:trunc_index], fitted_curve, linestyle='--', color=color)
     ax[0].set_title(f'Mean ACF and fits by {cat_str} block')
     ax[0].set_xlabel('Lag')
@@ -480,17 +513,20 @@ def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len
     l1_values = [params[0] for params in fit_params.values()]
     dl1_values = [err[0] for err in fit_errors.values()]
 
-    # Create bins from start_cat to end_cat for each block
-    bins = []
-    for i in range(len(cats) - 1):
-        bins.append((cats[i], cats[i + 1]))
-    bins.append((cats[-1], cats[-1] + 1))  # Last bin
+    if cat_str == 'omega':
+        ax[1].errorbar(cats, l1_values, yerr=dl1_values, fmt='o', capsize=5)
+    else:
+        # Create bins from start_cat to end_cat for each block
+        bins = []
+        for i in range(len(cats) - 1):
+            bins.append((cats[i], cats[i + 1]))
+        bins.append((cats[-1], cats[-1] + 1))  # Last bin
 
-    # Plot histogram
-    bin_centers = [(b[0] + b[1]) / 2 for b in bins]
-    bin_widths = [b[1] - b[0] for b in bins]
+        # Plot histogram
+        bin_centers = [(b[0] + b[1]) / 2 for b in bins]
+        bin_widths = [b[1] - b[0] for b in bins]
 
-    ax[1].bar(bin_centers, l1_values, yerr=dl1_values, width=bin_widths, align='center', capsize=2)
+        ax[1].bar(bin_centers, l1_values, yerr=dl1_values, width=bin_widths, align='center', capsize=2)
     ax[1].set_title(f'First Fit Parameter ($l_1$) vs {cat_str}')
     ax[1].set_xlabel(f'{cat_str}')
     ax[1].set_ylabel('l1')
