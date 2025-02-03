@@ -188,27 +188,51 @@ def AZcorr(x, win, cc):
         rr.append(ccp/np.sqrt(aap*bbp)/2+ccm/np.sqrt(aam*bbm)/2)
     return rr
 
-def groupFitACF_inside(cat_str, cat_data, n_blocks, Z, size, center, window_len, ZMF):
+def groupFitACF_inside(cat_str, cat_data, n_shots, Z, size, center, window_len, ZMF):
     '''
-        `cat_str`: [omega/size/time/detuning/dE] in string format
-        `cat_data`: data array
-        `n_blocks`: number of blocks to divide the category
-        `Z`: magnetization profile shots
-        `size`: size array
-        `center`: center array
-        `ZMF`: Zero-Mean Flag (1 for zero-mean)
+        Groups the data and computes the ACF for the inside region of the magnetization profile shots. It then fits the ACF means to a Gaussian correlation function and plots the results.
+
+        Parameters:
+        - `cat_str`: [omega/size/time/detuning/dE] in string format
+        - `cat_data`: data array
+        - `n_shots`: number of shots per block to divide the category
+        - `Z`: magnetization profile shots
+        - `size`: size array
+        - `center`: center array
+        - `window_len`: window length for ACF computation
+        - `ZMF`: Zero-Mean Flag (1 for zero-mean)
     '''
     CLG = np.arange(window_len+1)
+
+    # Filter shots with inside length greater than 4*window_len
+    valid_indices = []
+    for i, shot in enumerate(Z):
+        s = size[i]
+        c = center[i]
+        inside = shot[int(c-s/2+10):int(c+s/2-10)]
+        if len(inside) > 4 * window_len:
+            valid_indices.append(i)
+
+    cat_data = cat_data[valid_indices]
+    Z = Z[valid_indices]
+    size = size[valid_indices]
+    center = center[valid_indices]
+
     ## GATHER BY CAT
     if cat_str != 'omega':
-        # Define cat blocks (e.g., every 10 units of cat)
-        cat_block_size = (np.max(cat_data) - np.min(cat_data))/n_blocks
-        cat_blocks = np.arange(min(cat_data), max(cat_data) + cat_block_size, cat_block_size)
+        # Define cat blocks with a constant number of n_shots
+        sorted_cat_data = np.sort(cat_data)
+        cat_blocks = [sorted_cat_data[int(i * len(sorted_cat_data) / n_shots)] for i in range(n_shots)]
+        cat_blocks.append(sorted_cat_data[-1] + 1)  # To include the last block
+        # print(cat_blocks)
+        cat_block_sizes = np.diff(cat_blocks)
+        cat_block_sizes = np.append(cat_block_sizes, 0)
+        # print(cat_block_sizes)
     else:
         cat_blocks = np.unique(cat_data)
 
     fig, ax = plt.subplots(figsize=(10, 5), ncols=2)
-    ax[0].pcolormesh(Z, vmin = -1, vmax = +1, cmap = 'RdBu')
+    ax[0].pcolormesh(Z, vmin=-1, vmax=+1, cmap='RdBu')
     ax[0].set_xlabel('$x\ [\mu m]$')
     ax[0].set_ylabel('shots')
 
@@ -221,16 +245,17 @@ def groupFitACF_inside(cat_str, cat_data, n_blocks, Z, size, center, window_len,
     ax[1].set_xlabel('$x\ [\mu m]$')
     ax[1].set_ylabel('shots')
 
-    # Add vertical lines to indicate the different blocks
+    # Add horizontal lines to indicate the different blocks
     if cat_str != 'omega':
-        for start_cat in cat_blocks:
-            end_cat = start_cat + cat_block_size
-            block_indices = np.where((cat_data >= start_cat) & (cat_data < end_cat))[0]
+        for i, start_cat in enumerate(cat_blocks):
+            end_cat = start_cat + cat_block_sizes[i]
+            block_indices = np.where((cat_data[sorted_indices] >= start_cat) & (cat_data[sorted_indices] < end_cat))[0]
+            # print(start_cat, end_cat, len(block_indices))
             if len(block_indices) > 0:
                 ax[1].axhline(y=block_indices[-1], color='k', linestyle='--', linewidth=0.5)
     else:
         for cat_val in cat_blocks:
-            block_indices = np.where(cat_data == cat_val)[0]
+            block_indices = np.where(cat_data[sorted_indices] == cat_val)[0]
             if len(block_indices) > 0:
                 ax[1].axhline(y=block_indices[-1], color='k', linestyle='--', linewidth=0.5)
 
@@ -242,21 +267,21 @@ def groupFitACF_inside(cat_str, cat_data, n_blocks, Z, size, center, window_len,
 
     # Group shots by cat block and compute FFT and ACF
     if cat_str != 'omega':
-        for start_cat in cat_blocks:
-            end_cat = start_cat + cat_block_size
+        for i, start_cat in enumerate(cat_blocks):
+            end_cat = start_cat + cat_block_sizes[i]
             shots_in_block = Z[(cat_data >= start_cat) & (cat_data < end_cat)]
+            # print(len(shots_in_block))
             if len(shots_in_block) > 0:
                 for i, shot in enumerate(shots_in_block):
                     s = size[(cat_data >= start_cat) & (cat_data < end_cat)][i]
                     c = center[(cat_data >= start_cat) & (cat_data < end_cat)][i]
                     inside = shot[int(c-s/2+10):int(c+s/2-10)]
-                    if len(inside) > 4*window_len:
-                        if ZMF:
-                            acf = AZcorr(inside, int(window_len), 1)
-                        else:
-                            acf = AZcorr(inside, int(window_len), 0)
-                        acf_values.append(acf)
-                        cat_new.append(start_cat)
+                    if ZMF:
+                        acf = AZcorr(inside, int(window_len), 1)
+                    else:
+                        acf = AZcorr(inside, int(window_len), 0)
+                    acf_values.append(acf)
+                    cat_new.append(start_cat)
     else:
         for cat_val in cat_blocks:
             shots_in_block = Z[cat_data == cat_val]
@@ -285,7 +310,7 @@ def groupFitACF_inside(cat_str, cat_data, n_blocks, Z, size, center, window_len,
     fit_errors = {}
     for start_cat, acf_mean in acf_means.items():
         try:
-            popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1])
+            popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1, 1.7])
             fit_params[start_cat] = popt
             fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
         except RuntimeError:
@@ -313,11 +338,21 @@ def groupFitACF_inside(cat_str, cat_data, n_blocks, Z, size, center, window_len,
     l1_values = [params[0] for params in fit_params.values()]
     dl1_values = [err[0] for err in fit_errors.values()]
 
-    ax[1].errorbar(cats, l1_values, yerr=dl1_values, marker='o', linestyle='none', capsize=2)
+    # Create bins from start_cat to end_cat for each block
+    bins = []
+    for i in range(len(cats) - 1):
+        bins.append((cats[i], cats[i + 1]))
+    bins.append((cats[-1], cats[-1] + 1))  # Last bin
+
+    # Plot histogram
+    bin_centers = [(b[0] + b[1]) / 2 for b in bins]
+    bin_widths = [b[1] - b[0] for b in bins]
+
+    ax[1].bar(bin_centers, l1_values, yerr=dl1_values, width=bin_widths, align='center', capsize=2)
     ax[1].set_title(f'First Fit Parameter ($l_1$) vs {cat_str}')
     ax[1].set_xlabel(f'{cat_str}')
     ax[1].set_ylabel('l1')
-    # ax[1].set_yscale('log')
+    # ax[1].set_xscale('log')
 
     plt.tight_layout()
     plt.show()
@@ -332,12 +367,33 @@ def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len
         `center`: center array
         `ZMF`: Zero-Mean Flag (1 for zero-mean)
     '''
+    # Filter shots with inside length greater than 4*window_len
+    valid_indices = []
+    for i, shot in enumerate(Z):
+        s = size[i]
+        c = center[i]
+        left = shot[:int(c-s/2-10)]
+        right = shot[int(c+s/2+10):]
+        if len(left) > 4 * window_len and len(right) > 4 * window_len:
+            valid_indices.append(i)
+
+    cat_data = cat_data[valid_indices]
+    Z = Z[valid_indices]
+    size = size[valid_indices]
+    center = center[valid_indices]
+
     CLG = np.arange(window_len+1)
+
     ## GATHER BY CAT
     if cat_str != 'omega':
-        # Define cat blocks (e.g., every 10 units of cat)
-        cat_block_size = (np.max(cat_data) - np.min(cat_data))/n_blocks
-        cat_blocks = np.arange(min(cat_data), max(cat_data) + cat_block_size, cat_block_size)
+        # Define cat blocks with a constant number of n_shots
+        sorted_cat_data = np.sort(cat_data)
+        cat_blocks = [sorted_cat_data[int(i * len(sorted_cat_data) / n_blocks)] for i in range(n_blocks)]
+        cat_blocks.append(sorted_cat_data[-1] + 1)  # To include the last block
+        # print(cat_blocks)
+        cat_block_sizes = np.diff(cat_blocks)
+        cat_block_sizes = np.append(cat_block_sizes, 0)
+        # print(cat_block_sizes)
     else:
         cat_blocks = np.unique(cat_data)
 
@@ -347,8 +403,8 @@ def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len
 
     # Group shots by cat block and compute FFT and ACF
     if cat_str != 'omega':
-        for start_cat in cat_blocks:
-            end_cat = start_cat + cat_block_size
+        for i, start_cat in enumerate(cat_blocks):
+            end_cat = start_cat + cat_block_sizes[i]
             shots_in_block = Z[(cat_data >= start_cat) & (cat_data < end_cat)]
             if len(shots_in_block) > 0:
                 for i, shot in enumerate(shots_in_block):
@@ -356,15 +412,15 @@ def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len
                     c = center[(cat_data >= start_cat) & (cat_data < end_cat)][i]
                     left = shot[:int(c-s/2-10)]
                     right = shot[int(c+s/2+10):]
-                    if len(left) > 4*window_len and len(right) > 4*window_len:
-                        if ZMF:
-                            acf_left = AZcorr(left, int(window_len), 1)
-                            acf_right = AZcorr(right, int(window_len), 1)
-                        else:
-                            acf_left = AZcorr(left, int(window_len), 0)
-                            acf_right = AZcorr(right, int(window_len), 0)
-                        acf_values.append(0.5*(np.array(acf_left) + np.array(acf_right)))
-                        cat_new.append(start_cat)
+                    # if len(left) > 4*window_len and len(right) > 4*window_len:
+                    if ZMF:
+                        acf_left = AZcorr(left, int(window_len), 1)
+                        acf_right = AZcorr(right, int(window_len), 1)
+                    else:
+                        acf_left = AZcorr(left, int(window_len), 0)
+                        acf_right = AZcorr(right, int(window_len), 0)
+                    acf_values.append(0.5*(np.array(acf_left) + np.array(acf_right)))
+                    cat_new.append(start_cat)
     else:
         for cat_val in cat_blocks:
             shots_in_block = Z[cat_data == cat_val]
@@ -396,7 +452,7 @@ def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len
     fit_errors = {}
     for start_cat, acf_mean in acf_means.items():
         try:
-            popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1])
+            popt, pcorr = curve_fit(corrGauss, CLG[:trunc_index], acf_mean[:trunc_index], p0=[1, -0.1, 1.7])
             fit_params[start_cat] = popt
             fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
         except RuntimeError:
@@ -424,11 +480,21 @@ def groupFitACF_outside(cat_str, cat_data, n_blocks, Z, size, center, window_len
     l1_values = [params[0] for params in fit_params.values()]
     dl1_values = [err[0] for err in fit_errors.values()]
 
-    ax[1].errorbar(cats, l1_values, yerr=dl1_values, marker='o', linestyle='none', capsize=2)
+    # Create bins from start_cat to end_cat for each block
+    bins = []
+    for i in range(len(cats) - 1):
+        bins.append((cats[i], cats[i + 1]))
+    bins.append((cats[-1], cats[-1] + 1))  # Last bin
+
+    # Plot histogram
+    bin_centers = [(b[0] + b[1]) / 2 for b in bins]
+    bin_widths = [b[1] - b[0] for b in bins]
+
+    ax[1].bar(bin_centers, l1_values, yerr=dl1_values, width=bin_widths, align='center', capsize=2)
     ax[1].set_title(f'First Fit Parameter ($l_1$) vs {cat_str}')
     ax[1].set_xlabel(f'{cat_str}')
     ax[1].set_ylabel('l1')
-    # ax[1].set_yscale('log')
+    # ax[1].set_xscale('log')
 
     plt.tight_layout()
     plt.show()

@@ -36,7 +36,7 @@ if gather_flag == 'omega':
 elif gather_flag == 'time':
     groupFitACF_inside('time', time, 10, Z, size, center, window_len, zero_mean_flag)
 elif gather_flag == 'size':
-    groupFitACF_inside('size', size, 20, Z, size, center, window_len, zero_mean_flag)
+    groupFitACF_inside('size', size, 8, Z, size, center, window_len, zero_mean_flag)
 elif gather_flag == 'detuning':
     groupFitACF_inside('detuning', detuning, 50, Z, size, center, window_len, zero_mean_flag)
 elif gather_flag == 'dE':

@@ -38,12 +38,14 @@ for day in sel_days:
                 sizes.append(size[i])
                 times.append(time[i])
                 omegas.append(Omega[day][seq])
-                dets.append(Detuning[day][seq])
+                if selected_flag:
+                    dets.append(Detuning[day][seq])
 
 print("Saving gathered data on data/gathered/\n", end="")
 np.savetxt(f"data/gathered/center.csv", centers, delimiter=',')
 np.savetxt(f"data/gathered/size.csv", sizes, delimiter=',')
 np.savetxt(f"data/gathered/time.csv", times, delimiter=',')
 np.savetxt(f"data/gathered/omega.csv", omegas, delimiter=',')
-np.savetxt(f"data/gathered/detuning.csv", dets, delimiter=',')
 np.savetxt(f"data/gathered/Z.csv", Zs, delimiter=',')
+if selected_flag:
+    np.savetxt(f"data/gathered/detuning.csv", dets, delimiter=',')
