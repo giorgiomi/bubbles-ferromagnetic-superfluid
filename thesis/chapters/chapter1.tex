@@ -1,4 +1,46 @@
-In this chapter we will briefly discuss the theoretical background used when dealing with two-component coherently coupled spin mixtures of BECs. Since we are dealing with a many-body quantum problem, the standard approach is to use a quantum field to describe the state of the condensate. This leads directly to the Gross-Pitaevskii equation, which will be the starting point of this discussion. The following content is mostly based on Ref.\ \cite{lamporesi2023two}.
+In this chapter we will briefly discuss the theoretical background used when dealing with two-component coherently coupled spin mixtures of BECs. Since we are dealing with a many-body quantum problem, the standard approach is to use a quantum field to describe the state of the condensate. This leads directly to the Gross-Pitaevskii equation, which will be the starting point of this discussion, after a quick review of the ideal Bose gas. The following content is mostly based on Refs.\ \cite{pitaevskii2016bose} and \cite{lamporesi2023two}.
+
+\section{Ideal Bose gas}
+The simplest way to treat the ideal Bose gas (a quantum system) is by relying on the grand-canonical ensemble. 
+
+Let us then recall the probability of the system having a number of particles $N'$ and energy $E_k$ when in contact with a reservoir of temperature $T$ and chemical potential $\mu$:
+\begin{equation*}
+    P_{N'}(E_k) = e^{\beta(\mu N' - E_k)}\, ,
+\end{equation*}
+with $\beta = 1/(k_B T)$, from which one can build the \textit{grand-canonical partition function}
+\begin{equation}
+    \mathcal{Z}(\beta, \mu) = \sum_{N' = 0}^\infty \sum_k P_{N'}(E_k) = \sum_{N' = 0}^\infty e^{\beta \mu N'} Q_{N'}(\beta)\, ,
+    \label{eq:part_func}
+\end{equation}
+where $Q_{N'}$ is the canonical partition function associated to a system of $N'$ (fixed) particles. From the partition function, the physical properties of the system are derived through the calculation of the grand-canonical potential 
+\begin{equation}
+    \Omega = E - T S - \mu N = -k_B T \log\mathcal{Z}\, .
+    \label{eq:GC_potential}
+\end{equation}
+
+In the case of a non-interacting system, the total Hamiltonian is $H = \sum_i H_i$, where the single-particle Hamiltonian solves the eigenvalue problem $H_i \phi_i(\mathbf{r}) = \epsilon_i \phi_i(\mathbf{r})$. In this setting, each energy level $\epsilon_i$ is occupied by $n_i$ particles, and thus the total number of particles and the total energy are
+\begin{equation*}
+    N' = \sum_i n_i\, , \qquad E_k = \sum_i \epsilon_i n_i\, .
+\end{equation*}
+The partition function of Eq.\ \eqref{eq:part_func} becomes easy to compute, yielding
+\begin{equation*}
+    \begin{split}
+        \mathcal{Z}(\beta, \mu) &= 
+        \sum_{n_0 = 0}^\infty \sum_{n_1 = 0}^\infty \cdots\ e^{\beta \mu \sum_i n_i} e^{-\beta \sum_i \epsilon_i n_i} = 
+        \left(\sum_{n_0} e^{\beta \mu n_0} e^{-\beta \epsilon_0 n_0}\right)
+        \left(\sum_{n_1} e^{\beta \mu n_1} e^{-\beta \epsilon_1 n_1}\right) = \\
+        &= \prod_i \sum_{n_i} \left[e^{\beta(\mu -\epsilon_i)}\right]^{n_i} = 
+        \prod_i \frac{1}{1-e^{\beta(\mu - \epsilon_i)}}\, .
+    \end{split}
+\end{equation*}
+It is interesting to study the total number of particles, which can be obtained from the potential of Eq.\ \eqref{eq:GC_potential}:
+\begin{equation*}
+    N = \langle N' \rangle = -\pdv{\Omega}{\mu} = k_B T \pdv{\log\mathcal{Z}}{\mu} = \sum_i \frac{1}{e^{\beta(\epsilon_i - \mu)}-1} = \sum_i \langle n_i \rangle\, ,
+\end{equation*}
+hence revealing the famous \textit{Bose-Einstein distribution}
+\begin{equation*}
+    \langle n_i \rangle = \frac{1}{e^{\beta(\epsilon_i - \mu)}-1}\, .
+\end{equation*}
 
 \section{Gross-Pitaevskii equation}
 For a 1D single-component BEC, namely made of only one species of $N$ indistinguishable bosons, one can use a single wavefunction $\psi(x,t)$ to describe its ground state (GS) by exploiting a mean-field approximation, thus revealing the Gross-Pitaevskii equation (GPE):
