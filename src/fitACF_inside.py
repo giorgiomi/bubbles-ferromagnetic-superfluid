@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from util.methods import groupFitACF_inside
+from util.methods import groupFitACF
 
 # Data
 # f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
@@ -32,14 +32,14 @@ dE = np.sqrt(omega*(1150-omega))
 # exit()
 
 if gather_flag == 'omega':
-     groupFitACF_inside('omega', omega, 1, Z, size, center, window_len, zero_mean_flag)
+     groupFitACF('omega', omega, 1, Z, size, center, window_len, zero_mean_flag, 'inside')
 elif gather_flag == 'time':
-    groupFitACF_inside('time', time, 10, Z, size, center, window_len, zero_mean_flag)
+    groupFitACF('time', time, 10, Z, size, center, window_len, zero_mean_flag, 'inside')
 elif gather_flag == 'size':
-    groupFitACF_inside('size', size, 8, Z, size, center, window_len, zero_mean_flag)
+    groupFitACF('size', size, 8, Z, size, center, window_len, zero_mean_flag, 'inside')
 elif gather_flag == 'detuning':
-    groupFitACF_inside('detuning', detuning, 50, Z, size, center, window_len, zero_mean_flag)
+    groupFitACF('detuning', detuning, 50, Z, size, center, window_len, zero_mean_flag, 'inside')
 elif gather_flag == 'dE':
-     groupFitACF_inside('dE', dE, 20, Z, size, center, window_len, zero_mean_flag)
+     groupFitACF('dE', dE, 20, Z, size, center, window_len, zero_mean_flag, 'inside')
 else:
     print("Gather method has to be [omega/time/size/detuning/dE]")
