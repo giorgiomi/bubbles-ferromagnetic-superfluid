@@ -6,9 +6,14 @@ from util.parameters import importParameters
 from util.methods import scriptUsage
 
 # Data
-f, seqs, Omega, knT, detuning, sel_days, sel_seq = importParameters()
+selected_flag = int(input("Enter 1 for selected, 0 for all: "))
+if selected_flag:
+    str = 'selected'
+else:
+    str = 'processed'
+f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters(selected_flag)
 w = 200
-chosen_days = scriptUsage()
+chosen_days = scriptUsage(sel_days)
 
 # Print script purpose
 print("\nSorting data with bubble width (and shifting)\n")
@@ -20,14 +25,14 @@ for day in chosen_days:
     # for seq, seqi in enumerate((seqs[day])):
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
-        df_center = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center.csv")
-        df_time = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/time.csv")
-        df_size = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV.csv")
-        df_M = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/magnetization.csv")
-        df_in_left = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_left.csv")
-        df_in_right = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_right.csv")
-        df_out_left = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_left.csv")
-        df_out_right = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/out_right.csv")
+        df_center = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/center.csv")
+        df_time = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/time.csv")
+        df_size = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/sizeADV.csv")
+        df_M = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/magnetization.csv")
+        df_in_left = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/in_left.csv")
+        df_in_right = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/in_right.csv")
+        df_out_left = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/out_left.csv")
+        df_out_right = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/out_right.csv")
 
         b_center = df_center.to_numpy().flatten()
         time = df_time.to_numpy().flatten()
@@ -59,16 +64,16 @@ for day in chosen_days:
         
         # save Z, Z_shifted on file
         if save_flag:
-            print(f"\rSaving sorted data on data/selected/day_{day}/seq_{seq}/", end="")
-            np.savetxt(f"data/selected/day_{day}/seq_{seq}/Z_shifted.csv", Z_shifted, delimiter=',')
-            np.savetxt(f"data/selected/day_{day}/seq_{seq}/Z_sorted.csv", Z, delimiter=',')
-            np.savetxt(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv", b_center_sorted, delimiter=',')
-            np.savetxt(f"data/selected/day_{day}/seq_{seq}/time_sorted.csv", time_sorted, delimiter=',')
-            np.savetxt(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", b_sizeADV_sorted, delimiter=',')
-            np.savetxt(f"data/selected/day_{day}/seq_{seq}/in_left_sorted.csv", in_left_sorted, delimiter=',')
-            np.savetxt(f"data/selected/day_{day}/seq_{seq}/in_right_sorted.csv", in_right_sorted, delimiter=',')
-            np.savetxt(f"data/selected/day_{day}/seq_{seq}/out_left_sorted.csv", out_left_sorted, delimiter=',')
-            np.savetxt(f"data/selected/day_{day}/seq_{seq}/out_right_sorted.csv", out_right_sorted, delimiter=',')
+            print(f"\rSaving sorted data on data/{str}/day_{day}/seq_{seq}/", end="")
+            np.savetxt(f"data/{str}/day_{day}/seq_{seq}/Z_shifted.csv", Z_shifted, delimiter=',')
+            np.savetxt(f"data/{str}/day_{day}/seq_{seq}/Z_sorted.csv", Z, delimiter=',')
+            np.savetxt(f"data/{str}/day_{day}/seq_{seq}/center_sorted.csv", b_center_sorted, delimiter=',')
+            np.savetxt(f"data/{str}/day_{day}/seq_{seq}/time_sorted.csv", time_sorted, delimiter=',')
+            np.savetxt(f"data/{str}/day_{day}/seq_{seq}/sizeADV_sorted.csv", b_sizeADV_sorted, delimiter=',')
+            np.savetxt(f"data/{str}/day_{day}/seq_{seq}/in_left_sorted.csv", in_left_sorted, delimiter=',')
+            np.savetxt(f"data/{str}/day_{day}/seq_{seq}/in_right_sorted.csv", in_right_sorted, delimiter=',')
+            np.savetxt(f"data/{str}/day_{day}/seq_{seq}/out_left_sorted.csv", out_left_sorted, delimiter=',')
+            np.savetxt(f"data/{str}/day_{day}/seq_{seq}/out_right_sorted.csv", out_right_sorted, delimiter=',')
         else:
             # Plotting the bubble (unsorted)
             fig, ax = plt.subplots(figsize=(10, 5), ncols=3, gridspec_kw={'width_ratios': [1, 1, 0.05]})

@@ -9,11 +9,16 @@ import sys
 from util.methods import scriptUsage, quadPlot, computeFFT_ACF, doublePlot
 
 # Data
-f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters()
+selected_flag = int(input("Enter 1 for selected, 0 for all: "))
+if selected_flag:
+    str = 'selected'
+else:
+    str = 'processed'
+f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters(selected_flag)
 w = 200 # Thomas-Fermi radius, always the same
 sampling_rate = 1.0 # 1/(1 pixel)
 
-chosen_days = scriptUsage()
+chosen_days = scriptUsage(sel_days)
 
 # Print script purpose
 print("\nAnalyzing FFT and ACF on INSIDE REGION with magnetization signal\n")
@@ -33,7 +38,7 @@ for window_len in np.linspace(40, 40, 1):
     for day in chosen_days:
         for seq in sel_seq[day]:
             seqi = seqs[day][seq]
-            df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
+            df_size_sorted = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
             b_sizeADV_sorted = df_size_sorted.to_numpy().flatten()
             max_size = int(max(b_sizeADV_sorted) + 1)
             if max_size > max_length and max_size < 2*w:
@@ -48,12 +53,12 @@ for window_len in np.linspace(40, 40, 1):
     for day in chosen_days:
         for seq in sel_seq[day]:
             seqi = seqs[day][seq]
-            df_size_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
-            df_center_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/center_sorted.csv", header=None)
-            df_time_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/time_sorted.csv", header=None)
-            df_in_left_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_left_sorted.csv", header=None)
-            df_in_right_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/in_right_sorted.csv", header=None)
-            df_Z_sorted = pd.read_csv(f"data/selected/day_{day}/seq_{seq}/Z_sorted.csv", header=None)
+            df_size_sorted = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
+            df_center_sorted = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/center_sorted.csv", header=None)
+            df_time_sorted = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/time_sorted.csv", header=None)
+            df_in_left_sorted = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/in_left_sorted.csv", header=None)
+            df_in_right_sorted = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/in_right_sorted.csv", header=None)
+            df_Z_sorted = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/Z_sorted.csv", header=None)
             
             omega = Omega[day][seq]
             detuning = Detuning[day][seq]
@@ -98,13 +103,11 @@ for window_len in np.linspace(40, 40, 1):
 
                 # compute FFT of the inside
                 N = len(inside)
-                if N > 0:
-                    inside_fft_magnitudes, inside_acf_values, max_freq = computeFFT_ACF(zero_mean_flag, inside, CFG, CLG, inside_fft_magnitudes, inside_acf_values, window_len)
-                    max_freqs.append(max_freq)
+                if N > 4*window_len:
+                    inside_fft_magnitudes, inside_acf_values, _, _ = computeFFT_ACF(zero_mean_flag, inside, CFG, CLG, inside_fft_magnitudes, inside_acf_values, window_len)
 
             inside_fft_magnitudes = np.array(inside_fft_magnitudes)
             inside_fft_mean = np.mean(inside_fft_magnitudes, axis=0)
-            max_freqs = np.array(max_freqs)
             
             inside_acf_values = np.array(inside_acf_values)
             inside_acf_mean = np.mean(inside_acf_values, axis=0)

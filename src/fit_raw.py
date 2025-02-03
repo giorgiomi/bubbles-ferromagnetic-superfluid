@@ -112,6 +112,7 @@ for fs in sel_days: # all seqs
         b_size = []
         b_sizeADV = []
         b_center = []
+        s_width = []
         b_inside_boundary_left = []
         b_inside_boundary_right = []
         b_outside_boundary_left = []
@@ -173,6 +174,7 @@ for fs in sel_days: # all seqs
                         b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2))
                         b_size.append(best_2arctan[2] - best_2arctan[1])
                         b_sizeADV.append(best_BS_right[1] - best_BS_left[1])
+                        s_width.append(0.5*(best_BS_left[3] + best_BS_right[3]))
 
                         b_inside_boundary_left.append(best_BS_left[1] + 2*best_BS_left[3]) # defines the inside region with BS fit
                         b_inside_boundary_right.append(best_BS_right[1] - 2*best_BS_right[3]) # defines the inside region with BS fit
@@ -226,6 +228,7 @@ for fs in sel_days: # all seqs
                     b_size.append(0)
                     b_sizeADV.append(0)
                     b_center.append(w)
+                    s_width.append(0)
                     b_inside_boundary_left.append(w)
                     b_inside_boundary_right.append(w)
                     b_outside_boundary_left.append(0)
@@ -237,6 +240,7 @@ for fs in sel_days: # all seqs
                 b_size.append(0)
                 b_sizeADV.append(0)
                 b_center.append(w)
+                s_width.append(0)
                 b_inside_boundary_left.append(w)
                 b_inside_boundary_right.append(w)
                 b_outside_boundary_left.append(0)
@@ -245,6 +249,7 @@ for fs in sel_days: # all seqs
         b_size = np.array(b_size)
         b_sizeADV = np.array(b_sizeADV) 
         b_center = np.array(b_center)
+        s_width = np.array(s_width)
         b_inside_boundary_left = np.array(b_inside_boundary_left)
         b_inside_boundary_right = np.array(b_inside_boundary_right)
         b_outside_boundary_left = np.array(b_outside_boundary_left)
@@ -253,6 +258,7 @@ for fs in sel_days: # all seqs
         if save_flag:
             print(f"\rSaving fitted data on data/{str}/day_{fs}/seq_{ei}/", end="")
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/center.csv", b_center, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/slope.csv", s_width, delimiter=',')
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/time.csv", time, delimiter=',')
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')

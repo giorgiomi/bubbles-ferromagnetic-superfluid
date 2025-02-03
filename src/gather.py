@@ -19,6 +19,7 @@ else:
 Zs = []
 sizes = []
 centers = []
+slopes = []
 times = []
 omegas = []
 dets = []
@@ -28,6 +29,7 @@ for day in sel_days:
     for seq in sel_seq[day]:
         size = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/sizeADV.csv", header=None).to_numpy().flatten()
         center = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/center.csv", header=None).to_numpy().flatten()
+        slope = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/slope.csv", header=None).to_numpy().flatten()
         time = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/time.csv", header=None).to_numpy().flatten()
         Z = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/magnetization.csv", header=None).to_numpy()
 
@@ -35,6 +37,7 @@ for day in sel_days:
             if size[i] > 0 and size[i] < 2*w:
                 Zs.append(shot)
                 centers.append(center[i])
+                slopes.append(slope[i])
                 sizes.append(size[i])
                 times.append(time[i])
                 omegas.append(Omega[day][seq])
@@ -44,6 +47,7 @@ for day in sel_days:
 print("Saving gathered data on data/gathered/\n", end="")
 np.savetxt(f"data/gathered/center.csv", centers, delimiter=',')
 np.savetxt(f"data/gathered/size.csv", sizes, delimiter=',')
+np.savetxt(f"data/gathered/slope.csv", slopes, delimiter=',')
 np.savetxt(f"data/gathered/time.csv", times, delimiter=',')
 np.savetxt(f"data/gathered/omega.csv", omegas, delimiter=',')
 np.savetxt(f"data/gathered/Z.csv", Zs, delimiter=',')
