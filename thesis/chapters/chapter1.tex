@@ -1,7 +1,7 @@
 In this chapter we will briefly discuss the theoretical background used when dealing with two-component coherently coupled spin mixtures of BECs. Since we are dealing with a many-body quantum problem, the standard approach is to use a quantum field to describe the state of the condensate. This leads directly to the Gross-Pitaevskii equation, which will be the starting point of this discussion, after a quick review of the ideal Bose gas. The following content is mostly based on Refs.\ \cite{pitaevskii2016bose} and \cite{lamporesi2023two}.
 
 \section{Ideal Bose gas}
-The simplest way to treat the ideal Bose gas (a quantum system) is by relying on the grand-canonical ensemble. 
+The simplest way to treat the ideal Bose gas (a quantum system of non-interacting bosons) is by relying on the grand-canonical ensemble. 
 
 Let us then recall the probability of the system having a number of particles $N'$ and energy $E_k$ when in contact with a reservoir of temperature $T$ and chemical potential $\mu$:
 \begin{equation*}
@@ -33,6 +33,7 @@ The partition function of Eq.\ \eqref{eq:part_func} becomes easy to compute, yie
         \prod_i \frac{1}{1-e^{\beta(\mu - \epsilon_i)}}\, .
     \end{split}
 \end{equation*}
+Note that the condition $\mu < \epsilon_0$ must be satisfied for the convergence of the series. 
 It is interesting to study the total number of particles, which can be obtained from the potential of Eq.\ \eqref{eq:GC_potential}:
 \begin{equation*}
     N = \langle N' \rangle = -\pdv{\Omega}{\mu} = k_B T \pdv{\log\mathcal{Z}}{\mu} = \sum_i \frac{1}{e^{\beta(\epsilon_i - \mu)}-1} = \sum_i \langle n_i \rangle\, ,
@@ -41,6 +42,25 @@ hence revealing the famous \textit{Bose-Einstein distribution}
 \begin{equation*}
     \langle n_i \rangle = \frac{1}{e^{\beta(\epsilon_i - \mu)}-1}\, .
 \end{equation*}
+The occupation number of the ground state is $N_0 = \langle n_0 \rangle$ and the remaining particles are called the thermal component $N_T = N - N_0$. 
+
+The origin of the Bose-Einstein condensation phenomenon is that $N_0 \to \infty$ when $\mu \to \epsilon_0$. In particular, at a fixed temperature $T$, the function $N_T(\mu)$ has a maximum $N_c$ at $\mu = \epsilon_0$, while $N_0$ is divergent. This implies that:
+\begin{itemize}
+    \item if $N_c > N$, then the normalization condition $N = N_0 + N_T$ is satisfied for values of $\mu < \epsilon_0$ and $N_0$ is negligible (no condensation);
+    \item if $N_c = N$, it means that we are at the critical temperature $T_c$ defined by $N_T(T = T_c, \mu = \epsilon_0) = N$. Since $N_T$ is an increasing function of $T$, the previous scenario corresponds to $T > T_c$;
+    \item if $N_c < N$ (or $T < T_c$), the contribution of $N_0$ is crucial for the normalization and thus the condensation happens.
+\end{itemize}
+In a finite box of volume $V$, where the lowest energy eigenvalue is $\epsilon_0 = 0$, the condensate fraction for $T < T_c$ is expressed by
+\begin{equation*}
+    \frac{N_0}{N} = 1-\left(\frac{T}{T_c}\right)^{3/2}\, .
+\end{equation*}
+Since $N_0 \approx 0$ for $T > T_c$, the function has a discontinuity of its derivative at the critical temperature: a typical symptom of phase transitions.
+
+The behaviour is similar for a system trapped in an external harmonic potential, where the condensate fraction is
+\begin{equation*}
+    \frac{N_0}{N} = 1-\left(\frac{T}{T_c}\right)^3
+\end{equation*}
+and the critical temperature depends on the oscillation frequencies.
 
 \section{Gross-Pitaevskii equation}
 For a 1D single-component BEC, namely made of only one species of $N$ indistinguishable bosons, one can use a single wavefunction $\psi(x,t)$ to describe its ground state (GS) by exploiting a mean-field approximation, thus revealing the Gross-Pitaevskii equation (GPE):
