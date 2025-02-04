@@ -21,7 +21,7 @@ else:
 zero_mean_flag = int(input("\nEnter 1 for zero-mean signal ACF, 0 for true signal: "))
 
 # Ask for gather flag
-gather_flag = input("\nEnter gather method [omega/time/size/detuning/dE]: ")
+gather_flag = input("\nEnter gather method [omega/time/size/detuning/dE/slope]: ")
 
 # Ask for region flag
 region_flag = input("\nEnter region [inside/outside]: ")
@@ -29,6 +29,7 @@ region_flag = input("\nEnter region [inside/outside]: ")
 # Import bubble data
 size = pd.read_csv(f"data/gathered/size.csv", header=None).to_numpy().flatten()
 center = pd.read_csv(f"data/gathered/center.csv", header=None).to_numpy().flatten()
+slope = pd.read_csv(f"data/gathered/slope.csv", header=None).to_numpy().flatten()
 time = pd.read_csv(f"data/gathered/time.csv", header=None).to_numpy().flatten()
 omega = pd.read_csv(f"data/gathered/omega.csv", header=None).to_numpy().flatten()
 detuning = pd.read_csv(f"data/gathered/detuning.csv", header=None).to_numpy().flatten()
@@ -41,12 +42,15 @@ dE = np.sqrt(omega*(1150-omega))
 if gather_flag == 'omega':
     groupFitACF('omega', omega, 1, Z, size, center, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'time':
-    groupFitACF('time', time, 8, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('time', time, 20, Z, size, center, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'size':
-    groupFitACF('size', size, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('size', size, 20, Z, size, center, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'detuning':
-    groupFitACF('detuning', detuning, 50, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('detuning', detuning, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'dE':
-    groupFitACF('dE', dE, 20, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('dE', dE, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+elif gather_flag == 'slope':
+    groupFitACF('slope', slope, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
 else:
     print("Gather method has to be [omega/time/size/detuning/dE]")
+    

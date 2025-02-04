@@ -399,7 +399,7 @@ def groupFitACF(cat_str, cat_data, n_shots, Z, size, center, window_len, ZMF, re
     ax[1].set_xlabel(f'{cat_str}')
     ax[1].set_ylabel('$\ell_1$')
     ax[1].set_ylim(min(l1_values) - 0.5, None)
-    # ax[1].set_xscale('log')
+    ax[1].set_xscale('log')
 
     plt.tight_layout()
     plt.show()

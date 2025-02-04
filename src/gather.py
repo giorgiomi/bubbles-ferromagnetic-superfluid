@@ -34,7 +34,7 @@ for day in sel_days:
         Z = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/magnetization.csv", header=None).to_numpy()
 
         for i, shot in enumerate(Z):
-            if size[i] > 0 and size[i] < 2*w:
+            if size[i] > 0 and size[i] < 2*w and slope[i] > 0:
                 Zs.append(shot)
                 centers.append(center[i])
                 slopes.append(slope[i])
