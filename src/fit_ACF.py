@@ -40,17 +40,18 @@ dE = np.sqrt(omega*(1150-omega))
 # exit()
 
 if gather_flag == 'omega':
-    groupFitACF('omega', omega, 1, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('omega', omega, omega, 1, Z, size, center, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'time':
-    groupFitACF('time', time, 20, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('time', time, omega, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'size':
-    groupFitACF('size', size, 20, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('size', size, omega, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'detuning':
-    groupFitACF('detuning', detuning, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+    print("Detuning not available")
+    # groupFitACF('detuning', detuning, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'dE':
-    groupFitACF('dE', dE, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('dE', dE, omega, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'slope':
-    groupFitACF('slope', slope, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('slope', slope, omega, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
 else:
     print("Gather method has to be [omega/time/size/detuning/dE]")
     
