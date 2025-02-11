@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
 from util.parameters import importParameters
-from util.functions import bubble, gauss, bubbleshoulder # fit functions
+from util.functions import bubble, gauss, bubbleshoulder, bubblePieces # fit functions
 
 import os
 import warnings
@@ -117,6 +117,9 @@ for fs in sel_days: # all seqs
         b_inside_boundary_right = []
         b_outside_boundary_left = []
         b_outside_boundary_right = []
+        b_exp_slope_left = []
+        b_exp_slope_right = []
+        b_off = []
         times = np.unique(time) 
         MbList = []
         timeAdvBubble = []
@@ -152,11 +155,16 @@ for fs in sel_days: # all seqs
                     Mi_right = M[i][int((round(best_2arctan[2])) - s_size) : int(round(best_2arctan[2])) + s_size]
                     best_BS_right, covar_BS_right = curve_fit(bubbleshoulder, xx_right, Mi_right, p0 = init_BS_right)
 
-                    if not save_flag and best_BS_left[3] < 4 and best_BS_left[3] > 0: 
+                    # Fitting with new function
+                    best_pieces, covar_pieces = curve_fit(bubblePieces, xx, M[i], p0=[-1, 0.05, 0.05, init_c1, init_c2, 0.7])
+
+                    # if not save_flag and best_BS_left[3] < 4 and best_BS_left[3] > 0: 
+                    if not save_flag:
                         print(f"{best_BS_left[1]:.2f} +/- {best_BS_left[3]:.2f}")
                         # Plot bubble and bubbleshoulder fit
                         plt.plot(xx, M[i], label="Data")
                         plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
+                        plt.plot(xx, bubblePieces(xx, *best_pieces), label="Piecewise fit")
                         plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
                         plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
                         plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
@@ -176,8 +184,12 @@ for fs in sel_days: # all seqs
                         b_sizeADV.append(best_BS_right[1] - best_BS_left[1])
                         s_width.append(0.5*(best_BS_left[3] + best_BS_right[3]))
 
-                        b_inside_boundary_left.append(best_BS_left[1] + 2*best_BS_left[3]) # defines the inside region with BS fit
-                        b_inside_boundary_right.append(best_BS_right[1] - 2*best_BS_right[3]) # defines the inside region with BS fit
+                        b_off.append(best_pieces[5])
+
+                        b_exp_slope_left.append(best_pieces[1])
+                        b_exp_slope_right.append(best_pieces[2])
+                        b_inside_boundary_left.append(best_pieces[3]) # defines the inside region with bubblePieces
+                        b_inside_boundary_right.append(best_pieces[4]) # defines the inside region with bubblePieces
                         
                         b_outside_boundary_left.append(best_BS_left[1] - 2*best_BS_left[3]) # defines the outside region with BS fit
                         b_outside_boundary_right.append(best_BS_right[1] + 2*best_BS_right[3]) # defines the outside region with BS fit
@@ -233,6 +245,9 @@ for fs in sel_days: # all seqs
                     b_inside_boundary_right.append(w)
                     b_outside_boundary_left.append(0)
                     b_outside_boundary_right.append(2*w)
+                    b_exp_slope_left.append(0)
+                    b_exp_slope_right.append(0)
+                    b_off.append(0)
 
             # Over the threshold value, the bubble is not formed, hence everything set to 0
             else: 
@@ -245,6 +260,9 @@ for fs in sel_days: # all seqs
                 b_inside_boundary_right.append(w)
                 b_outside_boundary_left.append(0)
                 b_outside_boundary_right.append(2*w)
+                b_exp_slope_left.append(0)
+                b_exp_slope_right.append(0)
+                b_off.append(0)
         
         b_size = np.array(b_size)
         b_sizeADV = np.array(b_sizeADV) 
@@ -254,6 +272,9 @@ for fs in sel_days: # all seqs
         b_inside_boundary_right = np.array(b_inside_boundary_right)
         b_outside_boundary_left = np.array(b_outside_boundary_left)
         b_outside_boundary_right = np.array(b_outside_boundary_right)
+        b_exp_slope_left = np.array(b_exp_slope_left)
+        b_exp_slope_right = np.array(b_exp_slope_right)
+        b_off = np.array(b_off)
 
         if save_flag:
             print(f"\rSaving fitted data on data/{str}/day_{fs}/seq_{ei}/", end="")
@@ -263,8 +284,11 @@ for fs in sel_days: # all seqs
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/sizeADV.csv", b_sizeADV, delimiter=',')
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/magnetization.csv", M, delimiter=',')
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/density.csv", D, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/off.csv", b_off, delimiter=',')
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/in_left.csv", b_inside_boundary_left, delimiter=',')
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/in_right.csv", b_inside_boundary_right, delimiter=',')
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/out_left.csv", b_outside_boundary_left, delimiter=',')
             np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/out_right.csv", b_outside_boundary_right, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/exp_left.csv", b_exp_slope_left, delimiter=',')
+            np.savetxt(f"data/{str}/day_{fs}/seq_{ei}/exp_right.csv", b_exp_slope_right, delimiter=',')
 

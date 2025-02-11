@@ -371,8 +371,11 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
         doff_values = [err[1] for err in fit_errors.values()]
 
         if cat_str == 'omega':
-            ax_fit[0].errorbar(cats, l1_values, yerr=dl1_values, fmt='o', capsize=2)
-            ax_fit[1].errorbar(cats, off_values, yerr=doff_values, fmt='o', capsize=2)
+            ax_fit[0].errorbar(1150/np.array(cats), l1_values, yerr=dl1_values, fmt='o', capsize=2, color='tab:blue')
+            ax_fit[1].errorbar(1150/np.array(cats), off_values, yerr=doff_values, fmt='o', capsize=2, color='tab:blue')
+
+            ax_fit[0].set_xlabel('$kn/\Omega$')
+            ax_fit[1].set_xlabel('$kn/\Omega$')
         else:
             # Create bins from start_cat to end_cat for each block
             bins = []
@@ -386,13 +389,13 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
 
             ax_fit[0].errorbar(bin_centers, l1_values, xerr=bin_semiwidths, yerr=dl1_values, fmt='o', capsize=2, label=f'$\Omega = {om}$ Hz')
             ax_fit[1].errorbar(bin_centers, off_values, xerr=bin_semiwidths, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega = {om}$ Hz')
+            ax_fit[0].set_xlabel(f'{cat_str}')
+            ax_fit[1].set_xlabel(f'{cat_str}')
         ax_fit[0].set_title(f'First Fit Parameter ($\ell_1$) vs {cat_str}')
-        ax_fit[0].set_xlabel(f'{cat_str}')
         ax_fit[0].set_ylabel('$\ell_1$')
         ax_fit[0].legend()
 
         ax_fit[1].set_title(f'Second Fit Parameter (off) vs {cat_str}')
-        ax_fit[1].set_xlabel(f'{cat_str}')
         ax_fit[1].set_ylabel('off')
         ax_fit[1].legend()
 
