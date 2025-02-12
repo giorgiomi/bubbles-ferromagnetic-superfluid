@@ -14,7 +14,7 @@ In order to extract the density distribution, the two spin states are treated in
 It is possible to study the two-component system by separating the treatment on the density ($n = n_\uparrow + n_\downarrow$) and the spin ($nZ = n_\uparrow - n_\downarrow$) degrees of of freedom. 
 % While the density is described by a continuity equation, the spin behaviour is ruled by a magnetic mean-field Hamiltionian, that presents a first-order phase transition in the central region of the system when $\Omega_R < |k|n$, where $k \propto \Delta a$. At fixed values of $\Omega_R$, the experiment can be tuned by the parameter $\delta$, expressing the \textit{detuning}. In general, the mean-field energy landscape $E(Z)$ is described by an asymmetric double-well, that becomes symmetric for $\delta = 0$. In the case of $\delta < 0$, the energy is minimized by negative values of $Z$. 
 
-\section{Data}
+\section{Raw data}
 Raw data is organized in a hierarchical system. At a fixed instant, the condensate's measured data are called a \textit{shot} (it refers to the imaging process). Each shot is part of a series of them that can be analyzed as the time evolution of a single system: this series is called a \textit{sequence}. Eventually, during a \textit{day} of measurements, many sequences may be collected, and a selection of them will be studied in the following analysis. For each sequence, the experimental data contains also the radiation coupling $\Omega_R$ in a range between 200 and 800 \unit{\hertz} (it changes from one day of measurements to another) and the detuning $\delta$.
 
 A shot contains all the information on the system at a certain instant, including the two population densities, $n_\uparrow(x)$ for to the atoms in the state $\ket{\uparrow}$ and $n_\downarrow(x)$ for the atoms in the state $\ket{\downarrow}$, distributed on a length scale from 0 to 400 pixels. The spatial resolution of the image is $1\ \text{pixel}\ = 1\ \unit{\micro\meter}$, so the two length units will be often used interchangeably. The magnetization data $Z(x)$ is calculated with Eq.\ \eqref{eq:magnetization} and, by definition, composed of a series of values ranging from $-1$ to $1$.
@@ -80,41 +80,54 @@ Once the width is retrieved, it is useful to order the shots in a sequence by th
 \end{figure}
 An example sequence is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
 
-\subsection{FFT and ACF analysis}
+\section{Spectral analysis}
 Since we are interested in the dynamics of the bubble, energy propagation is an important feature to focus on. In order to study it, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signal. 
 
-We will first approach the problem of deriving such a profile using Fast Fourier Transform (FFT), an algorithm that implements the Discrete Fourier Transform (DFT) in an efficient manner. Given the input as a sequence of $N$ discrete values $Z_0,\dots,Z_{N-1}$ sampled with spacing $\Delta x$, by definition the DFT is a series of $N$ discrete values $\mathcal{Z}_0,\dots,\mathcal{Z}_{N-1}$ spaced by $\Delta k = 1/(N\Delta x)$ and convoluted with a complex phase such that
+\subsection{FFT and ACF definition}
+We will first approach the problem of deriving such a profile using Fast Fourier Transform (FFT), an algorithm that implements the Discrete Fourier Transform (DFT) in an efficient manner.\footnote{The most common implementation is the Cooley-Tukey algorithm, used in the Scipy Python library for FFT.} Given the input as a sequence of $N$ discrete values $Z_0,\dots,Z_{N-1}$ sampled with spacing $\Delta x$, by definition the DFT is a series of $N$ discrete values $\mathcal{Z}_0,\dots,\mathcal{Z}_{N-1}$ spaced by $\Delta k = 1/(N\Delta x)$ and convoluted with a complex phase such that
 \begin{equation*}
-    \mathcal{Z}_k = \sum_{n=0}^{n=N-1} Z_n e^{-2\pi i \frac{k}{N}n}\, .
+    \mathcal{Z}_k = \sum_{n=0}^{N-1} Z_n e^{-2\pi i \frac{k}{N}n}\, .
 \end{equation*}
-When the input $Z_n$ is real-valued, the transform is too, and it is also symmetric between positive and negative frequencies. The physical world contains only positive frequencies, so we will neglect the negative part of the transform.\footnote{This is achievable in \texttt{Python} using the function \texttt{rfft} instead of \texttt{fft}.}
+When the input $Z_n$ is real-valued, the transform is too, and it is also symmetric between positive and negative frequencies. The physical world contains only positive frequencies, so we will neglect the negative part of the transform. This is achievable by using the Scipy function \texttt{\textbf{rfft}} instead of \texttt{\textbf{fft}}.
 
 Another tool that can be used to study the periodic properties of a signal is the autocorrelation function (ACF). Similarly to the DFT, the ACF is also a particular type of convolution, where the signal is convoluted with itself. The caveat here is that since our signal is of finite length, the whole convolution would show boundary effects, as shown in Fig.\ \ref{fig:ACF_bound}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/chap2/ACF_bound.jpeg}
-    \caption{Boundary effects when computing the autocorrelation function on the whole signal. Since the signal is finite, the contributions on the borders are zero.}
+    \caption{[CHANGE PICTURE TO BETTER VERSION] Boundary effects when computing the autocorrelation function on the whole signal. Since the signal is finite, the contributions on the borders are zero.}
     \label{fig:ACF_bound}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/chap2/ACF_window.jpeg}
+    \caption{[CHANGE PICTURE TO BETTER VERSION] Windowed autocorrelation scheme. No boundary effects}
+    \label{fig:ACF_window}
 \end{figure}
 It is then worth to limit the signal in a central window of length $2W$ and computing the ACF on the windowed signal. Taking as input the latter as $Z_0,\dots,Z_{2W-1}$, the output will be a series of values $\mathcal{A}_0,\dots,\mathcal{A}_{W}$ living in the spatial domain\footnote{While the FFT domain is made of frequencies, the ACF domain is instead made of lag values, corresponding to the spatial shifts of the signal.} such that:
 \begin{equation*}
     \mathcal{A}_k = \frac{1}{2} \left( \frac{\sum_{n} Z_n Z_{n+k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n+k}^2}} + \frac{\sum_{n} Z_n Z_{n-k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n-k}^2}} \right)\, .
 \end{equation*}
-This formula computes the windowed autocorrelation by shifting the signal both to the left and to the right and then taking the average. Both terms are normalized in order to get $\mathcal{A}_0 = 1$.
+This formula computes the windowed autocorrelation by shifting the signal both to the left and to the right and then taking the average.
+Both terms are normalized in order to get $\mathcal{A}_0 = 1$. Note that the sums run from $n = 0$ to $n = W-1$ and thus the length of the signal must be greater than $4W$: data that does not respect this condition will not be analyzed. A scheme is presented in Fig.\ \ref{fig:ACF_window}.
 
-Now, what we shall do is to compute the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one and look for periodic signals in both. We will also compute the transforms on the no-bubble shots. An example of the inside region analysis is presented in Fig.\ \ref{fig:inside_00}.
+\subsection{FFT and ACF analysis}
+Now, what we shall do is to compute the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one. This is done by relying on the fit routine results, mainly the shoulder centers and their widths.
+We will also compute the transforms on the no-bubble shots. An example of the inside region zero-mean analysis for a selected sequence is presented in Fig.\ \ref{fig:inside_00}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/chap2/inside_day_0_seq_0.png}
-    \caption{Example of FFT and ACF calculated in a sequence. The values for each shot are shown in the left plots with colormaps, while the averages are on the right.}
+    \caption{Example of FFT and ACF calculated in a sequence. The values for each shot are shown in the left plots with colormaps, while the averages on all shots are on the right. Note that before computing the transforms the data was set to zero-mean by subtracting its average.}
     \label{fig:inside_00}
 \end{figure}
-One can probably (with a good eye) already see in the colormap plot that two or three vertical bands extend over all shots and appear at the same frequencies. This ensures that the FFT averaging is rightful.
+% One can probably (with a good eye) already see in the colormap plot that two or three vertical bands extend over all shots and appear at the same frequencies. This ensures that the FFT averaging is rightful.
+
+Let us briefly discuss the behaviours of the computed FFTs and ACFs, considering that it is similar for all sequences and the example presented is a good one. The FFT shows a peak at a frequency in the order of $k_{\rm FFT} \sim 0.01$ \unit{\per\micro\meter} and of width in the order of $\Delta k_{\rm FFT} \sim 0.1$ \unit{\per\micro\meter}. The ACF instead has a peak at $\Delta x_{\rm ACF} \sim 10-11$ \unit{\micro\meter} and another one at $\Delta x_{\rm ACF} \sim 17-18$ \unit{\micro\meter}. By comparing these results, one should see a correspondence, namely $k \sim 1/\Delta x$. However, by taking the inverse of the ACF peaks, one gets $k_{\rm ACF} \sim 0.1$ and $k_{\rm ACF} \sim 0.06$, both frequencies being hidden in the FFT plot due to the broad peak. The reason for the peak broadness is probability the data noise. We will thus proceed by relying on the ACF for the remaining analysis.
+
 \begin{figure}[t!]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/chap2/inside_fft_avg.png}
-    \caption{FFT and ACF profiles averaged over all sequences with the same radiation coupling $\Omega_R$.}
+    \caption{FFT and ACF profiles (computed with zero-mean data) averaged over all sequences with the same radiation coupling $\Omega_R$.}
     \label{fig:inside_avg}
 \end{figure}
 
-\subsection{Border alignment}
+% \subsection{Border alignment}

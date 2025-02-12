@@ -54,6 +54,7 @@ main-frn.tex
 
 # images
 *.png
+*.jpeg
 
 # articles and books
 *.pdf

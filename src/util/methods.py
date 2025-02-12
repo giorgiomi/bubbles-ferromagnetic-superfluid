@@ -57,32 +57,36 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
 
     # Colormap for FFT
     im1 = axs[0, 0].imshow(FFT_mag, aspect='auto', extent=[CFG[0], CFG[-1], 0, len(data)], origin='lower', cmap='plasma')
-    fig.colorbar(im1, ax=axs[0, 0], label='Magnitude')
+    fig.colorbar(im1, ax=axs[0, 0])
     axs[0, 0].set_title(region + f" FFT of day {day}, sequence {seq}")
-    axs[0, 0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
+    axs[0, 0].set_xlabel(r"$k\ [1/\mu m]$")
     axs[0, 0].set_ylabel("Shot number")
 
     # Average FFT
     axs[0, 1].plot(CFG, FFT_mean, '-', label='FFT on background inside')
     # axs[0, 1].annotate(f"# of inside shots = {len(data)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
     axs[0, 1].set_title(region + f" FFT average of day {day}, sequence {seq}")
-    axs[0, 1].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
+    axs[0, 1].set_xlabel(r"$k\ [1/\mu m]$")
     # axs[0, 1].set_yscale('log')
     axs[0, 1].set_xlim(-0.02, 0.52)
+    axs[0, 1].set_ylabel("FFT")
     # axs[0, 1].legend()
 
     # Colormap for autocorrelation
     im2 = axs[1, 0].imshow(ACF_val, aspect='auto', extent=[CLG[0], CLG[-1], 0, len(data)-1], origin='lower', cmap='plasma')
-    fig.colorbar(im2, ax=axs[1, 0], label='ACF')
+    fig.colorbar(im2, ax=axs[1, 0])
     axs[1, 0].set_title(region + f" ACF of day {day}, sequence {seq}")
-    axs[1, 0].set_xlabel("$\Delta x$")
+    axs[1, 0].set_xlabel("$\Delta x\ [\mu m]$")
     axs[1, 0].set_ylabel("Shot number")
+    axs[1, 0].set_xticks(np.arange(0, 21, 2))
 
     # Average Autocorrelation
     axs[1, 1].plot(CLG, ACF_mean, '-', label='ACF on background inside')
     # axs[1, 1].annotate(f"# of inside shots = {len(data)}", xy=(0.8, 0.75), xycoords='axes fraction', fontsize=10, ha='center', bbox=dict(boxstyle='round', facecolor='white', edgecolor='black'))
     axs[1, 1].set_title(region + f" ACF average of day {day}, sequence {seq}")
-    axs[1, 1].set_xlabel("$\Delta x$")
+    axs[1, 1].set_xlabel("$\Delta x\ [\mu m]$")
+    axs[1, 1].set_ylabel("ACF")
+    axs[1, 1].set_xticks(np.arange(0, 21, 2))
     # axs[1, 1].legend()
 
     plt.tight_layout()
@@ -99,22 +103,25 @@ def doublePlot(o_fft_d, o_acf_d, CFG, CLG, region):
     for omega in sorted_omegas: 
         fft_list = o_fft_d[omega]
         avg_fft = np.mean(fft_list, axis=0)
-        axs[0].plot(CFG, avg_fft, '-', label=fr'$\Omega = {omega}$ Hz')
+        axs[0].plot(CFG, avg_fft, '-', label=fr'$\Omega_R/2\pi = {omega}$ Hz')
 
         acf_list = o_acf_d[omega]
         avg_acf = np.mean(acf_list, axis=0)
-        axs[1].plot(CLG, avg_acf, '-', label=fr'$\Omega = {omega}$ Hz')
+        axs[1].plot(CLG, avg_acf, '-', label=fr'$\Omega_R/2\pi = {omega}$ Hz')
 
     # Plot FFTs
-    axs[0].set_xlabel(r"$k/(2\pi)\ [1/\mu m]$")
+    axs[0].set_xlabel(r"$k\ [1/\mu m]$")
+    axs[0].set_ylabel("FFT")
     axs[0].set_xlim(-0.02, 0.52)
     axs[0].legend()
     axs[0].set_title(f"Average {region} FFTs")
 
     # Plot ACFs    
-    axs[1].set_xlabel("$\Delta x$")
+    axs[1].set_xlabel("$\Delta x\ [\mu m]$")
+    axs[1].set_ylabel("ACF")
     axs[1].legend()
     axs[1].set_title(f"Average {region} ACFs")
+    axs[1].set_xticks(range(0, 21, 2))
 
     plt.tight_layout()
     return fig
