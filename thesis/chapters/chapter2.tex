@@ -12,7 +12,7 @@ In order to extract the density distribution, the two spin states are treated in
 \end{equation}
 
 It is possible to study the two-component system by separating the treatment on the density ($n = n_\uparrow + n_\downarrow$) and the spin ($nZ = n_\uparrow - n_\downarrow$) degrees of of freedom. 
-While the density is described by a continuity equation, the spin behaviour is ruled by a magnetic mean-field Hamiltionian, that presents a first-order phase transition in the central region of the system when $\Omega_R < |k|n$, where $k \propto \Delta a$. At fixed values of $\Omega_R$, the experiment can be tuned by the parameter $\delta$, expressing the \textit{detuning}. In general, the mean-field energy landscape $E(Z)$ is described by an asymmetric double-well, that becomes symmetric for $\delta = 0$. In the case of $\delta < 0$, the energy is minimized by negative values of $Z$. 
+% While the density is described by a continuity equation, the spin behaviour is ruled by a magnetic mean-field Hamiltionian, that presents a first-order phase transition in the central region of the system when $\Omega_R < |k|n$, where $k \propto \Delta a$. At fixed values of $\Omega_R$, the experiment can be tuned by the parameter $\delta$, expressing the \textit{detuning}. In general, the mean-field energy landscape $E(Z)$ is described by an asymmetric double-well, that becomes symmetric for $\delta = 0$. In the case of $\delta < 0$, the energy is minimized by negative values of $Z$. 
 
 \section{Data}
 Raw data is organized in a hierarchical system. At a fixed instant, the condensate's measured data are called a \textit{shot} (it refers to the imaging process). Each shot is part of a series of them that can be analyzed as the time evolution of a single system: this series is called a \textit{sequence}. Eventually, during a \textit{day} of measurements, many sequences may be collected, and a selection of them will be studied in the following analysis. For each sequence, the experimental data contains also the radiation coupling $\Omega_R$ in a range between 200 and 800 \unit{\hertz} (it changes from one day of measurements to another) and the detuning $\delta$.
@@ -35,11 +35,21 @@ where $c_1$ and $c_2$ are the centers of the arctangent "shoulders", and $w_1$ a
 \end{equation*}
 yielding the shoulder center $c$. Eventually, we obtain the bubble center $x_0 = (c_1 + c_2)/2$ and the bubble width $\sigma_B = c_2 - c_1$.
 
-In some cases, especially when the bubble is narrow, the fitting procedure to optimize the parameters of Eq.\ \eqref{eq:double-atan}'s function fails and we are forced to use a gaussian profile such as
+% In some cases, especially when the bubble is narrow, the fitting procedure to optimize the parameters of Eq.\ \eqref{eq:double-atan}'s function fails and we are forced to use a gaussian profile such as
+% \begin{equation*}
+%     Z_{\rm fit}(x) = - A \exp\left[-\frac{(x-c)^2}{2\sigma^2}\right] + \Delta\, ,
+% \end{equation*}
+% with $x_0 = c$ being the bubble center and $\sigma_B = \num{2.335}\ \sigma$ its width.
+
+While this routine is very accurate for determining the shoulder profile and hence the bubble width, the transition between the shoulders and the inside region shows no continuity in many shots. In order to catch the entire profile and especially the boundaries of the inside region, we can fit the data with a piecewise function made of two exponential tails and a constant value in the middle, such as
 \begin{equation*}
-    Z_{\rm fit}(x) = - A \exp\left[-\frac{(x-c)^2}{2\sigma^2}\right] + \Delta\, ,
+    Z_{\rm fit}(x) = 
+    \begin{cases}
+        A \exp(\frac{x-x_1}{w_1}) + \Delta \qquad\quad &\text{for } x < x_1\\
+        A + \Delta \qquad\qquad\qquad\qquad &\text{for } x_1 < x < x_2\\
+        A \exp(-\frac{x-x_2}{w_2}) + \Delta \qquad &\text{for } x > x_2
+    \end{cases}
 \end{equation*}
-with $x_0 = c$ being the bubble center and $\sigma_B = \num{2.335}\ \sigma$ its width.
 
 \begin{figure}[h!]
     \centering
@@ -79,10 +89,18 @@ We will first approach the problem of deriving such a profile using Fast Fourier
 \end{equation*}
 When the input $Z_n$ is real-valued, the transform is too, and it is also symmetric between positive and negative frequencies. The physical world contains only positive frequencies, so we will neglect the negative part of the transform.\footnote{This is achievable in \texttt{Python} using the function \texttt{rfft} instead of \texttt{fft}.}
 
-Another tool that can be used to study the periodic properties of a signal is the autocorrelation function (ACF). Similarly to the DFT, the ACF is also a particular type of convolution, where the signal is convoluted with itself. Taking the same input as before, the output will be a series of values $\mathcal{A}_0,\dots,\mathcal{A}_{2N-2}$ living in the spatial domain such that:
+Another tool that can be used to study the periodic properties of a signal is the autocorrelation function (ACF). Similarly to the DFT, the ACF is also a particular type of convolution, where the signal is convoluted with itself. The caveat here is that since our signal is of finite length, the whole convolution would show boundary effects, as shown in Fig.\ \ref{fig:ACF_bound}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/chap2/ACF_bound.jpeg}
+    \caption{Boundary effects when computing the autocorrelation function on the whole signal. Since the signal is finite, the contributions on the borders are zero.}
+    \label{fig:ACF_bound}
+\end{figure}
+It is then worth to limit the signal in a central window of length $2W$ and computing the ACF on the windowed signal. Taking as input the latter as $Z_0,\dots,Z_{2W-1}$, the output will be a series of values $\mathcal{A}_0,\dots,\mathcal{A}_{W}$ living in the spatial domain\footnote{While the FFT domain is made of frequencies, the ACF domain is instead made of lag values, corresponding to the spatial shifts of the signal.} such that:
 \begin{equation*}
-    \mathcal{A}_k = \sum_{n=0}^{N-1} Z_n Z^*_{n-k+N-1}\, .
+    \mathcal{A}_k = \frac{1}{2} \left( \frac{\sum_{n} Z_n Z_{n+k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n+k}^2}} + \frac{\sum_{n} Z_n Z_{n-k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n-k}^2}} \right)\, .
 \end{equation*}
+This formula computes the windowed autocorrelation by shifting the signal both to the left and to the right and then taking the average. Both terms are normalized in order to get $\mathcal{A}_0 = 1$.
 
 Now, what we shall do is to compute the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one and look for periodic signals in both. We will also compute the transforms on the no-bubble shots. An example of the inside region analysis is presented in Fig.\ \ref{fig:inside_00}.
 \begin{figure}[h!]
