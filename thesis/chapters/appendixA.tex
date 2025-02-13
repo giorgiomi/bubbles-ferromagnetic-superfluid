@@ -1,0 +1,40 @@
+\label{chap:app_ACF}
+The autocorrelation function is a powerful tool for a spectral analysis of the data, since it can extract the main frequency of the signal. Let us compute the expected model for the ACF in some example cases, using the function
+\begin{equation}
+    \mathcal{A}(m) = \frac{1}{2} \left( \frac{\sum_{n} f_n f_{n+m}}{\sqrt{\sum_{n} f_n^2 \sum_{n} f_{n+m}^2}} + \frac{\sum_{n} f_n f_{n-m}}{\sqrt{\sum_{n} f_n^2 \sum_{n} f_{n-m}^2}} \right)
+    \label{eq:ACF}
+\end{equation}
+and supposing to run the sums over $N$ values covering many periods of the signal $f(x)$.
+
+\section{Pure sinusoid}
+First, let us take a pure sinusoidal signal
+\[
+    f(x) = A\cos(k_0 x + \phi)\, ,
+\]  
+where $x$ can be discretized with $x = x_0 + n\Delta x$, yielding
+\begin{equation*}
+    f_n = A\cos[k_0(x_0 + n\Delta x) + \phi]\, .
+\end{equation*}
+When considering Eq.\ \eqref{eq:ACF}, the left and right contributions shall be treated separately (the calculation is eventually the same). We then proceed with the calculation of $S(m) = \sum_n f_n f_{n+m}$:
+\begin{equation*}
+    S(m) = \sum_n A^2 \cos[k_0(x_0 + n\Delta x) + \phi] \cos[k_0(x_0 + (n+m)\Delta x) + \phi]\, ,
+\end{equation*}
+where we can use the trigonometric identity
+\[
+    \cos(\alpha)\cos(\beta) = \frac{1}{2}[\cos(\alpha-\beta) + \cos(\alpha+\beta)]
+\]
+getting
+\begin{equation*}
+    S(m) = \frac{A^2}{2}\sum_n [\cos(k_0 m \Delta x) + \cos(k_0(2x_0 + (2n + m)\Delta x) + 2\phi)]\, .
+\end{equation*}
+The second term in the sum averages to zero, but the first one survives and does not depend on $n$, hence
+\[
+    S(m) = \frac{A^2}{2}N\cos(k_0 m \Delta x)\, .
+\]
+What is left to compute are the normalization sums $\sum_n f_n^2$ and $\sum_n f_{n+m}^2$. But since the cosine squared averages to $\frac{1}{2}$ over one period, the result is straight-forward and both sums are equal to $\frac{A^2}{2}N$. Eventually, the ACF right term reads
+\begin{equation*}
+    \mathcal{A}(m) = \frac{\frac{A^2}{2}N\cos(k_0 m \Delta x)}{\sqrt{\frac{A^2}{2}N \frac{A^2}{2}N}} = \cos(k_0 m \Delta x)\, ,
+\end{equation*}
+and since $\Delta x$ is fixed, the ACF lets us extrapolate the signal frequency $k_0$.
+
+\section{Sinusoid with noise}

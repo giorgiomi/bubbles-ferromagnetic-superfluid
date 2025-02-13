@@ -29,7 +29,24 @@ To find the bubble parameters, the magnetization data is fitted with a double-ar
     Z_{\rm fit}(x) = -A \left[\frac{2}{\pi}\arctan(\frac{x-c_1}{w_1}) - \frac{2}{\pi}\arctan(\frac{x-c_2}{w_2})\right] + \Delta\, ,
     \label{eq:double-atan}
 \end{equation}
-where $c_1$ and $c_2$ are the centers of the arctangent "shoulders", and $w_1$ and $w_2$ are their characteristic widths. Then, for a better result, a further fit is performed on each shoulder with a single-arctangent function
+where $c_1$ and $c_2$ are the centers of the arctangent "shoulders", and $w_1$ and $w_2$ are their characteristic widths. 
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/chap2/arctan_fit.png}
+        \caption{Example of double arctangent fit results performed on a shot.}
+        \label{fig:atan-fit}
+    \end{minipage}
+    \hspace{0.02\textwidth}
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/chap2/gaussian_fit.png}
+        \caption{Example of gaussian fit results performed on a shot.}
+        \label{fig:gaussian-fit}
+    \end{minipage}
+\end{figure}
+Then, for a better result, a further fit is performed on each shoulder with a single-arctangent function
 \begin{equation*}
     Z_{\rm fit}(x) = -A \frac{2}{\pi}\arctan(\frac{x-c}{w}) + \Delta\, ,
 \end{equation*}
@@ -51,28 +68,11 @@ While this routine is very accurate for determining the shoulder profile and hen
     \end{cases}
 \end{equation*}
 
-\begin{figure}[h!]
-    \centering
-    \begin{minipage}[t]{0.47 \textwidth}
-        \centering
-        \includegraphics[width = \linewidth]{figures/chap2/arctan_fit.png}
-        \caption{Example of double arctangent fit results performed on a shot.}
-        \label{fig:atan-fit}
-    \end{minipage}
-    \hspace{0.02\textwidth}
-    \begin{minipage}[t]{0.47 \textwidth}
-        \centering
-        \includegraphics[width = \linewidth]{figures/chap2/gaussian_fit.png}
-        \caption{Example of gaussian fit results performed on a shot.}
-        \label{fig:gaussian-fit}
-    \end{minipage}
-\end{figure}
-
 An example of fitting with the arctangent functions is provided in Fig.\ \ref{fig:atan-fit}, while a gaussian fit is shown in Fig.\ \ref{fig:gaussian-fit}.
 
 % \subsection{Shot sorting}
 Once the width is retrieved, it is useful to order the shots in a sequence by this parameter. This process lets us display the system evolution, in contrast to the original shot ordering based on the experimental time waited before observing the bubble. Furthermore, we can obtain a nicer picture by aligning the bubbles to their center and removing the no-bubble shots.
-\begin{figure}[t!]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/chap2/shot_sorting.png}
     \caption{Shot sorting based on bubble width and alignment based on bubble center. Both parameters are estimated from the previous fitting procedure.}
@@ -108,10 +108,10 @@ It is then worth to limit the signal in a central window of length $2W$ and comp
     \mathcal{A}_k = \frac{1}{2} \left( \frac{\sum_{n} Z_n Z_{n+k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n+k}^2}} + \frac{\sum_{n} Z_n Z_{n-k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n-k}^2}} \right)\, .
 \end{equation*}
 This formula computes the windowed autocorrelation by shifting the signal both to the left and to the right and then taking the average.
-Both terms are normalized in order to get $\mathcal{A}_0 = 1$. Note that the sums run from $n = 0$ to $n = W-1$ and thus the length of the signal must be greater than $4W$: data that does not respect this condition will not be analyzed. A scheme is presented in Fig.\ \ref{fig:ACF_window}.
+Both terms are normalized in order to get $\mathcal{A}_0 = 1$. The computation of this function on some simple signals is shown in App.\ \ref{chap:app_ACF}. Note that the sums run from $n = 0$ to $n = W-1$ and thus the length of the signal must be greater than $4W$: data that does not respect this condition will not be analyzed. A scheme is presented in Fig.\ \ref{fig:ACF_window}.
 
 \subsection{FFT and ACF analysis}
-Now, what we shall do is to compute the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one. This is done by relying on the fit routine results, mainly the shoulder centers and their widths.
+Now, what we shall do is computing the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one. This is done by relying on the fit routine results, mainly the shoulder centers and their widths.
 We will also compute the transforms on the no-bubble shots. An example of the inside region zero-mean analysis for a selected sequence is presented in Fig.\ \ref{fig:inside_00}.
 \begin{figure}[h!]
     \centering
@@ -121,7 +121,7 @@ We will also compute the transforms on the no-bubble shots. An example of the in
 \end{figure}
 % One can probably (with a good eye) already see in the colormap plot that two or three vertical bands extend over all shots and appear at the same frequencies. This ensures that the FFT averaging is rightful.
 
-Let us briefly discuss the behaviours of the computed FFTs and ACFs, considering that it is similar for all sequences and the example presented is a good one. The FFT shows a peak at a frequency in the order of $k_{\rm FFT} \sim 0.01$ \unit{\per\micro\meter} and of width in the order of $\Delta k_{\rm FFT} \sim 0.1$ \unit{\per\micro\meter}. The ACF instead has a peak at $\Delta x_{\rm ACF} \sim 10-11$ \unit{\micro\meter} and another one at $\Delta x_{\rm ACF} \sim 17-18$ \unit{\micro\meter}. By comparing these results, one should see a correspondence, namely $k \sim 1/\Delta x$. However, by taking the inverse of the ACF peaks, one gets $k_{\rm ACF} \sim 0.1$ and $k_{\rm ACF} \sim 0.06$, both frequencies being hidden in the FFT plot due to the broad peak. The reason for the peak broadness is probability the data noise. We will thus proceed by relying on the ACF for the remaining analysis.
+Let us briefly discuss the behaviours of the computed FFTs and ACFs, considering that it is similar for all sequences and the example presented is a good one (see Fig.\ \ref{fig:inside_avg}). The FFT shows a peak at a frequency in the order of $k_{\rm FFT} \sim 0.01$ \unit{\per\micro\meter} and of width in the order of $\Delta k_{\rm FFT} \sim 0.1$ \unit{\per\micro\meter}. The ACF instead has a first peak at $\Delta x_{\rm ACF} \sim 10-11$ \unit{\micro\meter}. By comparing these results, one should see a correspondence, namely $k \sim 1/\Delta x$. However, by taking the inverse of the ACF peak values, one gets $k_{\rm ACF} \sim 0.1$ \unit{\per\micro\meter}, a frequency hidden in the FFT plot due to the broad peak. The reason for the peak broadness is probability the data noise, which is difficult to analyze properly. We will thus proceed by relying on the ACF for the remaining analysis.
 
 \begin{figure}[t!]
     \centering
