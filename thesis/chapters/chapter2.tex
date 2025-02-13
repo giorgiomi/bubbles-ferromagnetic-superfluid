@@ -1,4 +1,4 @@
-In this chapter we will talk about the experimental platform in which the experiment was carried out and we will then proceed with the FFT and ACF data analysis.
+In this chapter we will talk about the experimental platform in which the experiment was carried out and we will then proceed with the FFT and ACF data analysis. The code for the analysis was written in the \textbf{\texttt{Python}} language.
 
 \section{Experimental platform}
 The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom ($\mathbf{F} = \mathbf{I} + \mathbf{J}$, takes into account the nuclear spin and the total angular momentum of the electrons) and $m_F$ its projection on the quantization axis. The $\ket{\uparrow}$ state is then coupled to $\ket{1, -1} = \ket{\downarrow}$ through microwave radiation with amplitude $\Omega_R$. The relevant scattering lengths concerning the two states are $a_\uparrow = 64.3 a_0$, $a_\downarrow = 54.5 a_0$ and $a_{\uparrow\downarrow} = 64.3 a_0$.
@@ -141,9 +141,9 @@ The routine is the following:
 \end{enumerate}
 In particular, the ACF profiles can be fitted with a damped cosine of the form
 \begin{equation*}
-    \mathcal{A}_{\rm fit}(x) = (1 - \Delta)\cos(\frac{x}{l_2})\exp[-\left(\frac{x}{l_1}\right)^\alpha] + \Delta\, ,
+    \mathcal{A}_{\rm fit}(x) = (1 - \Delta)\cos(\frac{x}{\ell_2})\exp[-\left(\frac{x}{\ell_1}\right)^\alpha] + \Delta\, ,
 \end{equation*}
-with $\alpha = 1.7$ fine-tuned in order to catch the profile in the best way possible.\footnote{One could set $\alpha$ as a fit parameter, but this would result in a worse estimation of the length $l_1$.} An example is presented in Fig.\ \ref{fig:fit_time_inside}, where the shots are grouped by time. The fit parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside}.
+with $\alpha = 1.7$ fine-tuned in order to catch the profile in the best way possible.\footnote{One could set $\alpha$ as a fit parameter, but this would result in a worse estimation of the length $\ell_1$.} An example is presented in Fig.\ \ref{fig:fit_time_inside}, where the shots are grouped by time. The fit parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside}.
 
 \begin{figure}
     \centering
@@ -153,8 +153,8 @@ with $\alpha = 1.7$ fine-tuned in order to catch the profile in the best way pos
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width = 0.75\textwidth]{figures/chap2/param_time_inside.png}
-    \caption{Fit parameters $l_1$ and $\Delta$ (off) of shots grouped by time.}
+    \includegraphics[width = \textwidth]{figures/chap2/param_time_inside.png}
+    \caption{Fit parameters $\ell_1$, $\Delta$ (off) and $\ell_2$ of shots grouped by time.}
     \label{fig:param_time_inside}
 \end{figure}
 

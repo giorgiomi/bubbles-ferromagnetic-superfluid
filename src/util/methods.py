@@ -204,7 +204,7 @@ def AZcorr(x, win, cc):
         rr.append(ccp/np.sqrt(aap*bbp)/2+ccm/np.sqrt(aam*bbm)/2)
     return rr
 
-def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, center_raw, window_len, ZMF, region):
+def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, center_raw, window_len, ZMF, region):
     '''
         Groups the data and computes the ACF for the inside region of the magnetization profile shots. It then fits the ACF means to a Gaussian correlation function and plots the results.
 
@@ -212,7 +212,7 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
         - `cat_str`: [omega/size/time/detuning/dE] in string format
         - `cat_data`: data array
         - `omega_data`: omega data array
-        - `n_shots`: number of shots per block to divide the category
+        - `n_blocks`: number of blocks to divide the category
         - `Z`: magnetization profile shots
         - `size`: size array
         - `center`: center array
@@ -221,8 +221,9 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
         - `region`: [inside/outside] in string format
     '''
     CLG = np.arange(window_len+1)
-    omega_vals = np.unique(omega_data)
-    fig_fit, ax_fit = plt.subplots(2, 1, figsize=(10, 8))
+    # omega_vals = np.unique(omega_data)
+    omega_vals = [300, 400, 600, 800]
+    fig_fit, ax_fit = plt.subplots(1, 3, figsize=(12, 5))
     fig_pro, ax_pro = plt.subplots(1, len(omega_vals), figsize=(15, 5))
     k = 0
 
@@ -252,14 +253,15 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
 
         ## GATHER BY CAT
         if cat_str != 'omega':
-            # Define cat blocks with a constant number of n_shots
+            # Define cat blocks with a constant number of n_blocks
             sorted_cat_data = np.sort(cat_data)
-            cat_blocks = [sorted_cat_data[int(i * len(sorted_cat_data) / n_shots)] for i in range(n_shots)]
-            cat_blocks.append(sorted_cat_data[-1] + 1)  # To include the last block
+            cat_blocks = [sorted_cat_data[int(i * len(sorted_cat_data) / n_blocks)] for i in range(n_blocks)]
+            # cat_blocks.append(sorted_cat_data[-1] + 1)  # To include the last block
             # print(cat_blocks)
             cat_block_sizes = np.diff(cat_blocks)
-            cat_block_sizes = np.append(cat_block_sizes, 0)
-            # print(cat_block_sizes)
+            cat_block_sizes = np.append(cat_block_sizes, sorted_cat_data[-1] - cat_blocks[-1])
+            # cat_block_sizes = np.append(cat_block_sizes, 0)
+            # print(len(cat_block_sizes))
         else:
             cat_blocks = np.unique(cat_data)
 
@@ -303,7 +305,7 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
             for i, start_cat in enumerate(cat_blocks):
                 end_cat = start_cat + cat_block_sizes[i]
                 shots_in_block = Z[(cat_data >= start_cat) & (cat_data < end_cat)]
-                # print(len(shots_in_block))
+                # print(i, start_cat, end_cat, len(shots_in_block))
                 if len(shots_in_block) > 0:
                     for i, shot in enumerate(shots_in_block):
                         s = size[(cat_data >= start_cat) & (cat_data < end_cat)][i]
@@ -357,6 +359,7 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
 
         # Compute mean ACF for each cat block
         acf_means = {start_cat: np.mean(acf_values[cat_new == start_cat], axis=0) for start_cat in cat_blocks if start_cat in cat_new}
+        # print(acf_means.keys())
 
         # Fit the ACF means to the Gaussian correlation function
         fit_params = {}
@@ -364,7 +367,7 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
         for start_cat, acf_mean in acf_means.items():
             try:
                 if region == 'inside':
-                    popt, pcorr = curve_fit(corrGauss, CLG, acf_mean, p0=[2, -0.1])
+                    popt, pcorr = curve_fit(corrGauss, CLG[:12], acf_mean[:12], p0=[2, -0.1, 2], bounds=((0, -1, 0), (100, 1, 50)))
                 elif region == 'outside':
                     popt, pcorr = curve_fit(corrExp, CLG, acf_mean, p0=[2, -0.1])
                 fit_params[start_cat] = popt
@@ -378,37 +381,50 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
         dl1_values = [err[0] for err in fit_errors.values()]
         off_values = [params[1] for params in fit_params.values()]
         doff_values = [err[1] for err in fit_errors.values()]
+        if region == 'inside':
+            l2_values = [params[2] for params in fit_params.values()]
+            dl2_values = [err[2] for err in fit_errors.values()]
 
         if cat_str == 'omega':
             ax_fit[0].errorbar(1150/np.array(cats), l1_values, yerr=dl1_values, fmt='o', capsize=2, color='tab:blue')
             ax_fit[1].errorbar(1150/np.array(cats), off_values, yerr=doff_values, fmt='o', capsize=2, color='tab:blue')
-
             ax_fit[0].set_xlabel('$kn/\Omega$')
             ax_fit[1].set_xlabel('$kn/\Omega$')
+
+            if region == 'inside':
+                ax_fit[2].errorbar(1150/np.array(cats), l2_values, yerr=dl2_values, fmt='o', capsize=2, color='tab:blue')
+                ax_fit[2].set_xlabel('$kn/\Omega$')
         else:
             # Create bins from start_cat to end_cat for each block
-            bins = []
-            for i in range(len(cats) - 1):
-                bins.append((cats[i], cats[i + 1]))
-            bins.append((cats[-1], cats[-1] + 1))  # Last bin
-
-            # Plot histogram
-            bin_centers = [(b[0] + b[1]) / 2 for b in bins]
-            bin_semiwidths = [(b[1] - b[0])/2 for b in bins]
-
-            ax_fit[0].errorbar(bin_centers, l1_values, xerr=bin_semiwidths, yerr=dl1_values, fmt='o', capsize=2, label=f'$\Omega = {om}$ Hz')
-            ax_fit[1].errorbar(bin_centers, off_values, xerr=bin_semiwidths, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega = {om}$ Hz')
+            bin_semiwidths = [cat_block_sizes[i]/2 for i in range(len(cat_block_sizes))]
+            bin_centers = [cat_blocks[i] + bin_semiwidths[i] for i in range(len(cat_blocks))]
+            # print(len(bin_centers), len(bin_semiwidths), len(l1_values))
+# 
+            ax_fit[0].errorbar(bin_centers, l1_values, xerr=bin_semiwidths, yerr=dl1_values, fmt='o', capsize=2, label=f'$\Omega/2\pi = {om}$ Hz')
+            ax_fit[1].errorbar(bin_centers, off_values, xerr=bin_semiwidths, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega/2\pi = {om}$ Hz')
+            if region == 'inside':
+                ax_fit[2].errorbar(bin_centers, l2_values, xerr=bin_semiwidths, fmt='o', capsize=2, label=f'$\Omega/2\pi = {om}$ Hz')
+                ax_fit[2].set_xlabel(f'{cat_str}')
             ax_fit[0].set_xlabel(f'{cat_str}')
             ax_fit[1].set_xlabel(f'{cat_str}')
+
         ax_fit[0].set_title(f'First Fit Parameter ($\ell_1$) vs {cat_str}')
-        ax_fit[0].set_ylabel('$\ell_1$')
+        ax_fit[0].set_ylabel('$\ell_1\ [\mu m]$')
+        # ax_fit[0].set_xscale('log')
         ax_fit[0].legend()
 
         ax_fit[1].set_title(f'Second Fit Parameter (off) vs {cat_str}')
         ax_fit[1].set_ylabel('off')
+        # ax_fit[1].set_xscale('log')
         ax_fit[1].legend()
 
-        ## Plot ACF means and fits, fit not plotted for now
+        if region == 'inside':
+            ax_fit[2].set_title(f'Third Fit Parameter ($\ell_2$) vs {cat_str}')
+            ax_fit[2].set_ylabel('$\ell_2\ [\mu m]$')
+            # ax_fit[2].set_xscale('log')
+            ax_fit[2].legend()
+
+        ## Plot ACF means and fits
         colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
         for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
             ax_pro[k].plot(CLG, acf_mean, color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
@@ -427,6 +443,6 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
 
     fig_fit.tight_layout()
     fig_pro.tight_layout()
-    # fig_pro.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
-    # fig_fit.savefig(f"thesis/figures/chap2/param_{cat_str}_{region}.png", dpi=500)
+    fig_pro.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
+    fig_fit.savefig(f"thesis/figures/chap2/param_{cat_str}_{region}.png", dpi=500)
     plt.show()
