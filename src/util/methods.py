@@ -222,7 +222,9 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
     '''
     CLG = np.arange(window_len+1)
     omega_vals = np.unique(omega_data)
-    fig, ax_fit = plt.subplots(2, 1, figsize=(10, 8))
+    fig_fit, ax_fit = plt.subplots(2, 1, figsize=(10, 8))
+    fig_pro, ax_pro = plt.subplots(1, len(omega_vals), figsize=(15, 5))
+    k = 0
 
     for om in omega_vals:
         # Filter shots with inside length greater than 4*window_len and omega
@@ -407,20 +409,24 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_shots, Z_raw, size_raw, cen
         ax_fit[1].legend()
 
         ## Plot ACF means and fits, fit not plotted for now
-        # colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
-        # for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
-        #     ax_fit[2].plot(CLG, acf_mean, color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
-        #     if start_cat in fit_params:
-        #         if region == 'inside':
-        #             fitted_curve = corrGauss(CLG, *fit_params[start_cat])
-        #         elif region == 'outside':
-        #             fitted_curve = corrExp(CLG, *fit_params[start_cat])
-        #         ax_fit[2].plot(CLG, fitted_curve, linestyle='--', color=color)
-        # ax_fit[2].set_title(f'Mean ACF and fits by {cat_str} block')
-        # ax_fit[2].set_xlabel('$\Delta x$')
-        # ax_fit[2].set_ylabel('ACF')
-        # ax_fit[2].legend(fontsize='small')
-        # ax_fit[2].set_xticks(np.arange(0, 21, 2))
+        colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
+        for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
+            ax_pro[k].plot(CLG, acf_mean, color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
+            if start_cat in fit_params:
+                if region == 'inside':
+                    fitted_curve = corrGauss(CLG, *fit_params[start_cat])
+                elif region == 'outside':
+                    fitted_curve = corrExp(CLG, *fit_params[start_cat])
+                ax_pro[k].plot(CLG, fitted_curve, linestyle='--', color=color)
+        ax_pro[k].set_title(fr'$\Omega_R/2\pi = {om:.0f}$ Hz')
+        ax_pro[k].set_xlabel('$\Delta x\ [\mu m]$')
+        ax_pro[k].set_ylabel('ACF')
+        # ax_pro[k].legend(fontsize='small')
+        ax_pro[k].set_xticks(np.arange(0, 21, 4))
+        k += 1
 
-    plt.tight_layout()
+    fig_fit.tight_layout()
+    fig_pro.tight_layout()
+    # fig_pro.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
+    # fig_fit.savefig(f"thesis/figures/chap2/param_{cat_str}_{region}.png", dpi=500)
     plt.show()

@@ -130,4 +130,32 @@ Let us briefly discuss the behaviours of the computed FFTs and ACFs, considering
     \label{fig:inside_avg}
 \end{figure}
 
+From now on, all shots will be considered, independently from days and sequences. What we shall proceed to do is studying the ACF parameters as functions of the bubble properties, such as the experimental waiting time and the bubble size, and of the experimental external parameters: the coupling $\Omega_R$ and the detuning $\delta$. 
+The routine is the following:
+\begin{enumerate}
+    \item Gather all shots with the same $\Omega_R$ and save their bubble parameters
+    \item Sort the shots based on the bubble property we are interested in
+    \item Group the shots in blocks of a fixed length
+    \item Compute the ACF for each shot in a block and take the average
+    \item Plot the ACF averages for each block and fit them
+\end{enumerate}
+In particular, the ACF profiles can be fitted with a damped cosine of the form
+\begin{equation*}
+    \mathcal{A}_{\rm fit}(x) = (1 - \Delta)\cos(\frac{x}{l_2})\exp[-\left(\frac{x}{l_1}\right)^\alpha] + \Delta\, ,
+\end{equation*}
+with $\alpha = 1.7$ fine-tuned in order to catch the profile in the best way possible.\footnote{One could set $\alpha$ as a fit parameter, but this would result in a worse estimation of the length $l_1$.} An example is presented in Fig.\ \ref{fig:fit_time_inside}, where the shots are grouped by time. The fit parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/fit_time_inside.png}
+    \caption{ACF average profiles of shots grouped by time in 10 blocks and fitted with the damped cosine for each value of $\Omega_R$.}
+    \label{fig:fit_time_inside}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.75\textwidth]{figures/chap2/param_time_inside.png}
+    \caption{Fit parameters $l_1$ and $\Delta$ (off) of shots grouped by time.}
+    \label{fig:param_time_inside}
+\end{figure}
+
 % \subsection{Border alignment}
