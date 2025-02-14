@@ -225,6 +225,9 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
     omega_vals = [300, 400, 600, 800]
     fig_fit, ax_fit = plt.subplots(1, 3, figsize=(12, 5))
     fig_pro, ax_pro = plt.subplots(1, len(omega_vals), figsize=(15, 5))
+    fig_om, ax_om = plt.subplots(1, 1, figsize=(8, 4))
+    colors_om = plt.cm.tab10([0, 1, 2, 3])
+    print(colors_om)
     k = 0
 
     for om in omega_vals:
@@ -364,10 +367,11 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
         # Fit the ACF means to the Gaussian correlation function
         fit_params = {}
         fit_errors = {}
+        tr_idx = 20
         for start_cat, acf_mean in acf_means.items():
             try:
                 if region == 'inside':
-                    popt, pcorr = curve_fit(corrGauss, CLG[:12], acf_mean[:12], p0=[2, -0.1, 2], bounds=((0, -1, 0), (100, 1, 50)))
+                    popt, pcorr = curve_fit(corrGauss, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1, 2], bounds=((0, -1, 0), (20, 1, 20)))
                 elif region == 'outside':
                     popt, pcorr = curve_fit(corrExp, CLG, acf_mean, p0=[2, -0.1])
                 fit_params[start_cat] = popt
@@ -400,49 +404,75 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
             bin_centers = [cat_blocks[i] + bin_semiwidths[i] for i in range(len(cat_blocks))]
             # print(len(bin_centers), len(bin_semiwidths), len(l1_values))
 # 
-            ax_fit[0].errorbar(bin_centers, l1_values, xerr=bin_semiwidths, yerr=dl1_values, fmt='o', capsize=2, label=f'$\Omega/2\pi = {om}$ Hz')
-            ax_fit[1].errorbar(bin_centers, off_values, xerr=bin_semiwidths, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega/2\pi = {om}$ Hz')
+            ax_fit[0].errorbar(bin_centers, l1_values, xerr=bin_semiwidths, yerr=dl1_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
+            ax_fit[1].errorbar(bin_centers, off_values, xerr=bin_semiwidths, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
             if region == 'inside':
-                ax_fit[2].errorbar(bin_centers, l2_values, xerr=bin_semiwidths, fmt='o', capsize=2, label=f'$\Omega/2\pi = {om}$ Hz')
+                ax_fit[2].errorbar(bin_centers, l2_values, xerr=bin_semiwidths, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
                 ax_fit[2].set_xlabel(f'{cat_str}')
             ax_fit[0].set_xlabel(f'{cat_str}')
             ax_fit[1].set_xlabel(f'{cat_str}')
 
+        if cat_str == 'time':
+            xlim = [0.5, 500]
+        elif cat_str == 'size':
+            xlim = [90, 400]
+        elif cat_str == 'slope':
+            xlim = [1e-1, 4e2]
+        elif cat_str == 'omega':
+            xlim = [1, 4] # kn/omega, not omega
         ax_fit[0].set_title(f'First Fit Parameter ($\ell_1$) vs {cat_str}')
         ax_fit[0].set_ylabel('$\ell_1\ [\mu m]$')
-        # ax_fit[0].set_xscale('log')
+        ax_fit[0].set_xscale('log')
+        ax_fit[0].set_xlim(xlim)
         ax_fit[0].legend()
 
         ax_fit[1].set_title(f'Second Fit Parameter (off) vs {cat_str}')
         ax_fit[1].set_ylabel('off')
-        # ax_fit[1].set_xscale('log')
+        ax_fit[1].set_xscale('log')
+        ax_fit[1].set_xlim(xlim)
         ax_fit[1].legend()
 
         if region == 'inside':
             ax_fit[2].set_title(f'Third Fit Parameter ($\ell_2$) vs {cat_str}')
             ax_fit[2].set_ylabel('$\ell_2\ [\mu m]$')
-            # ax_fit[2].set_xscale('log')
+            ax_fit[2].set_xscale('log')
+            ax_fit[2].set_xlim(xlim)
             ax_fit[2].legend()
 
         ## Plot ACF means and fits
-        colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
-        for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
-            ax_pro[k].plot(CLG, acf_mean, color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
-            if start_cat in fit_params:
-                if region == 'inside':
-                    fitted_curve = corrGauss(CLG, *fit_params[start_cat])
-                elif region == 'outside':
-                    fitted_curve = corrExp(CLG, *fit_params[start_cat])
-                ax_pro[k].plot(CLG, fitted_curve, linestyle='--', color=color)
-        ax_pro[k].set_title(fr'$\Omega_R/2\pi = {om:.0f}$ Hz')
-        ax_pro[k].set_xlabel('$\Delta x\ [\mu m]$')
-        ax_pro[k].set_ylabel('ACF')
-        # ax_pro[k].legend(fontsize='small')
-        ax_pro[k].set_xticks(np.arange(0, 21, 4))
+        if cat_str != 'omega':
+            colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
+            for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
+                ax_pro[k].plot(CLG, acf_mean, color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
+                if start_cat in fit_params:
+                    if region == 'inside':
+                        fitted_curve = corrGauss(CLG, *fit_params[start_cat])
+                    elif region == 'outside':
+                        fitted_curve = corrExp(CLG, *fit_params[start_cat])
+                    ax_pro[k].plot(CLG, fitted_curve, linestyle='--', color=color)
+            ax_pro[k].set_title(fr'$\Omega_R/2\pi = {om:.0f}$ Hz')
+            ax_pro[k].set_xlabel('$\Delta x\ [\mu m]$')
+            ax_pro[k].set_ylabel('ACF')
+            # ax_pro[k].legend(fontsize='small')
+            ax_pro[k].set_xticks(np.arange(0, 21, 4))
+        else:
+            color = colors_om[k]
+            ax_om.plot(CLG, acf_mean, color=color, label=fr'$\Omega_R/2\pi = {om:.0f}$ Hz')
+            if region == 'inside':
+                fitted_curve = corrGauss(CLG, *fit_params[start_cat])
+            elif region == 'outside':
+                fitted_curve = corrExp(CLG, *fit_params[start_cat])
+            ax_om.plot(CLG, fitted_curve, linestyle='--', color=color)
+            ax_om.set_xlabel('$\Delta x\ [\mu m]$')
+            ax_om.set_ylabel('ACF')
+            ax_om.set_xticks(np.arange(0, 21, 4))
+            ax_om.legend()
         k += 1
 
     fig_fit.tight_layout()
     fig_pro.tight_layout()
-    fig_pro.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
-    fig_fit.savefig(f"thesis/figures/chap2/param_{cat_str}_{region}.png", dpi=500)
+    fig_om.tight_layout()
+    # fig_pro.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
+    # fig_fit.savefig(f"thesis/figures/chap2/param_{cat_str}_{region}.png", dpi=500)
+    # fig_om.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
     plt.show()

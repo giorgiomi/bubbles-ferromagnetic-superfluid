@@ -143,19 +143,37 @@ In particular, the ACF profiles can be fitted with a damped cosine of the form
 \begin{equation*}
     \mathcal{A}_{\rm fit}(x) = (1 - \Delta)\cos(\frac{x}{\ell_2})\exp[-\left(\frac{x}{\ell_1}\right)^\alpha] + \Delta\, ,
 \end{equation*}
-with $\alpha = 1.7$ fine-tuned in order to catch the profile in the best way possible.\footnote{One could set $\alpha$ as a fit parameter, but this would result in a worse estimation of the length $\ell_1$.} An example is presented in Fig.\ \ref{fig:fit_time_inside}, where the shots are grouped by time. The fit parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside}.
-
-\begin{figure}
+with $\alpha = 1.7$ fine-tuned in order to catch the profile in the best way possible.\footnote{One could set $\alpha$ as a fit parameter, but this would result in a worse estimation of the length $\ell_1$.} An example is presented in Fig.\ \ref{fig:fit_time_inside}, where the shots are grouped by time. The fit parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside}, \ref{fig:param_size_inside} and \ref{fig:param_slope_inside}.
+\begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_time_inside.png}
-    \caption{ACF average profiles of shots grouped by time in 10 blocks and fitted with the damped cosine for each value of $\Omega_R$.}
+    \caption{ACF average profiles of shots grouped by time in 10 blocks (solid lines) and fitted with the damped cosine (dotted lines) for each value of $\Omega_R$.}
     \label{fig:fit_time_inside}
 \end{figure}
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_time_inside.png}
     \caption{Fit parameters $\ell_1$, $\Delta$ (off) and $\ell_2$ of shots grouped by time.}
     \label{fig:param_time_inside}
 \end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/param_size_inside.png}
+    \caption{Fit parameters $\ell_1$, $\Delta$ (off) and $\ell_2$ of shots grouped by size.}
+    \label{fig:param_size_inside}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/param_slope_inside.png}
+    \caption{Fit parameters $\ell_1$, $\Delta$ (off) and $\ell_2$ of shots grouped by slope.}
+    \label{fig:param_slope_inside}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/fit_omega_inside.png}
+    \caption{ACF average profiles of shots grouped by $\Omega_R$ (solid lines) and fitted with the damped cosine (dotted lines).}
+    \label{fig:fit_omega_inside}
+\end{figure}
+The time dependence seems to be the most noticeable. From Fig.\ \ref{fig:param_time_inside}, the first parameter $\ell_1$ is decreasing with time, while the second parameter $\Delta$ is increasing. This behaviour could mean that the magnetization in the bubble loses its coherence with time.
 
 % \subsection{Border alignment}
