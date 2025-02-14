@@ -227,7 +227,7 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
     fig_pro, ax_pro = plt.subplots(1, len(omega_vals), figsize=(15, 5))
     fig_om, ax_om = plt.subplots(1, 1, figsize=(8, 4))
     colors_om = plt.cm.tab10([0, 1, 2, 3])
-    print(colors_om)
+    # print(colors_om)
     k = 0
 
     for om in omega_vals:
@@ -252,7 +252,7 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
         Z = Z_raw[valid_indices]
         size = size_raw[valid_indices]
         center = center_raw[valid_indices]
-        # print(om, len(cat_data))
+        print(om, len(cat_data_raw[omega_data == om]), len(cat_data))
 
         ## GATHER BY CAT
         if cat_str != 'omega':
@@ -367,13 +367,13 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
         # Fit the ACF means to the Gaussian correlation function
         fit_params = {}
         fit_errors = {}
-        tr_idx = 20
+        tr_idx = 21 # 21 means all data
         for start_cat, acf_mean in acf_means.items():
             try:
                 if region == 'inside':
                     popt, pcorr = curve_fit(corrGauss, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1, 2], bounds=((0, -1, 0), (20, 1, 20)))
                 elif region == 'outside':
-                    popt, pcorr = curve_fit(corrExp, CLG, acf_mean, p0=[2, -0.1])
+                    popt, pcorr = curve_fit(corrExp, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1])
                 fit_params[start_cat] = popt
                 fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
             except RuntimeError:
@@ -426,8 +426,8 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
         ax_fit[0].set_xlim(xlim)
         ax_fit[0].legend()
 
-        ax_fit[1].set_title(f'Second Fit Parameter (off) vs {cat_str}')
-        ax_fit[1].set_ylabel('off')
+        ax_fit[1].set_title(f'Second Fit Parameter ($\Delta$) vs {cat_str}')
+        ax_fit[1].set_ylabel('$\Delta$')
         ax_fit[1].set_xscale('log')
         ax_fit[1].set_xlim(xlim)
         ax_fit[1].legend()
