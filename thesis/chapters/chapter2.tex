@@ -1,4 +1,4 @@
-In this chapter we will talk about the experimental platform in which the experiment was carried out and we will then proceed with the FFT and ACF data analysis. The code for the analysis was written in the \textbf{\texttt{Python}} language.
+In this chapter we will talk about the experimental platform in which the experiment was carried out (Ref. \cite{zenesini2024false}) and we will then proceed with the FFT and ACF data analysis. The code for the analysis was written in the \textbf{\texttt{Python}} language.
 
 \section{Experimental platform}
 The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom 
@@ -87,12 +87,14 @@ An example sequence is shown in Fig.\ \ref{fig:sorting} with a colormap displayi
 Since we are interested in the dynamics of the bubble, energy propagation is an important feature to focus on. In order to study it, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signal. 
 
 \subsection{FFT and ACF definition}
+\paragraph{FFT}
 We will first approach the problem of deriving such a profile by using the Fast Fourier Transform (FFT), an algorithm that implements the Discrete Fourier Transform (DFT) in an efficient manner.\footnote{The most common implementation is the Cooley-Tukey algorithm, used in the Scipy Python library for FFT.} Given the input as a sequence of $N$ discrete values $Z_0,\dots,Z_{N-1}$ sampled with spacing $\Delta x$, by definition the DFT is a series of $N$ discrete values $\mathcal{F}_0,\dots,\mathcal{F}_{N-1}$ spaced by $\Delta k = 1/(N\Delta x)$ and convoluted with a complex phase such that
 \begin{equation*}
     \mathcal{F}_k = \sum_{n=0}^{N-1} Z_n e^{-2\pi i \frac{k}{N}n}\, .
 \end{equation*}
 When the input $Z_n$ is real-valued, the transform is too, and it is also symmetric between positive and negative frequencies. The physical world contains only positive frequencies, so we will neglect the negative part of the transform. This is achievable by using the Scipy function \texttt{\textbf{rfft}} instead of \texttt{\textbf{fft}}.
 
+\paragraph{ACF}
 Another tool that can be used to study the periodic properties of a signal is the autocorrelation function (ACF). Similarly to the DFT, the ACF is also a particular type of convolution, where the signal is convoluted with itself. The caveat here is that since our signal is of finite length, the whole convolution would show boundary effects, as shown in Fig.\ \ref{fig:ACF_bound}.
 \begin{figure}[h!]
     \centering
@@ -164,11 +166,11 @@ The ACF outside profiles can be fitted with a damped cosine of the form
 \end{equation*}
 with $\alpha = 1.7$ fine-tuned in order to catch the profile in the best way possible. One could theoretically set $\alpha$ as a fit parameter, but this would result in a worse estimation of the length $\ell_1$, with the fit that adapts to the data by changing only $\alpha$. On the other hand, for the outside region we use an exponential
 \begin{equation*}
-    \mathcal{A}_{\rm fit}(x) = (1-\Delta)\exp[-\frac{x}{l_1}] + \Delta\, .
+    \mathcal{A}_{\rm fit}(x) = (1-\Delta)\exp[-\frac{x}{\ell_1}] + \Delta\, .
 \end{equation*}
 
 \paragraph{Inside}
-An example of fit on the inside shots is presented in Fig.\ \ref{fig:fit_time_inside}, where the shots are grouped by time. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside}, \ref{fig:param_size_inside} and \ref{fig:param_slope_inside}.
+An example of fit on the inside shots is presented in Fig.\ \ref{fig:fit_time_inside}, where the shots are grouped by time. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside}, \ref{fig:param_size_inside} and \ref{fig:param_slope_inside}. A global fit on all shots with the same radiation coupling is in Fig.\ \ref{fig:fit_omega_inside}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_time_inside.png}
@@ -178,29 +180,55 @@ An example of fit on the inside shots is presented in Fig.\ \ref{fig:fit_time_in
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_time_inside.png}
-    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of shots grouped by time.}
+    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots grouped by time (in log scale).}
     \label{fig:param_time_inside}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_size_inside.png}
-    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of shots grouped by size.}
+    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots grouped by size (in log scale).}
     \label{fig:param_size_inside}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_slope_inside.png}
-    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of shots grouped by slope.}
+    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots grouped by slope (in log scale).}
     \label{fig:param_slope_inside}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_omega_inside.png}
-    \caption{ACF average profiles of shots grouped by $\Omega_R$ (solid lines) and fitted with the damped cosine (dotted lines).}
+    \caption{ACF average profiles of inside shots grouped by $\Omega_R$ (solid lines) and fitted with the damped cosine (dotted lines).}
     \label{fig:fit_omega_inside}
 \end{figure}
 The time dependence seems to be the most noticeable. From Fig.\ \ref{fig:param_time_inside}, the first parameter $\ell_1$ is decreasing with time, while the second parameter $\Delta$ is increasing and approaching 1. This behaviour could mean that the magnetization inside the bubble loses (?) its spatial information with time.
 
 \paragraph{Outside}
+As for the inside ones, an example of fit on the outside shots is presented in Fig.\ \ref{fig:fit_time_outside}, where the shots are grouped by time. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_outside}, \ref{fig:param_size_outside}. A global fit on all shots with the same radiation coupling is in Fig.\ \ref{fig:fit_omega_outside}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/fit_time_outside.png}
+    \caption{ACF average profiles of outside shots grouped by time in 10 blocks (solid lines) and fitted with the exponential (dotted lines) for each value of $\Omega_R$.}
+    \label{fig:fit_time_outside}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/param_time_outside.png}
+    \caption{Fit parameters $\ell_1$ and $\Delta$ and of outside shots grouped by time (in log scale).}
+    \label{fig:param_time_outside}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/param_size_outside.png}
+    \caption{Fit parameters $\ell_1$ and $\Delta$ of outside shots grouped by size.}
+    \label{fig:param_size_outside}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/fit_omega_outside.png}
+    \caption{ACF average profiles of outside shots grouped by $\Omega_R$ (solid lines) and fitted with the exponential (dotted lines).}
+    \label{fig:fit_omega_outside}
+\end{figure}
+In contrast to the inside bubble region, what emerges outside the bubble is that the characteristic length of the autocorrelation $\ell_1$ is increasing with time and the offset is decreasing (Fig.\ \ref{fig:param_time_outside}), which is the opposite behaviour.
 
 % \subsection{Border alignment}

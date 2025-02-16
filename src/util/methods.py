@@ -373,7 +373,7 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
                 if region == 'inside':
                     popt, pcorr = curve_fit(corrGauss, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1, 2], bounds=((0, -1, 0), (20, 1, 20)))
                 elif region == 'outside':
-                    popt, pcorr = curve_fit(corrExp, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1])
+                    popt, pcorr = curve_fit(corrExp, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1], bounds=((0, -1), (20, 1)))
                 fit_params[start_cat] = popt
                 fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
             except RuntimeError:
@@ -415,20 +415,21 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
         if cat_str == 'time':
             xlim = [0.5, 500]
         elif cat_str == 'size':
-            xlim = [90, 400]
+            xlim = [25, 280]
         elif cat_str == 'slope':
             xlim = [1e-1, 4e2]
         elif cat_str == 'omega':
             xlim = [1, 4] # kn/omega, not omega
         ax_fit[0].set_title(f'First Fit Parameter ($\ell_1$) vs {cat_str}')
         ax_fit[0].set_ylabel('$\ell_1\ [\mu m]$')
-        ax_fit[0].set_xscale('log')
+        # ax_fit[0].set_xscale('log')
         ax_fit[0].set_xlim(xlim)
         ax_fit[0].legend()
 
         ax_fit[1].set_title(f'Second Fit Parameter ($\Delta$) vs {cat_str}')
         ax_fit[1].set_ylabel('$\Delta$')
-        ax_fit[1].set_xscale('log')
+        # ax_fit[1].set_xscale('log')
+        # ax_fit[1].set_yscale('log')
         ax_fit[1].set_xlim(xlim)
         ax_fit[1].legend()
 
@@ -465,6 +466,7 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
             ax_om.plot(CLG, fitted_curve, linestyle='--', color=color)
             ax_om.set_xlabel('$\Delta x\ [\mu m]$')
             ax_om.set_ylabel('ACF')
+            ax_om.set_title(f"ACF of {region} shots vs $\Omega_R$")
             ax_om.set_xticks(np.arange(0, 21, 4))
             ax_om.legend()
         k += 1
@@ -474,5 +476,5 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
     fig_om.tight_layout()
     # fig_pro.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
     # fig_fit.savefig(f"thesis/figures/chap2/param_{cat_str}_{region}.png", dpi=500)
-    # fig_om.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
+    fig_om.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
     plt.show()
