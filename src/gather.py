@@ -20,6 +20,8 @@ Zs = []
 sizes = []
 centers = []
 slopes = []
+exp_lefts = []
+exp_rights = []
 times = []
 omegas = []
 dets = []
@@ -32,6 +34,8 @@ for day in sel_days:
         slope = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/slope.csv", header=None).to_numpy().flatten()
         time = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/time.csv", header=None).to_numpy().flatten()
         Z = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/magnetization.csv", header=None).to_numpy()
+        exp_left = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/exp_left.csv", header=None).to_numpy().flatten()
+        exp_right = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/exp_right.csv", header=None).to_numpy().flatten()
 
         for i, shot in enumerate(Z):
             if size[i] > 0 and size[i] < 2*w and slope[i] > 0:
@@ -41,6 +45,8 @@ for day in sel_days:
                 sizes.append(size[i])
                 times.append(time[i])
                 omegas.append(Omega[day][seq])
+                exp_lefts.append(exp_left[i])
+                exp_rights.append(exp_right[i])
                 if selected_flag:
                     dets.append(Detuning[day][seq])
 
@@ -48,6 +54,8 @@ print("Saving gathered data on data/gathered/\n", end="")
 np.savetxt(f"data/gathered/center.csv", centers, delimiter=',')
 np.savetxt(f"data/gathered/size.csv", sizes, delimiter=',')
 np.savetxt(f"data/gathered/slope.csv", slopes, delimiter=',')
+np.savetxt(f"data/gathered/exp_left.csv", exp_lefts, delimiter=',')
+np.savetxt(f"data/gathered/exp_right.csv", exp_rights, delimiter=',')
 np.savetxt(f"data/gathered/time.csv", times, delimiter=',')
 np.savetxt(f"data/gathered/omega.csv", omegas, delimiter=',')
 np.savetxt(f"data/gathered/Z.csv", Zs, delimiter=',')

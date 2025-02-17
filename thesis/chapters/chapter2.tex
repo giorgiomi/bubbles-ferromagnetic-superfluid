@@ -1,4 +1,4 @@
-In this chapter we will talk about the experimental platform in which the experiment was carried out (Ref. \cite{zenesini2024false}) and we will then proceed with the FFT and ACF data analysis. The code for the analysis was written in the \textbf{\texttt{Python}} language.
+In this chapter we will talk about the experimental platform in which the experiment was carried out (Ref. \cite{zenesini2024false}) and we will then proceed with the FFT and ACF data analysis. The code for the analysis was written in the \textbf{\texttt{Python}} programming language.
 
 \section{Experimental platform}
 The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom 
@@ -46,7 +46,7 @@ where $c_1$ and $c_2$ are the centers' positions of the arctangent "shoulders", 
     \begin{minipage}[t]{0.47 \textwidth}
         \centering
         \includegraphics[width = \linewidth]{figures/chap2/gaussian_fit.png}
-        \caption{[TO CHANGE] Example of gaussian fit results performed on a shot.}
+        \caption{Example of gaussian fit results performed on a shot where the double arctangent fit procedure fails.}
         \label{fig:gaussian-fit}
     \end{minipage}
 \end{figure}
@@ -62,14 +62,16 @@ In some cases, especially when the bubble is narrow, the fitting procedure to op
 with $x_0 = c$ being the bubble center and $\sigma_B = \num{2.335}\ \sigma$ its width.
 
 While this routine is very accurate for determining the shoulder profile and hence the bubble width, the transition between the shoulders and the inside region (the bubble itself) shows no continuity in many shots. In order to catch the entire profile and especially the boundaries of the inside region, we can fit the data with a continous piecewise function made of two exponential tails and a constant value in the middle, such as
-\begin{equation*}
+\begin{equation}
     Z_{\rm fit}(x) = 
     \begin{cases}
         A \exp(\frac{x-x_1}{w_1}) + \Delta \qquad\quad &\text{for } x < x_1\\
         A + \Delta \qquad\qquad\qquad\qquad &\text{for } x_1 < x < x_2\\
         A \exp(-\frac{x-x_2}{w_2}) + \Delta \qquad &\text{for } x > x_2
-    \end{cases}
-\end{equation*}
+    \end{cases}\, ,
+    \label{eq:fit_exp}
+\end{equation}
+yielding also the characteristic widths of the tails $w_1$ and $w_2$.
 
 An example of fitting with the arctangent and stepwise exponential functions is provided in Fig.\ \ref{fig:atan-fit}, while a gaussian fit is shown in Fig.\ \ref{fig:gaussian-fit}.
 
@@ -78,10 +80,18 @@ Once the width is retrieved, it is useful to order the shots in a sequence by th
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/chap2/shot_sorting.png}
-    \caption{Shot sorting based on bubble width and alignment based on bubble center. Both parameters are estimated from the previous fitting procedure.}
+    \caption{Example of shot sorting based on bubble width and alignment based on bubble center for one sequence. Both parameters are estimated from the previous fitting procedure.}
     \label{fig:sorting}
 \end{figure}
 An example sequence is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
+
+In order to look at the distribution of the bubble parameters versus the experimental time, it is useful to group all shots and plot the bubble center, width and tail width, the latter being the left-right average $(w_1+w_2)/2$ from Eq.\ \eqref{eq:fit_exp}. That is shown in Fig.\ \ref{fig:b_param}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/b_param_time.png}
+    \caption{Bubble parameters distribution versus time.}
+    \label{fig:b_param}
+\end{figure}
 
 \section{Spectral analysis}
 Since we are interested in the dynamics of the bubble, energy propagation is an important feature to focus on. In order to study it, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signal. 
@@ -99,13 +109,13 @@ Another tool that can be used to study the periodic properties of a signal is th
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/chap2/ACF_bound.jpeg}
-    \caption{[TO CHANGE] Schematic representiation of boundary effects when computing the autocorrelation function on the whole signal. Since the signal is finite, the contributions on the borders are set to zero.}
+    \caption{[TO IMPROVE] Schematic representiation of boundary effects when computing the autocorrelation function on the whole signal. Since the signal is finite, the contributions on the borders are set to zero.}
     \label{fig:ACF_bound}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/chap2/ACF_window.jpeg}
-    \caption{[TO CHANGE] Schematic representiation of windowed autocorrelation. In contrast to a full-width ACF, here no boundary effects arise.}
+    \caption{[TO IMPROVE] Schematic representiation of windowed autocorrelation. In contrast to a full-width ACF, here no boundary effects arise.}
     \label{fig:ACF_window}
 \end{figure}
 It is then worth limiting the signal in a central window of length $2W$ and computing the ACF on the windowed signal. Taking as input the latter as $Z_0,\dots,Z_{2W-1}$, the output will be a series of values $\mathcal{A}_0,\dots,\mathcal{A}_{W}$ living in the spatial domain\footnote{While the FFT domain is made of frequencies, the ACF domain is instead made of lag values, corresponding to the spatial shifts of the signal.} such that:
@@ -150,14 +160,14 @@ The number of analyzed inside and outside shots is shown in Tab.\ \ref{tab:shots
 \begin{table}
     \centering
     \begin{tabular}{c|c|c|c}
-        $\Omega_R/2\pi$ [\unit{\hertz}] & all shots & inside shots & outside shots \\
+        $\Omega_R/2\pi$ [\unit{\hertz}] & \# all shots & \# inside shots & \# outside shots \\
         \hline
         300 & 1520 & 1459 & 972\\   
         400 & 660 & 600 & 472\\
         600 & 708 & 558 & 707\\
         800 & 156 & 120 & 154\\     
     \end{tabular}
-    \caption{Number of shots selected (where the inside or outside length is sufficient for the ACF computation). It is noticeable that the inside data for $\Omega_R/2\pi = 300$ \unit{\hertz} is way bigger than the rest.}
+    \caption{Number of shots selected (where the inside or outside length is sufficient for the ACF computation). It is noticeable that the inside data for 300 \unit{\hertz} is way bigger than the rest.}
     \label{tab:shots}
 \end{table}
 The ACF outside profiles can be fitted with a damped cosine of the form
@@ -174,7 +184,7 @@ An example of fit on the inside shots is presented in Fig.\ \ref{fig:fit_time_in
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_time_inside.png}
-    \caption{ACF average profiles of inside shots grouped by time in 10 blocks (solid lines) and fitted with the damped cosine (dotted lines) for each value of $\Omega_R$.}
+    \caption{ACF average profiles of inside shots grouped by time in 10 blocks (solid lines) and fitted with the damped cosine (dotted lines) for each value of $\Omega_R$. Time increases from darker to lighter colors.}
     \label{fig:fit_time_inside}
 \end{figure}
 \begin{figure}[h!]
@@ -208,7 +218,7 @@ As for the inside ones, an example of fit on the outside shots is presented in F
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_time_outside.png}
-    \caption{ACF average profiles of outside shots grouped by time in 10 blocks (solid lines) and fitted with the exponential (dotted lines) for each value of $\Omega_R$.}
+    \caption{ACF average profiles of outside shots grouped by time in 10 blocks (solid lines) and fitted with the exponential (dotted lines) for each value of $\Omega_R$. Time increases from darker to lighter colors.}
     \label{fig:fit_time_outside}
 \end{figure}
 \begin{figure}[h!]

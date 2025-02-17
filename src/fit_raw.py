@@ -163,13 +163,13 @@ for fs in sel_days: # all seqs
                         print(f"{best_BS_left[1]:.2f} +/- {best_BS_left[3]:.2f}")
                         # Plot bubble and bubbleshoulder fit
                         plt.plot(xx, M[i], label="Data")
-                        plt.plot(xx, bubble(xx, *best_2arctan), label="Global fit")
+                        plt.plot(xx, bubble(xx, *best_2arctan), label="Double arctan fit")
                         plt.plot(xx, bubblePieces(xx, *best_pieces), label="Piecewise fit")
                         plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
                         plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
                         plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
-                        plt.text(0.7, 0.1, f'Chi-squared: {chi_squared:.2f}', transform=plt.gca().transAxes,
-                                 fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white'))
+                        # plt.text(0.7, 0.1, f'Chi-squared: {chi_squared:.2f}', transform=plt.gca().transAxes,
+                        #          fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white'))
                         plt.xlabel('$x\ [\mu m]$')
                         plt.ylabel('$Z(x)$')
                         plt.legend()
@@ -217,12 +217,12 @@ for fs in sel_days: # all seqs
                     #     plt.plot(xx, M[i], label="Data")
                     #     plt.plot(xx, gauss(xx, *best_GS), label="Gaussian fit")
                     #     plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
-                    #     plt.text(0.7, 0.1, f'Chi-squared: {chi_squared:.2f}', transform=plt.gca().transAxes,
-                    #              fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white'))
+                    #     # plt.text(0.7, 0.1, f'Chi-squared: {chi_squared:.2f}', transform=plt.gca().transAxes,
+                    #     #          fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white'))
                     #     plt.xlabel('$x\ [\mu m]$')
                     #     plt.ylabel('$Z(x)$')
                     #     plt.legend()
-                    #     # plt.savefig('thesis/figures/chap2/gaussian_fit.png', dpi=500)
+                    #     plt.savefig('thesis/figures/chap2/gaussian_fit.png', dpi=500)
                     #     plt.show()
 
                     
