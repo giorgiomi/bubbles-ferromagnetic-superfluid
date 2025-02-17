@@ -12,7 +12,7 @@ def gauss(x, amp, center, width, offset):
 def bubbleshoulder(x, amp, cen1, offset, wid1):
     return - amp * (np.arctan((x - cen1) / wid1)) / (np.pi / 2) + offset
 
-def bubblePieces(x, A, B, C, x0, x1, off):
+def bubblePieces(x, A, B, C, x0, x1, off, D, E):
     x = np.asarray(x)
     result = np.empty_like(x, dtype=float)
     

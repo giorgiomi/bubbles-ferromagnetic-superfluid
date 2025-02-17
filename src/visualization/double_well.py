@@ -58,31 +58,35 @@ axs[1].set_ylabel(r'$|V_{MF}(Z_2) - V_{MF}(Z_1)|$')
 axs[1].set_title('Difference in Minima as a Function of $\omega$')
 
 plt.tight_layout()
-plt.show()
-
-par = [300, 200, -1, 1150]
-print(np.sqrt(300*(1150-300)))
-min1, min2, _ = find_minima(par)
-plt.figure()
-Z = np.linspace(-1, 1, 1000)
-plt.plot(Z, V_MF(Z, par) - min2[1], color='tab:gray')
-
-param_text = fr"$\Omega$={par[0]}, $\delta$={par[1]}, k={par[2]}, n={par[3]}"
-plt.annotate(param_text, xy=(0.55, 0.95), xycoords='axes fraction', fontsize=12,
-             horizontalalignment='left', verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white"))
-
-plt.plot(min1[0], min1[1] - min2[1], 'o', color='tab:blue', markersize=8)  # Plot first minimum as a blue point
-plt.plot(min2[0], 0, 'o', color='tab:red', markersize=8)  # Plot second minimum as a red point
-
-# Plot vertical line indicating the difference in minima
-plt.vlines(min1[0] + 0.1, min1[1] - min2[1], 0, colors='tab:orange')
-plt.hlines(0, min1[0], min1[0] + 0.2, colors='tab:orange')
-plt.hlines(min1[1] - min2[1], min1[0], min1[0] + 0.2, colors='tab:orange')
-plt.annotate(f"$\Delta = ${(min1[1] - min2[1]):.2f}", xy=(0.2, 0.45), xycoords='axes fraction', fontsize=12,
-             horizontalalignment='left', verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white"))
+# plt.show()
 
 
-plt.xlabel("Z")
-plt.ylabel("$V_{MF}$")
-plt.title("Mean-field energy")
+fig, axs = plt.subplots(3, 4, figsize=(15, 8))
+axs = axs.flatten()
+
+for i, om in enumerate(range(200, 1400, 100)):
+    for det in range(0, 700, 100):
+        kn = 1150
+        par = [om, det, -1, kn]
+        min1, min2, _ = find_minima(par)
+        
+        Z = np.linspace(-1, 1, 1000)
+        axs[i].plot(Z, V_MF(Z, par) - min2[1], color='tab:gray')
+
+        param_text = f"$\Omega_R/2\pi$ = {par[0]}\n$\delta$ = {par[1]}\n|k|n = {np.abs(par[2])*par[3]}"
+        axs[i].annotate(param_text, xy=(0.75, 0.95), xycoords='axes fraction', fontsize=12,
+                        horizontalalignment='left', verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white"))
+
+        # axs[i].plot(min1[0], min1[1] - min2[1], 'o', color='tab:blue', markersize=8)  # Plot first minimum as a blue point
+        # axs[i].plot(min2[0], 0, 'o', color='tab:red', markersize=8)  # Plot second minimum as a red point
+
+        # Annotate the minima points
+        # axs[i].annotate(r'$\mathbf{FV}$', xy=(min1[0], min1[1] - min2[1]), xytext=(min1[0] - 0.05, min1[1] - min2[1] + 100), fontsize=12, color='tab:blue')
+        # axs[i].annotate(r'$\mathbf{TV}$', xy=(min2[0], 0), xytext=(min2[0] - 0.05, 100), fontsize=12, color='tab:red')
+
+    axs[i].set_xlabel("Z")
+    axs[i].set_ylabel("$V_{MF}$")
+    axs[i].set_title(f"Mean-field energy landscape\n$\Omega_R/2\pi$ = {om}")
+
+plt.tight_layout()
 plt.show()

@@ -1,4 +1,4 @@
-In this chapter we will talk about the experimental platform in which the experiment was carried out (Ref. \cite{zenesini2024false}) and we will then proceed with the FFT and ACF data analysis. The code for the analysis was written in the \textbf{\texttt{Python}} programming language.
+In this chapter we describe the experimental platform in which the measurements were carried out (Ref. \cite{zenesini2024false}) and we will then proceed with the FFT and ACF data analysis. The code for the analysis was written in the \textbf{\texttt{Python}} programming language.
 
 \section{Experimental platform}
 The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom 
@@ -28,40 +28,47 @@ Our focus here is to characterize the bubble properties by utilizing the magneti
 In order to localize the bubble in a shot, the most interesting parameters to retrieve are the bubble center $x_0$ and its width $\sigma_B$. However, not all shots contain a bubble, namely the ones taken when the bubble was not formed yet. We can easily classify the two types of shots by computing the magnetization average in the central region and using a threshold value, set to $Z_{\rm thr} = -0.2$. 
 % The no-bubble shots will be useful later, when dealing with the noise frequency spectrum.
 
-To find the bubble parameters, the magnetization data is fitted with a double-arctangent function
+To parametrize the bubble, the magnetization data is fitted with a double-arctangent function
 \begin{equation}
     Z_{\rm fit}(x) = -A \left[\frac{2}{\pi}\arctan(\frac{x-c_1}{w_1}) - \frac{2}{\pi}\arctan(\frac{x-c_2}{w_2})\right] + \Delta\, ,
     \label{eq:double-atan}
 \end{equation}
 where $c_1$ and $c_2$ are the centers' positions of the arctangent "shoulders", and $w_1$ and $w_2$ are their characteristic widths. 
+% \begin{figure}[h!]
+%     \centering
+%     \begin{minipage}[t]{0.47 \textwidth}
+%         \centering
+%         \includegraphics[width = \linewidth]{figures/chap2/arctan_fit.png}
+%         \caption{Example of double arctangent and piecewise exponential fit results performed on a shot.}
+%         \label{fig:atan-fit}
+%     \end{minipage}
+%     \hspace{0.02\textwidth}
+%     \begin{minipage}[t]{0.47 \textwidth}
+%         \centering
+%         \includegraphics[width = \linewidth]{figures/chap2/gaussian_fit.png}
+%         \caption{Example of gaussian fit results performed on a shot where the double arctangent fit procedure fails.}
+%         \label{fig:gaussian-fit}
+%     \end{minipage}
+% \end{figure}
 \begin{figure}[h!]
     \centering
-    \begin{minipage}[t]{0.47 \textwidth}
-        \centering
-        \includegraphics[width = \linewidth]{figures/chap2/arctan_fit.png}
-        \caption{Example of double arctangent and piecewise exponential fit results performed on a shot.}
-        \label{fig:atan-fit}
-    \end{minipage}
-    \hspace{0.02\textwidth}
-    \begin{minipage}[t]{0.47 \textwidth}
-        \centering
-        \includegraphics[width = \linewidth]{figures/chap2/gaussian_fit.png}
-        \caption{Example of gaussian fit results performed on a shot where the double arctangent fit procedure fails.}
-        \label{fig:gaussian-fit}
-    \end{minipage}
+    \includegraphics[width = 0.75\textwidth]{figures/chap2/arctan_fit.png}
+    \caption{Example of fit results performed on a shot. First, the data is fitted with the double-arctangent function of Eq.\ \eqref{eq:double-atan}, then each shoulder is fitted with a single-arctangent, namely the one of Eq.\ \eqref{eq:atan}. This ensures a better estimation of the shoulder centers and thus of the bubble width. Eventually, a last fit is done with the piecewise function of Eq.\ \eqref{eq:fit_exp}, in order to capture the inside/outside discontinuity and the exponential tails.}
+    \label{fig:atan-fit}
 \end{figure}
 Then, for a better result, a further fit is performed on each shoulder with a single-arctangent function
-\begin{equation*}
+\begin{equation}
     Z_{\rm fit}(x) = -A \frac{2}{\pi}\arctan(\frac{x-c}{w}) + \Delta\, ,
-\end{equation*}
+    \label{eq:atan}
+\end{equation}
 yielding the shoulder center position $c$. Eventually, we obtain the bubble center position $x_0 = (c_1 + c_2)/2$ and the bubble width $\sigma_B = c_2 - c_1$.
-In some cases, especially when the bubble is narrow, the fitting procedure to optimize the parameters of Eq.\ \eqref{eq:double-atan}'s function fails and we are forced to use a gaussian profile such as
-\begin{equation*}
-    Z_{\rm fit}(x) = - A \exp\left[-\frac{(x-c)^2}{2\sigma^2}\right] + \Delta\, ,
-\end{equation*}
-with $x_0 = c$ being the bubble center and $\sigma_B = \num{2.335}\ \sigma$ its width.
+% In some cases, especially when the bubble is narrow, the fitting procedure to optimize the parameters of Eq.\ \eqref{eq:double-atan}'s function fails and we are forced to use a gaussian profile such as
+% \begin{equation*}
+%     Z_{\rm fit}(x) = - A \exp\left[-\frac{(x-c)^2}{2\sigma^2}\right] + \Delta\, ,
+% \end{equation*}
+% with $x_0 = c$ being the bubble center and $\sigma_B = \num{2.335}\ \sigma$ its width.
 
-While this routine is very accurate for determining the shoulder profile and hence the bubble width, the transition between the shoulders and the inside region (the bubble itself) shows no continuity in many shots. In order to catch the entire profile and especially the boundaries of the inside region, we can fit the data with a continous piecewise function made of two exponential tails and a constant value in the middle, such as
+While this routine is very accurate for determining the shoulder profile and hence the bubble width, the transition between the shoulders and the inside region (the bubble itself) shows no continuity in many shots. In order to capture the entire profile and especially the boundaries of the inside region, we can fit the data with a continous piecewise function made of two exponential tails and a constant value in the middle, such as
 \begin{equation}
     Z_{\rm fit}(x) = 
     \begin{cases}
@@ -73,14 +80,14 @@ While this routine is very accurate for determining the shoulder profile and hen
 \end{equation}
 yielding also the characteristic widths of the tails $w_1$ and $w_2$.
 
-An example of fitting with the arctangent and stepwise exponential functions is provided in Fig.\ \ref{fig:atan-fit}, while a gaussian fit is shown in Fig.\ \ref{fig:gaussian-fit}.
+An example of fitting with the arctangent and stepwise exponential functions is provided in Fig.\ \ref{fig:atan-fit}.
 
 % \subsection{Shot sorting}
 Once the width is retrieved, it is useful to order the shots in a sequence by this parameter. This process lets us display the system evolution, in contrast to the original shot ordering based on the experimental time waited before observing the bubble. Furthermore, we can obtain a nicer picture by aligning the bubbles to their center and removing the no-bubble shots.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/chap2/shot_sorting.png}
-    \caption{Example of shot sorting based on bubble width and alignment based on bubble center for one sequence. Both parameters are estimated from the previous fitting procedure.}
+    \caption{Example of shot sorting based on bubble width and alignment based on bubble center for one sequence. Both parameters are estimated from the previous fitting procedure. The data is colored by mapping positive magnetization to blue and negative magnetization to red.}
     \label{fig:sorting}
 \end{figure}
 An example sequence is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
@@ -94,7 +101,7 @@ In order to look at the distribution of the bubble parameters versus the experim
 \end{figure}
 
 \section{Spectral analysis}
-Since we are interested in the dynamics of the bubble, energy propagation is an important feature to focus on. In order to study it, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signal. 
+Since we are interested in the properties of the bubble, energy propagation is an important feature to focus on. In order to study it, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signal. 
 
 \subsection{FFT and ACF definition}
 \paragraph{FFT}
@@ -130,10 +137,10 @@ Now, what we shall do is computing the FFT and the ACF on the data, taking care 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/chap2/inside_day_0_seq_0.png}
-    \caption{Example of FFT and ACF calculated in a sequence. The values for each shot are shown in the left graphs with colormaps, while the averages on all shots are on the right. Note that before computing the transforms the data was set to zero-mean by subtracting its average.}
+    \caption{Example of FFT and ACF calculated in a sequence, after selecting the shots where $\sigma_B > 4W$. The values for each shot are shown in the left graphs with colormaps, while the averages on all shots are on the right. Note that before computing the transforms the data was set to zero-mean by subtracting its average.}
     \label{fig:inside_00}
 \end{figure}
-We will also compute the transforms on the no-bubble shots. An example of the inside region analysis for a selected sequence is presented in Fig.\ \ref{fig:inside_00}, where the data was first set to zero-mean.
+We will also compute the transforms on the no-bubble shots. An example of the inside region analysis for a selected sequence is presented in Fig.\ \ref{fig:inside_00}, where the data was first set to zero-mean and only the shots where $\sigma_B > 4W$ are selected.
 % One can probably (with a good eye) already see in the colormap plot that two or three vertical bands extend over all shots and appear at the same frequencies. This ensures that the FFT averaging is rightful.
 
 Let us briefly discuss the behaviours of the computed FFTs and ACFs, considering that it is similar for all sequences and the example presented is a good one (see Fig.\ \ref{fig:inside_avg}, showing the profiles averaged over all sequences with the same $\Omega_R$). The FFT shows a peak at a frequency in the order of $k_{\rm FFT} \sim 0.01$ \unit{\per\micro\meter} and of width in the order of $\Delta k_{\rm FFT} \sim 0.1$ \unit{\per\micro\meter}. The ACF instead has a first peak at $\Delta x_{\rm ACF} \sim 10-11$ \unit{\micro\meter}. By comparing these results, one should see a correspondence, namely $k \sim 1/\Delta x$. However, by taking the inverse of the ACF peak values, one gets $k_{\rm ACF} \sim 0.1$ \unit{\per\micro\meter}, a frequency hidden in the FFT plot due to the broad peak. The reason for the peak broadness is probability the data noise, which is difficult to analyze properly. We will thus proceed by relying on the ACF for the remaining analysis.
@@ -141,7 +148,7 @@ Let us briefly discuss the behaviours of the computed FFTs and ACFs, considering
 \begin{figure}[t!]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/chap2/inside_fft_avg.png}
-    \caption{FFT and ACF profiles (computed with zero-mean data) averaged over all sequences with the same radiation coupling $\Omega_R$.}
+    \caption{FFT and ACF profiles (computed with zero-mean data) averaged over all sequences with the same radiation coupling $\Omega_R$. The FFTs are peaked at $k_{\rm FFT} \sim 0.01$ \unit{\per\micro\meter}, while the first ACF peaks are at $\Delta x_{\rm ACF} \sim 10-11$ \unit{\micro\meter}.}
     \label{fig:inside_avg}
 \end{figure}
 
@@ -174,7 +181,7 @@ The ACF outside profiles can be fitted with a damped cosine of the form
 \begin{equation*}
     \mathcal{A}_{\rm fit}(x) = (1 - \Delta)\cos(\frac{x}{\ell_2})\exp[-\left(\frac{x}{\ell_1}\right)^\alpha] + \Delta\, ,
 \end{equation*}
-with $\alpha = 1.7$ fine-tuned in order to catch the profile in the best way possible. One could theoretically set $\alpha$ as a fit parameter, but this would result in a worse estimation of the length $\ell_1$, with the fit that adapts to the data by changing only $\alpha$. On the other hand, for the outside region we use an exponential
+with $\alpha = 1.7$ fine-tuned in order to capture the profile in the best way possible. One could theoretically set $\alpha$ as a fit parameter, but this would result in a worse estimation of the length $\ell_1$, with the fit that adapts to the data by changing only $\alpha$. On the other hand, for the outside region we use an exponential
 \begin{equation*}
     \mathcal{A}_{\rm fit}(x) = (1-\Delta)\exp[-\frac{x}{\ell_1}] + \Delta\, .
 \end{equation*}

@@ -18,7 +18,7 @@ print("\nFitting data, throwing away gaussian fits\n")
 save_flag = int(input("Enter 0 for just plotting or 1 for just saving: "))
 
 # Ask the user for selected or processed
-selected_flag = int(input("Enter 1 for selected, 0 for processed: "))
+selected_flag = int(input("Enter 1 for selected, 0 for all: "))
 if selected_flag: 
     str = "selected"
 else: 
@@ -139,7 +139,6 @@ for fs in sel_days: # all seqs
                 try:
                     # Fitting with bubble function
                     best_2arctan, covar_2arctan = curve_fit(bubble, xx, M[i], p0 = init_vals)
-                    chi_squared = np.sum((M[i] - bubble(xx, *best_2arctan)) ** 2)
 
                     # Initial values for bubbleshoulder fit
                     init_BS_left = [best_2arctan[0] * 0.7, best_2arctan[1], best_2arctan[3], best_2arctan[4]]
@@ -156,12 +155,15 @@ for fs in sel_days: # all seqs
                     best_BS_right, covar_BS_right = curve_fit(bubbleshoulder, xx_right, Mi_right, p0 = init_BS_right)
 
                     # Fitting with new function
-                    best_pieces, covar_pieces = curve_fit(bubblePieces, xx, M[i], p0=[-1, 0.05, 0.05, init_c1, init_c2, 0.7])
+                    best_pieces, covar_pieces = curve_fit(bubblePieces, xx, M[i], p0=[-1, 0.05, 0.05, init_c1, init_c2, 0.7, 0, 0])
+                    chi_squared = np.sum((M[i] - bubblePieces(xx, *best_pieces)) ** 2)
 
                     # if not save_flag and best_BS_left[3] < 4 and best_BS_left[3] > 0: 
                     if not save_flag:
-                        print(f"{best_BS_left[1]:.2f} +/- {best_BS_left[3]:.2f}")
+                        # print(f"{best_BS_left[1]:.2f} +/- {best_BS_left[3]:.2f}")
+                        print(chi_squared)
                         # Plot bubble and bubbleshoulder fit
+                        plt.figure(figsize=(8,4))
                         plt.plot(xx, M[i], label="Data")
                         plt.plot(xx, bubble(xx, *best_2arctan), label="Double arctan fit")
                         plt.plot(xx, bubblePieces(xx, *best_pieces), label="Piecewise fit")
@@ -173,7 +175,8 @@ for fs in sel_days: # all seqs
                         plt.xlabel('$x\ [\mu m]$')
                         plt.ylabel('$Z(x)$')
                         plt.legend()
-                        # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
+                        plt.tight_layout()
+                        plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
                         plt.show()
 
                     # Selection on shots
@@ -197,10 +200,14 @@ for fs in sel_days: # all seqs
                         b_size.append(0)
                         b_sizeADV.append(0)
                         b_center.append(w)
+                        s_width.append(0)
                         b_inside_boundary_left.append(w)
                         b_inside_boundary_right.append(w)
                         b_outside_boundary_left.append(0)
                         b_outside_boundary_right.append(2*w)
+                        b_exp_slope_left.append(0)
+                        b_exp_slope_right.append(0)
+                        b_off.append(0)
 
                     #print('Arctan fit working')
                 

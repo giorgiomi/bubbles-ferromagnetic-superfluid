@@ -169,13 +169,20 @@ There are also two distinct healing lengths,
 \section{Coherently coupled mixture}
 When the system is composed of two species of the same atom, such as two hyperfine states, the dynamics become more interesting because of the possible interconversion processes. One possibility is to use a homogeneous microwave radiation, which couples the two internal states $\ket{a}$ and $\ket{b}$, of the type
 \begin{equation*}
-    \Omega_R(t) \exp{-i\omega_{\rm cpl}t + \phi}\, ,\qquad
-    \omega_{\rm cpl} = \omega_{ab} + \delta\, ,
+    \Omega_R(t) \exp{-i\omega_{\rm cpl}t + \phi}\, ,\qquad \text{with }
+    \omega_{\rm cpl} = \omega_{ab} + \delta_B\, .
 \end{equation*}
-where the coupling frequency $\omega_{\rm cpl}$ differs from the transition frequency between the state $\omega_{ab}$ by a parameter $\delta$ called \textit{detuning}.
+Here, $\omega_{ab}$ is the transition frequency between the two coupled states, and in the case of two hyperfine states of the same angular momentum level it includes the linear Zeeman splitting of a small external magnetic field. The coupling frequency $\omega_{\rm cpl}$ differs from $\omega_{ab}$ by a parameter $\delta_B$ called \textit{detuning}.
+
+\subsection{Ferromagnetism}
+In this scenario, the system exhibits magnetic properties, namely a phase transition from \textit{paramagnetism} to \textit{ferromagnetism}. 
 
 \section{False vacuum decay and bubble formation}
-Given the asymmetric double well describing the mean-field energy landscape of the condensate (Fig.\ \ref{fig:FVD}), the metastable state A in which all atoms are in the state $\ket{\uparrow}$ is called False Vacuum (FV), since it is not the true ground state.
+Given the asymmetric double well
+\begin{equation*}
+    V_{\rm MF}(Z) = -\delta_{\rm eff} Z + \frac{|k|n}{2}Z^2 - \Omega_R \sqrt{1-Z^2}\cos\phi
+\end{equation*}
+describing the spin channel mean-field energy landscape of the condensate (Fig.\ \ref{fig:FVD}), the metastable state A in which all atoms are in the state $\ket{\uparrow}$ is called False Vacuum (FV), since it is not the true ground state.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/chap1/FVD.png}
