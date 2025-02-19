@@ -71,6 +71,21 @@ for om in omega_vals:
 
     ax[1].errorbar(clustered_t, avg_exp_width, xerr=err_t, yerr=err_exp_width, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
     ax[2].errorbar(clustered_t, avg_size, xerr=err_t, yerr=err_size, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
+
+    # Perform linear fit on avg_size vs clustered_t
+    sorted_indices = np.argsort(clustered_t)
+    sorted_clustered_t = clustered_t[sorted_indices]
+    sorted_avg_size = avg_size[sorted_indices]
+
+    log_clustered_t = np.log(sorted_clustered_t[:7])
+    log_avg_size = np.log(sorted_avg_size[:7])
+    [m, b], cov = np.polyfit(log_clustered_t, log_avg_size, 1, cov=True)
+    dm, db = np.sqrt(np.diag(cov))
+    fit_line = lambda x: np.exp(b) * x**m
+    print(om, m, dm)
+
+    # Plot the linear fit
+    ax[2].plot(sorted_clustered_t[:7], fit_line(sorted_clustered_t[:7]), '-', label=f'Fit $\Omega_R/2\pi = {om}$ Hz')
     
     # Reshape size for KMeans
     size_reshaped = size.reshape(-1, 1)
@@ -86,7 +101,6 @@ for om in omega_vals:
     err_exp_width_size = np.array([np.std(exp_width[labels_size == i])/np.sqrt(len(exp_width[labels_size == i])) for i in range(n_clusters)])
     clustered_s = np.array([np.mean(size[labels_size == i]) for i in range(n_clusters)])
     err_s = np.array([np.std(size[labels_size == i])/np.sqrt(len(size[labels_size == i])) for i in range(n_clusters)])
-
 
     # Plot clustered data on ax_cl
     for i in range(n_clusters):
@@ -119,7 +133,7 @@ ax[1].legend(fontsize='small', loc='upper left')
 ax[2].set_xlabel("t [ms]")
 ax[2].set_ylabel("$\sigma_B\ [\mu m]$")
 ax[2].set_xscale("log")
-ax[2].legend(fontsize='small', loc='upper left')
+ax[2].legend(fontsize='small', loc='upper right')
 
 ax[3].set_xlabel("$\Omega_R/2\pi$ [Hz]")
 ax[3].set_ylabel(r"$\langle w \rangle\ [\mu m]$")
@@ -133,5 +147,6 @@ fig1.suptitle("Shoulder width")
 fig2.suptitle("Clustering")
 fig1.tight_layout()
 fig2.tight_layout()
-# plt.savefig("thesis/figures/chap2/b_param_omega.png", dpi=500)
+# fig1.savefig("thesis/figures/chap2/b_param_cluster.png", dpi=500)
+# fig2.savefig("thesis/figures/chap2/clustering.png", dpi=500)
 plt.show()
