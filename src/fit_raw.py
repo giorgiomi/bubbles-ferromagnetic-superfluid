@@ -155,13 +155,14 @@ for fs in sel_days: # all seqs
                     best_BS_right, covar_BS_right = curve_fit(bubbleshoulder, xx_right, Mi_right, p0 = init_BS_right)
 
                     # Fitting with new function
-                    best_pieces, covar_pieces = curve_fit(bubblePieces, xx, M[i], p0=[-1, 0.05, 0.05, init_c1, init_c2, 0.7, 0, 0])
+                    best_pieces, covar_pieces = curve_fit(bubblePieces, xx, M[i], p0=[-1, 20, 20, init_c1, init_c2, 0.7, 0.7])
                     chi_squared = np.sum((M[i] - bubblePieces(xx, *best_pieces)) ** 2)
 
                     # if not save_flag and best_BS_left[3] < 4 and best_BS_left[3] > 0: 
-                    if not save_flag:
+                    if not save_flag and best_BS_right[1] - best_BS_left[1] > 300:
                         # print(f"{best_BS_left[1]:.2f} +/- {best_BS_left[3]:.2f}")
-                        print(chi_squared)
+                        print(chi_squared, best_BS_left[1], best_BS_right[1])
+                        print(best_pieces[1], best_pieces[2])
                         # Plot bubble and bubbleshoulder fit
                         plt.figure(figsize=(8,4))
                         plt.plot(xx, M[i], label="Data")
@@ -176,12 +177,11 @@ for fs in sel_days: # all seqs
                         plt.ylabel('$Z(x)$')
                         plt.legend()
                         plt.tight_layout()
-                        plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
+                        # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
                         plt.show()
 
                     # Selection on shots
-                    # if best_BS_left[3] < 4 and best_BS_left[3] > 0:
-                    if True:
+                    if best_pieces[1] < 2*w and best_pieces[2] < 2*w and best_pieces[1] > 0 and best_pieces[2] > 0:
                         b_center.append(int(best_BS_right[1] / 2 + best_BS_left[1] / 2))
                         b_size.append(best_2arctan[2] - best_2arctan[1])
                         b_sizeADV.append(best_BS_right[1] - best_BS_left[1])

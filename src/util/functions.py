@@ -12,7 +12,7 @@ def gauss(x, amp, center, width, offset):
 def bubbleshoulder(x, amp, cen1, offset, wid1):
     return - amp * (np.arctan((x - cen1) / wid1)) / (np.pi / 2) + offset
 
-def bubblePieces(x, A, B, C, x0, x1, off, D, E):
+def bubblePieces(x, A, w0, w1, x0, x1, d0, d1):
     x = np.asarray(x)
     result = np.empty_like(x, dtype=float)
     
@@ -20,9 +20,9 @@ def bubblePieces(x, A, B, C, x0, x1, off, D, E):
     mask2 = (x >= x0) & (x < x1)
     mask3 = x >= x1
     
-    result[mask1] = A * np.exp(B * (x[mask1] - x0)) + off
-    result[mask2] = A + off
-    result[mask3] = A * np.exp(-C * (x[mask3] - x1)) + off
+    result[mask1] = (A - d0) * np.exp((x[mask1] - x0)/w0) + d0
+    result[mask2] = A
+    result[mask3] = (A - d1) * np.exp(-(x[mask3] - x1)/w1) + d1
     
     return result
 

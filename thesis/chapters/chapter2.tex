@@ -72,9 +72,9 @@ While this routine is very accurate for determining the shoulder profile and hen
 \begin{equation}
     Z_{\rm fit}(x) = 
     \begin{cases}
-        A \exp(\frac{x-x_1}{w_1}) + \Delta \qquad\quad &\text{for } x < x_1\\
-        A + \Delta \qquad\qquad\qquad\qquad &\text{for } x_1 < x < x_2\\
-        A \exp(-\frac{x-x_2}{w_2}) + \Delta \qquad &\text{for } x > x_2
+        (A-\Delta_1) \exp(\frac{x-x_1}{w_1}) + \Delta_1 \qquad\quad &\text{for } x < x_1\\
+        A \qquad\qquad\qquad\qquad &\text{for } x_1 < x < x_2\\
+        (A-\Delta_2) \exp(-\frac{x-x_2}{w_2}) + \Delta_2 \qquad &\text{for } x > x_2
     \end{cases}\, ,
     \label{eq:fit_exp}
 \end{equation}

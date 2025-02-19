@@ -9,7 +9,7 @@ from sklearn.cluster import KMeans
 selected_flag = int(pd.read_csv(f"data/gathered/selected.csv", header=None).to_numpy().flatten()[0])
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters(selected_flag)
 w = 200 # Thomas-Fermi radius, always the same
-n_clusters = 10  # You can adjust the number of clusters
+n_clusters = 20
 
 # Print script purpose
 print(f"We are clustering guys, n_cl = {n_clusters}")
@@ -45,7 +45,7 @@ for om in omega_vals:
     exp_right = raw_exp_right[indices]
     time = raw_time[indices]
     Z = raw_Z[indices]
-    exp_width = (1/np.array(exp_left) + 1/np.array(exp_right))/2
+    exp_width = (np.array(exp_left) + np.array(exp_right))/2
 
     # plt.figure()
     # plt.plot(sorted_time, sorted_size, '.')
@@ -63,11 +63,11 @@ for om in omega_vals:
 
     # Calculate average and error for each cluster
     avg_size = np.array([np.mean(size[labels == i]) for i in range(n_clusters)])
-    err_size = np.array([np.std(size[labels == i])/len(size[labels == i]) for i in range(n_clusters)])
+    err_size = np.array([np.std(size[labels == i])/np.sqrt(len(size[labels == i])) for i in range(n_clusters)])
     avg_exp_width = np.array([np.mean(exp_width[labels == i]) for i in range(n_clusters)])
-    err_exp_width = np.array([np.std(exp_width[labels == i])/len(exp_width[labels == i]) for i in range(n_clusters)])
+    err_exp_width = np.array([np.std(exp_width[labels == i])/np.sqrt(len(exp_width[labels == i])) for i in range(n_clusters)])
     clustered_t = np.array([np.mean(time[labels == i]) for i in range(n_clusters)])
-    err_t = np.array([np.std(time[labels == i])/len(time[labels == i]) for i in range(n_clusters)])
+    err_t = np.array([np.std(time[labels == i])/np.sqrt(len(time[labels == i])) for i in range(n_clusters)])
 
     ax[1].errorbar(clustered_t, avg_exp_width, xerr=err_t, yerr=err_exp_width, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
     ax[2].errorbar(clustered_t, avg_size, xerr=err_t, yerr=err_size, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
@@ -81,16 +81,16 @@ for om in omega_vals:
 
     # Calculate average and error for each cluster by size
     avg_time_size = np.array([np.mean(time[labels_size == i]) for i in range(n_clusters)])
-    err_time_size = np.array([np.std(time[labels_size == i])/len(time[labels_size == i]) for i in range(n_clusters)])
+    err_time_size = np.array([np.std(time[labels_size == i])/np.sqrt(len(time[labels_size == i])) for i in range(n_clusters)])
     avg_exp_width_size = np.array([np.mean(exp_width[labels_size == i]) for i in range(n_clusters)])
-    err_exp_width_size = np.array([np.std(exp_width[labels_size == i])/len(exp_width[labels_size == i]) for i in range(n_clusters)])
+    err_exp_width_size = np.array([np.std(exp_width[labels_size == i])/np.sqrt(len(exp_width[labels_size == i])) for i in range(n_clusters)])
     clustered_s = np.array([np.mean(size[labels_size == i]) for i in range(n_clusters)])
-    err_s = np.array([np.std(size[labels_size == i])/len(size[labels_size == i]) for i in range(n_clusters)])
+    err_s = np.array([np.std(size[labels_size == i])/np.sqrt(len(size[labels_size == i])) for i in range(n_clusters)])
 
 
     # Plot clustered data on ax_cl
     for i in range(n_clusters):
-        print(om, len(time[labels == i]), len(time[labels_size == i]))
+        # print(om, len(time[labels == i]), len(time[labels_size == i]))
         ax_cl[omega_vals.index(om), 0].plot(time[labels == i], size[labels == i], 'o', markersize=4, alpha=1)
         ax_cl[omega_vals.index(om), 1].plot(time[labels == i], exp_width[labels == i], 'o', markersize=4, alpha=1)
         ax_cl[omega_vals.index(om), 2].plot(size[labels_size == i], exp_width[labels_size == i], 'o', markersize=4, alpha=1)

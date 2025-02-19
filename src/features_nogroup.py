@@ -42,7 +42,7 @@ for om in omega_vals:
     exp_right = raw_exp_right[indices]
     time = raw_time[indices]
     Z = raw_Z[indices]
-    exp_width = (1/np.array(exp_left) + 1/np.array(exp_right))/2
+    exp_width = (np.array(exp_left) + np.array(exp_right))/2
 
     # plt.plot(time, size, '.')
     # plt.xlabel("t [ms]")
@@ -97,7 +97,7 @@ plt.show()
 #     exp_right = raw_exp_right[indices]
 #     time = raw_time[indices]
 #     Z = raw_Z[indices]
-#     exp_width = (1/np.array(exp_left) + 1/np.array(exp_right))/2
+#     exp_width = (np.array(exp_left) + np.array(exp_right))/2
 
 #     # plt.plot(time, size, '.')
 #     # plt.xlabel("t [ms]")

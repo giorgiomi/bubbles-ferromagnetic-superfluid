@@ -42,7 +42,7 @@ for om in omega_vals:
     exp_right = raw_exp_right[indices]
     time = raw_time[indices]
     Z = raw_Z[indices]
-    exp_width = (1/np.array(exp_left) + 1/np.array(exp_right))/2
+    exp_width = (np.array(exp_left) + np.array(exp_right))/2
 
     # print(om, len(time))
 
@@ -115,8 +115,8 @@ for om in omega_vals:
     c_stds = {start_cat: np.std(c_values[cat_new == start_cat])/np.sqrt(len(c_values[cat_new == start_cat])) for start_cat in cat_blocks if start_cat in cat_new}
     sl_stds = {start_cat: np.std(sl_values[cat_new == start_cat])/np.sqrt(len(sl_values[cat_new == start_cat])) for start_cat in cat_blocks if start_cat in cat_new}
     
-    el_plot = [1/el_means[cat] for cat in cat_blocks if cat in el_means]
-    er_plot = [1/er_means[cat] for cat in cat_blocks if cat in er_means]
+    el_plot = [el_means[cat] for cat in cat_blocks if cat in el_means]
+    er_plot = [er_means[cat] for cat in cat_blocks if cat in er_means]
     s_plot = [s_means[cat] for cat in cat_blocks if cat in s_means]
     c_plot = [c_means[cat] for cat in cat_blocks if cat in c_means]
     sl_plot = [sl_means[cat] for cat in cat_blocks if cat in sl_means]
@@ -197,14 +197,14 @@ for om in omega_vals:
     c_stds = {start_cat: np.std(c_values[cat_new == start_cat])/np.sqrt(len(c_values[cat_new == start_cat])) for start_cat in cat_blocks if start_cat in cat_new}
     sl_stds = {start_cat: np.std(sl_values[cat_new == start_cat])/np.sqrt(len(sl_values[cat_new == start_cat])) for start_cat in cat_blocks if start_cat in cat_new}
     
-    el_plot = [1/el_means[cat] for cat in cat_blocks if cat in el_means]
-    er_plot = [1/er_means[cat] for cat in cat_blocks if cat in er_means]
+    el_plot = [el_means[cat] for cat in cat_blocks if cat in el_means]
+    er_plot = [er_means[cat] for cat in cat_blocks if cat in er_means]
     s_plot = [s_means[cat] for cat in cat_blocks if cat in s_means]
     c_plot = [c_means[cat] for cat in cat_blocks if cat in c_means]
     sl_plot = [sl_means[cat] for cat in cat_blocks if cat in sl_means]
     
-    el_yerr = [el_stds[cat]/(el_means[cat]**2) for cat in cat_blocks if cat in el_stds]
-    er_yerr = [er_stds[cat]/(el_means[cat]**2) for cat in cat_blocks if cat in er_stds]
+    el_yerr = [el_stds[cat] for cat in cat_blocks if cat in el_stds]
+    er_yerr = [er_stds[cat] for cat in cat_blocks if cat in er_stds]
     s_yerr = [s_stds[cat] for cat in cat_blocks if cat in s_stds]
     c_yerr = [c_stds[cat] for cat in cat_blocks if cat in c_stds]
     sl_yerr = [sl_stds[cat] for cat in cat_blocks if cat in sl_stds]
