@@ -171,8 +171,8 @@ The computation of this function on some simple signals is shown in App.\ \ref{c
 Now, what we shall do is computing the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one. This is done by relying on the piecewise exponential fit results, namely the positions $x_1$ and $x_2$ from Eq.\ \ref{eq:fit_exp}.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.75\textwidth]{figures/chap2/inside_omdet.png}
-    \caption{Example of FFT and ACF calculated in a sequence, after selecting the shots where $\sigma_B > 4W$. The values for each shot are shown in the left graphs with colormaps, while the averages on all shots are on the right. Note that before computing the transforms the data was set to zero-mean by subtracting its average.}
+    \includegraphics[width=\textwidth]{figures/chap2/inside_omdet.png}
+    \caption{Example of FFT and ACF calculated on the shots with a selected pair of $\Omega_R, \delta$, after selecting the shots where $\sigma_B > 4W = 80$. The values for each shot are shown in the left graphs with colormaps, while the averages on all shots are on the right. Note that before computing the transforms the data was set to zero-mean by subtracting its average. In the lower right graph, ACF computed on the true data (without the 0-mean) is shown for comparison to the other ACF profile.}
     \label{fig:inside_00}
 \end{figure}
 % We will also compute the transforms on the no-bubble shots. 
