@@ -60,7 +60,7 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
     fig.colorbar(im1, ax=axs[0, 0])
     axs[0, 0].set_title(region + f" FFT of day {day}, sequence {seq}")
     axs[0, 0].set_xlabel(r"$k\ [1/\mu m]$")
-    axs[0, 0].set_ylabel("Shot number")
+    axs[0, 0].set_ylabel("Size index")
 
     # Average FFT
     axs[0, 1].plot(CFG, FFT_mean, '-', label='FFT on background inside')
@@ -73,11 +73,11 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
     # axs[0, 1].legend()
 
     # Colormap for autocorrelation
-    im2 = axs[1, 0].imshow(ACF_val, aspect='auto', extent=[CLG[0], CLG[-1], 0, len(data)-1], origin='lower', cmap='plasma')
+    im2 = axs[1, 0].imshow(ACF_val, aspect='auto', extent=[CLG[0], CLG[-1], 0, len(data)-1], origin='lower', cmap='plasma', vmin=0.9, vmax=1)
     fig.colorbar(im2, ax=axs[1, 0])
     axs[1, 0].set_title(region + f" ACF of day {day}, sequence {seq}")
     axs[1, 0].set_xlabel("$\Delta x\ [\mu m]$")
-    axs[1, 0].set_ylabel("Shot number")
+    axs[1, 0].set_ylabel("Size index")
     axs[1, 0].set_xticks(np.arange(0, 21, 2))
 
     # Average Autocorrelation

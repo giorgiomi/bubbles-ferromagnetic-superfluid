@@ -85,7 +85,7 @@ for om in omega_vals:
     print(om, m, dm)
 
     # Plot the linear fit
-    ax[2].plot(sorted_clustered_t[:7], fit_line(sorted_clustered_t[:7]), '-', label=f'Fit $\Omega_R/2\pi = {om}$ Hz')
+    ax[2].plot(sorted_clustered_t[:7], fit_line(sorted_clustered_t[:7]), '--', label=f'Fit $\Omega_R/2\pi = {om}$ Hz', color=ax[2].lines[-1].get_color())
     
     # Reshape size for KMeans
     size_reshaped = size.reshape(-1, 1)
@@ -133,7 +133,8 @@ ax[1].legend(fontsize='small', loc='upper left')
 ax[2].set_xlabel("t [ms]")
 ax[2].set_ylabel("$\sigma_B\ [\mu m]$")
 ax[2].set_xscale("log")
-ax[2].legend(fontsize='small', loc='upper right')
+ax[2].set_yscale('log')
+# ax[2].legend(fontsize='small', loc='upper right')
 
 ax[3].set_xlabel("$\Omega_R/2\pi$ [Hz]")
 ax[3].set_ylabel(r"$\langle w \rangle\ [\mu m]$")
@@ -143,7 +144,7 @@ ax_cl[3, 0].set_xlabel("t [ms]")
 ax_cl[3, 1].set_xlabel("t [ms]")
 ax_cl[3, 2].set_xlabel("$\sigma_B\ [\mu m]$")
 
-fig1.suptitle("Shoulder width")
+fig1.suptitle("Bubble clustered parameters")
 fig2.suptitle("Clustering")
 fig1.tight_layout()
 fig2.tight_layout()

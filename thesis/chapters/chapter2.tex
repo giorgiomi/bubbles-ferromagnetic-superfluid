@@ -28,10 +28,17 @@ A shot contains all the information on the system after waiting for a time $t$, 
 % Our focus here is to study the magnetization of the system, developing a method to analyze the effects of its bubble formation, and then proceed with the density behaviour.
 Our focus here is to characterize the bubble properties in relation to $\Omega_R$, $\delta$, $t$ by utilizing the magnetization of the system. First, we need to extract the spatial parameters of the bubble in order to locate it in each shot, then we will proceed with the study of its evolution.
 
-\subsection{Bubble parameters and shot sorting}
+\subsection{Bubble fit parameters}
 In order to localize the bubble in a shot, the most interesting parameters to retrieve are the bubble center $x_0$ and its width $\sigma_B$.
 However, not all shots contain a bubble, namely the ones taken when the bubble was not formed yet. We can easily classify the two types of shots by computing the magnetization average in the central region and using a threshold value, set to $Z_{\rm thr} = -0.2$. 
 % The no-bubble shots will be useful later, when dealing with the noise frequency spectrum.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = 0.75\textwidth]{figures/chap2/arctan_fit.png}
+    \caption{Example of fit results performed on a shot. First, the data is fitted with the double-arctangent function of Eq.\ \eqref{eq:double-atan}, then each shoulder is fitted with a single-arctangent, namely the one of Eq.\ \eqref{eq:atan}. This ensures a better estimation of the shoulder centers and thus of the bubble width. Eventually, a last fit is done with the piecewise function of Eq.\ \eqref{eq:fit_exp}, in order to capture the inside/outside discontinuity and the exponential tails.}
+    \label{fig:atan-fit}
+\end{figure}
 
 To parametrize the bubble, the magnetization data is fitted with a double-arctangent function
 \begin{equation}
@@ -55,12 +62,6 @@ where $c_1$ and $c_2$ are the centers' positions of the arctangent "shoulders", 
 %         \label{fig:gaussian-fit}
 %     \end{minipage}
 % \end{figure}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width = 0.75\textwidth]{figures/chap2/arctan_fit.png}
-    \caption{Example of fit results performed on a shot. First, the data is fitted with the double-arctangent function of Eq.\ \eqref{eq:double-atan}, then each shoulder is fitted with a single-arctangent, namely the one of Eq.\ \eqref{eq:atan}. This ensures a better estimation of the shoulder centers and thus of the bubble width. Eventually, a last fit is done with the piecewise function of Eq.\ \eqref{eq:fit_exp}, in order to capture the inside/outside discontinuity and the exponential tails.}
-    \label{fig:atan-fit}
-\end{figure}
 Then, for a better result, a further fit is performed on each shoulder with a single-arctangent function
 \begin{equation}
     Z_{\rm fit}(x) = -A \frac{2}{\pi}\arctan(\frac{x-c_{1,2}}{w_{1,2}}) + \Delta\, ,
@@ -72,6 +73,13 @@ yielding the shoulder center position $c_{1,2}$. Eventually, we obtain the bubbl
 %     Z_{\rm fit}(x) = - A \exp\left[-\frac{(x-c)^2}{2\sigma^2}\right] + \Delta\, ,
 % \end{equation*}
 % with $x_0 = c$ being the bubble center and $\sigma_B = \num{2.335}\ \sigma$ its width.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/chap2/shot_sorting.png}
+    \caption{Example of initial shot sorting based on experimental waiting time (on the left) and final sorting based on bubble width $\sigma_B$ (on the right) for all shots with $\Omega_R/2\pi = 400$ \unit{\hertz} and $\delta/2\pi = 596.5$ \unit{\hertz}. The $\sigma_B$ parameter is estimated from the previous fitting procedure, and the no-bubble shots ($\sigma_B = 0$) are removed from the right plot. The data is colored by mapping positive magnetization to blue and negative magnetization to red.}
+    \label{fig:sorting}
+\end{figure}
 
 While this routine is very accurate for determining the shoulder profile and hence the bubble width, the transition between the shoulders and the inside region (the bubble itself) shows no continuity in many shots. In order to capture the entire profile and especially the boundaries of the inside region, we can fit the data with a continous piecewise function made of two exponential tails and a constant value in the middle, such as
 \begin{equation}
@@ -87,47 +95,53 @@ yielding also the characteristic widths of the tails $w_1$ and $w_2$.
 
 An example of fitting with the arctangent and stepwise exponential functions is provided in Fig.\ \ref{fig:atan-fit}.
 
-\begin{figure}[t!]
-    \centering
-    \includegraphics[width=\textwidth]{figures/chap2/shot_sorting.png}
-    \caption{Example of shot sorting based on bubble width $\sigma_B$ and alignment based on bubble center $x_0$ for one sequence. Both parameters are estimated from the previous fitting procedure. On the left, the shots are presented in the original ordering, by experimental waiting time. On the right, they are sorted by bubble size (the no-bubble shots are removed). The data is colored by mapping positive magnetization to blue and negative magnetization to red.}
-    \label{fig:sorting}
-\end{figure}
-
-% \subsection{Shot sorting}
+\subsection{Shot sorting}
 Once the bubble width $\sigma_B$ is retrieved, it is useful to order the shots in a sequence by this parameter. This process lets us display the system evolution, in contrast to the original shot ordering based on the experimental time waited before observing the bubble. The reason why we are more interested in the size dependence is that the bubble formation event is a stochastic process (the tunneling through the mean-field energy barrier), and the time at which a bubble forms is not determined. However, theory suggests that once the bubble is formed, its evolution (the decay from FV to TV) is determined. 
-
-Furthermore, we can obtain a nicer picture by aligning the bubbles to their center and removing the no-bubble shots.
-An example sequence is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
+An example of sorting by both time and size is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
 
 \section{Parameters analysis}
-In order to look at the distribution of the bubble parameters versus the experimental time or the bubble size, it is useful to group all shots and plot the bubble width and tail width, the latter being the left-right average $(w_1+w_2)/2$ from Eq.\ \eqref{eq:fit_exp}. 
+In order to look at the distribution of the bubble parameters versus the experimental time or the bubble size, we decide to group all shots by the radiation coupling $\Omega_R$ (ignoring the detuning $\delta$) and plot the bubble width and tail width, the latter being the left-right average $(w_1+w_2)/2$ from Eq.\ \eqref{eq:fit_exp}. 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/clustering.png}
+    \caption{Data clustering with the K-Means algorithm and $n_{\rm clusters} = 20$ based only on $t$ (first two columns from the left) or $\sigma_B$ (third column). The first column shows the $\sigma_B$ data on the y-axis, while the last two show the $w$ data.}
+    \label{fig:clust}
+\end{figure} 
 An approach to this might be the one of ordering the shots by time or size and then dividing all shots in blocks with a fixed number of shots per block. However, the distributions of $t$ and $\sigma_B$ are not continous (especially $t$, which is discretized), and it may be convenient to look for clustered data. 
 The clustering approach can be implemented by the K-Means algorithm from the Scikit-Learn Python library, which lets us choose the number of clusters. The clustered data is shown in Fig.\ \ref{fig:clust}. 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width = \textwidth]{figures/chap2/clustering.png}
-    \caption{Data clustering with $n_{\rm clusters} = 20$ based only on $t$ (first two columns from the left) or $\sigma_B$ (third column). The first column shows the $\sigma_B$ data on the y-axis, while the last two show the $w$ data.}
-    \label{fig:clust}
-\end{figure} 
-\begin{figure}[h!]
-    \centering
     \includegraphics[width = 0.8\textwidth]{figures/chap2/b_param_cluster.png}
-    \caption{Bubble parameters distribution averaged on all shots of the same cluster. The left panel shows, from top to bottom, $w$ vs $\sigma_B$, $w$ vs $t$ and $\sigma_B$ vs $t$. The right panel presented the average tail width over all shots with the same coupling radiation $\Omega_R$.}
+    \caption{Bubble parameters distribution averaged on all shots of the same cluster. The left panel shows, from top to bottom, $w$ vs $\sigma_B$, $w$ vs $t$ and $\sigma_B$ vs $t$ (the last one in log-log scale). In the last, a linear fit on the log-log increasing data is performed in order to estimate the rate of growth. The right panel presented the average tail width over all shots with the same coupling radiation $\Omega_R$.}
     \label{fig:b_param}
 \end{figure}
-The bubble parameters, averaged in each cluster and in relation one to another, are shown in Fig.\ \ref{fig:b_param}, along with the average on all shots with the same radiation coupling.
+The bubble parameters, averaged in each cluster and in relation one to another, are shown in Fig.\ \ref{fig:b_param}, along with the average on all shots with the same radiation coupling. While the tail width looks constant when varying the bubble size, the bubble size is increasing with time at first, and then decreases. The initial behaviour corresponds to the power-law growth of $\sigma_B$ in time of the type
+\[
+    \sigma_B(t) = At^B\, , 
+\]
+the final one is probability an artifact due to the low-density tails of the Thomas-Fermi distribution. Eventually, a linear fit is performed on the log-log data with the aim of finding the power-law coefficient $B$ for each value of the radiation coupling, yielding
+\begin{align*}
+    &B_{300} = 0.21 \pm 0.03\, ,\\
+    &B_{400} = 0.21 \pm 0.04\, ,\\
+    &B_{600} = 0.23 \pm 0.03\, ,\\
+    &B_{800} = 0.22 \pm 0.06\, ,
+\end{align*}
+all compatible among them, hence revealing that the bubble grows with the same profile at different values of $\Omega_R$.
 
 \section{Spectral analysis}
-Since we are interested in the properties of the bubble, energy propagation is an important feature to focus on. In order to study it, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signal. 
+Since we are interested in the properties of the bubble throughout its evolution, periodic signals in the magnetization channel and their relation to the waiting time or the bubble size are important features to focus on. In order to study them, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signals and, most importantly, the typical length scales of the system.
+
+The tools used in the following analysis are the Fast Fourier Transform (FFT) and the autocorrelation function (ACF).
 
 \subsection{FFT and ACF definition}
 \paragraph{FFT}
-We will first approach the problem of deriving such a profile by using the Fast Fourier Transform (FFT), an algorithm that implements the Discrete Fourier Transform (DFT) in an efficient manner.\footnote{The most common implementation is the Cooley-Tukey algorithm, used in the Scipy Python library for FFT.} Given the input as a sequence of $N$ discrete values $Z_0,\dots,Z_{N-1}$ sampled with spacing $\Delta x$, by definition the DFT is a series of $N$ discrete values $\mathcal{F}_0,\dots,\mathcal{F}_{N-1}$ spaced by $\Delta k = 1/(N\Delta x)$ and convoluted with a complex phase such that
+We will first approach the problem of deriving such a profile by using the Fast Fourier Transform (FFT), an algorithm that implements the Discrete Fourier Transform (DFT) in an efficient manner.\footnote{There are several efficient methods to compute the DFT. The most common implementation is the Cooley-Tukey algorithm, used in the Scipy Python library for FFT.} Given the input as a sequence of $N$ discrete values $Z_0,\dots,Z_{N-1}$ sampled with spacing $\Delta x$, by definition the DFT is a series of $N$ discrete values $\mathcal{F}_0,\dots,\mathcal{F}_{N-1}$ spaced by $\Delta k = 1/(N\Delta x)$ and convoluted with a complex phase such that
 \begin{equation*}
     \mathcal{F}_k = \sum_{n=0}^{N-1} Z_n e^{-2\pi i \frac{k}{N}n}\, .
 \end{equation*}
 When the input $Z_n$ is real-valued, the transform is too, and it is also symmetric between positive and negative frequencies. The physical world contains only positive frequencies, so we will neglect the negative part of the transform. This is achievable by using the Scipy function \texttt{\textbf{rfft}} instead of \texttt{\textbf{fft}}.
+
+The result of the Fourier transform of a signal is the extraction of the main frequency components of the signal itself. In fact, as we know, the transform of a pure sinusoidal signal with frequency $\omega_0$ results in a Dirac delta at $\omega = \omega_0$ (excluding the negative frequencies). In the general case of a signal made up of more frequency components and with noise, the peaks in the Fourier transform will correspond the most relevant frequencies. Note that in our case the signal is in the space-domain, and by taking the inverse of the points in the frequency-domain, one can get information about the spatial periodicity of the system, hence the typical length scale.
 
 \paragraph{ACF}
 Another tool that can be used to study the periodic properties of a signal is the autocorrelation function (ACF). Similarly to the DFT, the ACF is also a particular type of convolution, where the signal is convoluted with itself. The caveat here is that since our signal is of finite length, the whole convolution would show boundary effects, as shown in Fig.\ \ref{fig:ACF_bound}.
@@ -143,22 +157,26 @@ Another tool that can be used to study the periodic properties of a signal is th
     \caption{[TO IMPROVE] Schematic representiation of windowed autocorrelation. In contrast to a full-width ACF, here no boundary effects arise.}
     \label{fig:ACF_window}
 \end{figure}
-It is then worth limiting the signal in a central window of length $2W$ and computing the ACF on the windowed signal. Taking as input the latter as $Z_0,\dots,Z_{2W-1}$, the output will be a series of values $\mathcal{A}_0,\dots,\mathcal{A}_{W}$ living in the spatial domain\footnote{While the FFT domain is made of frequencies, the ACF domain is instead made of lag values, corresponding to the spatial shifts of the signal.} such that:
+It is then worth limiting the signal in a central window of length $2W$ and computing the ACF on the windowed signal (Fig.\ \ref{fig:ACF_window}). Taking as input the latter as $Z_0,\dots,Z_{2W-1}$, the output will be a series of values $\mathcal{A}_0,\dots,\mathcal{A}_{W}$ living in the space-domain\footnote{While the FFT domain is made of frequencies, the ACF domain is instead made of lag values, corresponding to the spatial shifts of the signal.} such that:
 \begin{equation*}
     \mathcal{A}_k = \frac{1}{2} \left( \frac{\sum_{n} Z_n Z_{n+k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n+k}^2}} + \frac{\sum_{n} Z_n Z_{n-k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n-k}^2}} \right)\, .
 \end{equation*}
 This formula computes the windowed autocorrelation by shifting the signal both to the left and to the right and then taking the average.
-Both terms are normalized in order to get $\mathcal{A}_0 = 1$. The computation of this function on some simple signals is shown in App.\ \ref{chap:app_ACF}. Note that the sums run from $n = 0$ to $n = W-1$ and thus the length of the signal must be greater than $4W$: data that does not respect this condition will not be analyzed. A schematic representiation of the windowed ACF is presented in Fig.\ \ref{fig:ACF_window}.
+Both terms are normalized in order to get $\mathcal{A}_0 = 1$. 
+Note that the sums run from $n = 0$ to $n = W-1$ and thus the length of the signal must be greater than $4W$: data that does not respect this condition will not be analyzed.
+
+The computation of this function on some simple signals is shown in App.\ \ref{chap:app_ACF}. In contrast to the FFT, the ACF results, as mentioned before, live in the space-domain and give direct results on the length scales. A high ACF value at $\Delta x_0$ means that the signal is correlated with itself when shifted by $\Delta x_0$. The periodicity of the signal is then related to the length $\Delta x_0$.
 
 \subsection{FFT and ACF analysis on sequences}
-Now, what we shall do is computing the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one. This is done by relying on the fit routine results, mainly the shoulder centers' positions and their widths.
+Now, what we shall do is computing the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one. This is done by relying on the piecewise exponential fit results, namely the positions $x_1$ and $x_2$ from Eq.\ \ref{eq:fit_exp}.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.75\textwidth]{figures/chap2/inside_day_0_seq_0.png}
+    \includegraphics[width=0.75\textwidth]{figures/chap2/inside_omdet.png}
     \caption{Example of FFT and ACF calculated in a sequence, after selecting the shots where $\sigma_B > 4W$. The values for each shot are shown in the left graphs with colormaps, while the averages on all shots are on the right. Note that before computing the transforms the data was set to zero-mean by subtracting its average.}
     \label{fig:inside_00}
 \end{figure}
-We will also compute the transforms on the no-bubble shots. An example of the inside region analysis for a selected sequence is presented in Fig.\ \ref{fig:inside_00}, where the data was first set to zero-mean and only the shots where $\sigma_B > 4W$ are selected.
+% We will also compute the transforms on the no-bubble shots. 
+An example of the inside region analysis for a selected pair of values $\Omega_R, \delta$ is presented in Fig.\ \ref{fig:inside_00}, where the data was first set to zero-mean and only the shots where $\sigma_B > 4W$ are selected.
 % One can probably (with a good eye) already see in the colormap plot that two or three vertical bands extend over all shots and appear at the same frequencies. This ensures that the FFT averaging is rightful.
 
 Let us briefly discuss the behaviours of the computed FFTs and ACFs, considering that it is similar for all sequences and the example presented is a good one (see Fig.\ \ref{fig:inside_avg}, showing the profiles averaged over all sequences with the same $\Omega_R$). The FFT shows a peak at a frequency in the order of $k_{\rm FFT} \sim 0.01$ \unit{\per\micro\meter} and of width in the order of $\Delta k_{\rm FFT} \sim 0.1$ \unit{\per\micro\meter}. The ACF instead has a first peak at $\Delta x_{\rm ACF} \sim 10-11$ \unit{\micro\meter}. By comparing these results, one should see a correspondence, namely $k \sim 1/\Delta x$. However, by taking the inverse of the ACF peak values, one gets $k_{\rm ACF} \sim 0.1$ \unit{\per\micro\meter}, a frequency hidden in the FFT plot due to the broad peak. The reason for the peak broadness is probability the data noise, which is difficult to analyze properly. We will thus proceed by relying on the ACF for the remaining analysis.
