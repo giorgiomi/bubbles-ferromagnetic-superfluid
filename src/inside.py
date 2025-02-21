@@ -37,6 +37,7 @@ max_length = 0
 for day in chosen_days:
     for seq in sel_seq[day]:
         seqi = seqs[day][seq]
+        # print(f"data/{str}/day_{day}/seq_{seq}/sizeADV_sorted.csv")
         df_size_sorted = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/sizeADV_sorted.csv", header=None)
         b_sizeADV_sorted = df_size_sorted.to_numpy().flatten()
         max_size = int(max(b_sizeADV_sorted) + 1)

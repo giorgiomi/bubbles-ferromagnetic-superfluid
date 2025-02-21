@@ -96,32 +96,52 @@ def quadPlot(day, seq, data, region, CFG, CLG, FFT_mag, FFT_mean, ACF_val, ACF_m
 
 def doublePlot(o_fft_d, o_acf_d, CFG, CLG, region):
     # FFTs and ACFs as a function of omega
-    fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+    fig, axs = plt.subplots(2, 2, figsize=(10, 6), sharey='row')
     sorted_omegas = sorted(o_fft_d.keys())
 
     # Average FFTs and ACFs with the same omega
     for omega in sorted_omegas: 
         fft_list = o_fft_d[omega]
         avg_fft = np.mean(fft_list, axis=0)
-        axs[0].plot(CFG, avg_fft, '-', label=fr'$\Omega_R/2\pi = {omega}$ Hz')
+        axs[0, 0].plot(CFG, avg_fft, '-', label=fr'$\Omega_R/2\pi = {omega}$ Hz')
+        axs[0, 1].plot(1/np.array(CFG[1:]), avg_fft[1:], '-', label=fr'$\Omega_R/2\pi = {omega}$ Hz')
 
         acf_list = o_acf_d[omega]
         avg_acf = np.mean(acf_list, axis=0)
-        axs[1].plot(CLG, avg_acf, '-', label=fr'$\Omega_R/2\pi = {omega}$ Hz')
+        axs[1, 0].plot(1/np.array(CLG[1:]), avg_acf[1:], '-', label=fr'$\Omega_R/2\pi = {omega}$ Hz')
+        axs[1, 1].plot(CLG, avg_acf, '-', label=fr'$\Omega_R/2\pi = {omega}$ Hz')
 
     # Plot FFTs
-    axs[0].set_xlabel(r"$k\ [1/\mu m]$")
-    axs[0].set_ylabel("FFT")
-    axs[0].set_xlim(-0.02, 0.52)
-    axs[0].legend()
-    axs[0].set_title(f"Average {region} FFTs")
+    axs[0, 0].set_xlabel(r"$k\ [1/\mu m]$")
+    axs[0, 0].set_ylabel("FFT")
+    axs[0, 0].set_xlim(-0.02, 0.52)
+    axs[0, 0].legend()
+    axs[0, 0].set_title(f"k-domain average {region} FFTs")
+
+    # Plot FFTs INVERTED-domain
+    axs[0, 1].set_xlabel("$1/k\ [\mu m]$")
+    # axs[0, 1].set_ylabel("FFT")
+    axs[0, 1].legend()
+    axs[0, 1].set_title(f"x-domain average {region} FFTs")
+    axs[0, 1].set_xticks(range(0, 21, 2))
+    axs[0, 1].set_xlim(-0.5, 20.5)
+    
+    # axs[0, 1].set_xscale('log')
+
+    # Plot ACFs INVERTED-domain  
+    axs[1, 0].set_xlabel("$1/\Delta x\ [1/\mu m]$")
+    axs[1, 0].set_ylabel("ACF")
+    axs[1, 0].legend()
+    axs[1, 0].set_title(f"k-domain average {region} ACFs")
+    axs[1, 0].set_xlim(-0.02, 0.52)
 
     # Plot ACFs    
-    axs[1].set_xlabel("$\Delta x\ [\mu m]$")
-    axs[1].set_ylabel("ACF")
-    axs[1].legend()
-    axs[1].set_title(f"Average {region} ACFs")
-    axs[1].set_xticks(range(0, 21, 2))
+    axs[1, 1].set_xlabel("$\Delta x\ [\mu m]$")
+    # axs[1, 1].set_ylabel("ACF")
+    axs[1, 1].legend()
+    axs[1, 1].set_title(f"x-domain average {region} ACFs")
+    axs[1, 1].set_xticks(range(0, 21, 2))
+    axs[1, 1].set_xlim(-0.5, 20.5)
 
     plt.tight_layout()
     return fig

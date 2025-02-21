@@ -153,5 +153,5 @@ for om in omega_vals:
 
         plt.suptitle(f"FFT and ACF on shots with $\Omega_R/2\pi = {om}$ Hz and $\delta/2\pi = {det}$ Hz")
         plt.tight_layout()
-        plt.savefig("thesis/figures/chap2/inside_omdet.png", dpi=500)
+        # plt.savefig("thesis/figures/chap2/inside_omdet.png", dpi=500)
         plt.show()
