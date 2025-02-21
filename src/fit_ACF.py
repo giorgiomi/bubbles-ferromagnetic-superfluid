@@ -32,6 +32,8 @@ center = pd.read_csv(f"data/gathered/center.csv", header=None).to_numpy().flatte
 slope = pd.read_csv(f"data/gathered/slope.csv", header=None).to_numpy().flatten()
 time = pd.read_csv(f"data/gathered/time.csv", header=None).to_numpy().flatten()
 omega = pd.read_csv(f"data/gathered/omega.csv", header=None).to_numpy().flatten()
+in_left = pd.read_csv(f"data/gathered/in_left.csv", header=None).to_numpy().flatten()
+in_right = pd.read_csv(f"data/gathered/in_right.csv", header=None).to_numpy().flatten()
 detuning = pd.read_csv(f"data/gathered/detuning.csv", header=None).to_numpy().flatten()
 Z = pd.read_csv(f"data/gathered/Z.csv", header=None).to_numpy()
 # dE = find_minima(omega, detuning, -1150, 1)
@@ -40,18 +42,20 @@ dE = np.sqrt(omega*(1150-omega))
 # exit()
 
 if gather_flag == 'omega':
-    groupFitACF('omega', omega, omega, 1, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('omega', omega, omega, 1, Z, window_len, zero_mean_flag, region_flag, in_left, in_right, 1)
 elif gather_flag == 'time':
-    groupFitACF('time', time, omega, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('time', time, omega, 10, Z, window_len, zero_mean_flag, region_flag, in_left, in_right, 10)
 elif gather_flag == 'size':
-    groupFitACF('size', size, omega, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+    groupFitACF('size', size, omega, 10, Z, window_len, zero_mean_flag, region_flag, in_left, in_right, 10)
 elif gather_flag == 'detuning':
     print("Detuning not available")
-    # groupFitACF('detuning', detuning, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+    # groupFitACF('detuning', detuning, 10, Z, window_len, zero_mean_flag, region_flag)
 elif gather_flag == 'dE':
-    groupFitACF('dE', dE, omega, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+    print("dE not available")
+    # groupFitACF('dE', dE, omega, 10, Z, window_len, zero_mean_flag, region_flag, in_left, in_right)
 elif gather_flag == 'slope':
-    groupFitACF('slope', slope, omega, 10, Z, size, center, window_len, zero_mean_flag, region_flag)
+    print("Detuning not available")
+    # groupFitACF('slope', slope, omega, 10, Z, window_len, zero_mean_flag, region_flag, in_left, in_right)
 else:
     print("Gather method has to be [omega/time/size/detuning/dE]")
     

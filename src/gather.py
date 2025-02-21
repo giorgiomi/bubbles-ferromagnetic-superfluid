@@ -42,7 +42,7 @@ for day in sel_days:
         in_right = pd.read_csv(f"data/{str}/day_{day}/seq_{seq}/in_right.csv", header=None).to_numpy().flatten()
 
         for i, shot in enumerate(Z):
-            if size[i] >= 0 and size[i] < 2*w: #and slope[i] > 0 # and in_left[i] < w and in_right[i] > w:
+            if size[i] >= 0 and size[i] < 2*w and in_left[i] < w and in_right[i] > w:
                 Zs.append(shot)
                 centers.append(center[i])
                 slopes.append(slope[i])

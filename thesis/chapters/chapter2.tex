@@ -196,9 +196,10 @@ The routine is the following:
     \item Gather all shots with the same $\Omega_R$ and save their bubble parameters;
     \item Select only the shots where the inside or outside region is at least $4W$ pixels long;
     \item Sort the shots based on the waiting time or the bubble size;
-    \item Group the shots in blocks of a fixed length;
-    \item Compute the ACF for each shot in a block and take the average;
-    \item Plot the ACF averages for each block and fit them.
+    \item Cluster the shots based on the sorting parameter;
+    \item Compute the ACF profile for each shot in a cluster and take the average;
+    \item Plot the ACF averages for each cluster and fit them;
+    \item Plot the fit results vs the time or size averages in each cluster.
 \end{enumerate}
 The number of analyzed inside and outside shots is shown in Tab.\ \ref{tab:shots}.
 \begin{table}[h!]
@@ -206,10 +207,10 @@ The number of analyzed inside and outside shots is shown in Tab.\ \ref{tab:shots
     \begin{tabular}{c|c|c|c}
         $\Omega_R/2\pi$ [\unit{\hertz}] & \# all shots & \# inside shots & \# outside shots \\
         \hline
-        300 & 1520 & 1459 & 972\\   
-        400 & 660 & 600 & 472\\
-        600 & 708 & 558 & 707\\
-        800 & 156 & 120 & 154\\     
+        300 & 1491 & 1435 & 938\\   
+        400 & 660 & 604 & 489\\
+        600 & 718 & 561 & 717\\
+        800 & 159 & 117 & 159\\     
     \end{tabular}
     \caption{Number of shots selected (where the inside or outside length is sufficient for the ACF computation). It is noticeable that the inside data for 300 \unit{\hertz} is way bigger than the rest.}
     \label{tab:shots}
@@ -225,15 +226,9 @@ with $\alpha = 1.7$ fine-tuned in order to capture the profile in the best way p
 An example of fit on the inside shots is presented in Fig.\ \ref{fig:fit_time_inside}, where the shots are grouped by time. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside} and \ref{fig:param_size_inside}. A global fit on all shots with the same radiation coupling is in Fig.\ \ref{fig:fit_omega_inside}.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width = \textwidth]{figures/chap2/fit_time_inside.png}
-    \caption{ACF average profiles of inside shots grouped by time in 10 blocks (solid lines) and fitted with the damped cosine (dotted lines) for each value of $\Omega_R$. Time increases from darker to lighter colors.}
+    \includegraphics[width = \textwidth]{figures/chap2/fit_size_inside.png}
+    \caption{ACF average profiles of inside shots grouped by size in 10 blocks (solid lines) and fitted with the damped cosine (dotted lines) for each value of $\Omega_R$. Size increases from darker to lighter colors.}
     \label{fig:fit_time_inside}
-\end{figure}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width = \textwidth]{figures/chap2/param_time_inside.png}
-    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots grouped by time (in log scale).}
-    \label{fig:param_time_inside}
 \end{figure}
 \begin{figure}[h!]
     \centering
@@ -241,12 +236,12 @@ An example of fit on the inside shots is presented in Fig.\ \ref{fig:fit_time_in
     \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots grouped by size (in log scale).}
     \label{fig:param_size_inside}
 \end{figure}
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[width = \textwidth]{figures/chap2/param_slope_inside.png}
-%     \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots grouped by slope (in log scale).}
-%     \label{fig:param_slope_inside}
-% \end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/param_time_inside.png}
+    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots grouped by time (in log scale).}
+    \label{fig:param_time_inside}
+\end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_omega_inside.png}
@@ -263,21 +258,21 @@ On the other hand, for the outside region ACF fit we use an exponential
 An example of fit on the outside shots is presented in Fig.\ \ref{fig:fit_time_outside}, where the shots are grouped by time. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_outside}, \ref{fig:param_size_outside}. A global fit on all shots with the same radiation coupling is in Fig.\ \ref{fig:fit_omega_outside}.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width = \textwidth]{figures/chap2/fit_time_outside.png}
-    \caption{ACF average profiles of outside shots grouped by time in 10 blocks (solid lines) and fitted with the exponential (dotted lines) for each value of $\Omega_R$. Time increases from darker to lighter colors.}
+    \includegraphics[width = \textwidth]{figures/chap2/fit_size_outside.png}
+    \caption{ACF average profiles of outside shots grouped by size in 10 blocks (solid lines) and fitted with the exponential (dotted lines) for each value of $\Omega_R$. Size increases from darker to lighter colors.}
     \label{fig:fit_time_outside}
-\end{figure}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width = \textwidth]{figures/chap2/param_time_outside.png}
-    \caption{Fit parameters $\ell_1$ and $\Delta$ and of outside shots grouped by time (in log scale).}
-    \label{fig:param_time_outside}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_size_outside.png}
     \caption{Fit parameters $\ell_1$ and $\Delta$ of outside shots grouped by size.}
     \label{fig:param_size_outside}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \textwidth]{figures/chap2/param_time_outside.png}
+    \caption{Fit parameters $\ell_1$ and $\Delta$ and of outside shots grouped by time (in log scale).}
+    \label{fig:param_time_outside}
 \end{figure}
 \begin{figure}[h!]
     \centering

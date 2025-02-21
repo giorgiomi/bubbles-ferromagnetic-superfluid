@@ -5,6 +5,8 @@ from util.parameters import importParameters
 from scipy.fft import rfft, rfftfreq
 from scipy.optimize import curve_fit
 from util.functions import corrGauss, corrExp
+from sklearn.cluster import KMeans
+
 
 # selected_flag = int(input("Enter 1 for selected, 0 for all: "))
 # f, seqs, Omega, knT, detuning, sel_days, sel_seqs = importParameters(selected_flag)
@@ -224,7 +226,7 @@ def AZcorr(x, win, cc):
         rr.append(ccp/np.sqrt(aap*bbp)/2+ccm/np.sqrt(aam*bbm)/2)
     return rr
 
-def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, center_raw, window_len, ZMF, region):
+def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, ZMF, region, in_left_raw, in_right_raw, n_clusters):
     '''
         Groups the data and computes the ACF for the inside region of the magnetization profile shots. It then fits the ACF means to a Gaussian correlation function and plots the results.
 
@@ -254,150 +256,88 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
         # Filter shots with inside length greater than 4*window_len and omega
         valid_indices = []
         for i, shot in enumerate(Z_raw):
-            s = size_raw[i]
-            c = center_raw[i]
+            i_l = in_left_raw[i]
+            i_r = in_right_raw[i]
             omega = omega_data[i]
             if region == 'inside':
-                inside = shot[int(c-s/2+10):int(c+s/2-10)]
+                inside = shot[int(i_l):int(i_r)]
                 if len(inside) > 4 * window_len and omega == om:
+                    # if (len(inside) > 390):
+                    #     print(len(inside))
                     valid_indices.append(i)
             elif region == 'outside':
-                left = shot[:int(c-s/2-10)]
-                right = shot[int(c+s/2+10):]
+                left = shot[:int(i_l-20)]
+                right = shot[int(i_r+20):]
                 if len(left) > 4 * window_len and len(right) > 4 * window_len and omega == om:
                     valid_indices.append(i)
 
-
         cat_data = cat_data_raw[valid_indices]
         Z = Z_raw[valid_indices]
-        size = size_raw[valid_indices]
-        center = center_raw[valid_indices]
-        print(om, len(cat_data_raw[omega_data == om]), len(cat_data))
+        in_left = in_left_raw[valid_indices]
+        in_right = in_right_raw[valid_indices]
+        print(om, len(cat_data_raw[omega_data == om]), len(cat_data))        
 
-        ## GATHER BY CAT
-        if cat_str != 'omega':
-            # Define cat blocks with a constant number of n_blocks
-            sorted_cat_data = np.sort(cat_data)
-            cat_blocks = [sorted_cat_data[int(i * len(sorted_cat_data) / n_blocks)] for i in range(n_blocks)]
-            # cat_blocks.append(sorted_cat_data[-1] + 1)  # To include the last block
-            # print(cat_blocks)
-            cat_block_sizes = np.diff(cat_blocks)
-            cat_block_sizes = np.append(cat_block_sizes, sorted_cat_data[-1] - cat_blocks[-1])
-            # cat_block_sizes = np.append(cat_block_sizes, 0)
-            # print(len(cat_block_sizes))
-        else:
-            cat_blocks = np.unique(cat_data)
-
-        ## PLOT SHOTS, not necessary
-        # fig, ax = plt.subplots(figsize=(10, 5), ncols=2)
-        # ax[0].pcolormesh(Z, vmin=-1, vmax=+1, cmap='RdBu')
-        # ax[0].set_xlabel('$x\ [\mu m]$')
-        # ax[0].set_ylabel('shots')
-
-        # # Sort Z by cat
-        # sorted_indices = np.argsort(cat_data)
-        # Z_sorted = Z[sorted_indices]
-
-        # # Display the ordered shots
-        # ax[1].pcolormesh(Z_sorted, vmin=-1, vmax=1, cmap='RdBu')
-        # ax[1].set_xlabel('$x\ [\mu m]$')
-        # ax[1].set_ylabel('shots')
-
-        # # Add horizontal lines to indicate the different blocks
-        # if cat_str != 'omega':
-        #     for i, start_cat in enumerate(cat_blocks):
-        #         end_cat = start_cat + cat_block_sizes[i]
-        #         block_indices = np.where((cat_data[sorted_indices] >= start_cat) & (cat_data[sorted_indices] < end_cat))[0]
-        #         # print(start_cat, end_cat, len(block_indices))
-        #         if len(block_indices) > 0:
-        #             ax[1].axhline(y=block_indices[-1], color='k', linestyle='--', linewidth=0.5)
-        # else:
-        #     for cat_val in cat_blocks:
-        #         block_indices = np.where(cat_data[sorted_indices] == cat_val)[0]
-        #         if len(block_indices) > 0:
-        #             ax[1].axhline(y=block_indices[-1], color='k', linestyle='--', linewidth=0.5)
-
-        # # plt.show()
+        ## CLUSTER BY CAT
+        cat_data_reshaped = cat_data.reshape(-1, 1)
+        kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(cat_data_reshaped)
+        labels = kmeans.labels_
+        # cat_blocks = [cat_data[labels == i] for i in range(n_clusters)]
 
         # Initialize lists to store ACF results for each cat block
         acf_values = []
-        cat_new = []
+        cl_idx = []
 
         # Group shots by cat block and compute FFT and ACF
-        if cat_str != 'omega':
-            for i, start_cat in enumerate(cat_blocks):
-                end_cat = start_cat + cat_block_sizes[i]
-                shots_in_block = Z[(cat_data >= start_cat) & (cat_data < end_cat)]
-                # print(i, start_cat, end_cat, len(shots_in_block))
-                if len(shots_in_block) > 0:
-                    for i, shot in enumerate(shots_in_block):
-                        s = size[(cat_data >= start_cat) & (cat_data < end_cat)][i]
-                        c = center[(cat_data >= start_cat) & (cat_data < end_cat)][i]
-                        if region == 'inside':
-                            inside = shot[int(c-s/2+10):int(c+s/2-10)]
-                            if ZMF:
-                                acf = AZcorr(inside, int(window_len), 1)
-                            else:
-                                acf = AZcorr(inside, int(window_len), 0)
-                            acf_values.append(acf)
-                        elif region == 'outside':
-                            left = shot[:int(c-s/2-10)]
-                            right = shot[int(c+s/2+10):]
-                            if ZMF:
-                                acf_left = AZcorr(left, int(window_len), 1)
-                                acf_right = AZcorr(right, int(window_len), 1)
-                            else:
-                                acf_left = AZcorr(left, int(window_len), 0)
-                                acf_right = AZcorr(right, int(window_len), 0)
-                            acf_values.append(0.5*(np.array(acf_left) + np.array(acf_right)))                        
-                        cat_new.append(start_cat)
-        else:
-            for cat_val in cat_blocks:
-                shots_in_block = Z[cat_data == cat_val]
-                if len(shots_in_block) > 0:
-                    for i, shot in enumerate(shots_in_block):
-                        s = size[cat_data == cat_val][i]
-                        c = center[cat_data == cat_val][i]
-                        if region == 'inside':
-                            inside = shot[int(c-s/2+10):int(c+s/2-10)]
-                            if ZMF:
-                                acf = AZcorr(inside, int(window_len), 1)
-                            else:
-                                acf = AZcorr(inside, int(window_len), 0)
-                            acf_values.append(acf)
-                        elif region == 'outside':
-                            left = shot[:int(c-s/2-10)]
-                            right = shot[int(c+s/2+10):]
-                            if ZMF:
-                                acf_left = AZcorr(left, int(window_len), 1)
-                                acf_right = AZcorr(right, int(window_len), 1)
-                            else:
-                                acf_left = AZcorr(left, int(window_len), 0)
-                                acf_right = AZcorr(right, int(window_len), 0)
-                            acf_values.append(0.5*(np.array(acf_left) + np.array(acf_right)))
-                        cat_new.append(cat_val)
+        for i in range(n_clusters):
+            shots_in_cluster = Z[labels == i]
+            if len(shots_in_cluster) > 0:
+                for j, shot in enumerate(shots_in_cluster):
+                    i_l = in_left[labels == i][j]
+                    i_r = in_right[labels == i][j]
+                    if region == 'inside':
+                        inside = shot[int(i_l):int(i_r)]
+                        if ZMF:
+                            acf = AZcorr(inside, int(window_len), 1)
+                        else:
+                            acf = AZcorr(inside, int(window_len), 0)
+                        acf_values.append(acf)
+                    elif region == 'outside':
+                        left = shot[:int(i_l-20)]
+                        right = shot[int(i_r+20):]
+                        if ZMF:
+                            acf_left = AZcorr(left, int(window_len), 1)
+                            acf_right = AZcorr(right, int(window_len), 1)
+                        else:
+                            acf_left = AZcorr(left, int(window_len), 0)
+                            acf_right = AZcorr(right, int(window_len), 0)
+                        acf_values.append(0.5*(np.array(acf_left) + np.array(acf_right)))
+                    cl_idx.append(i)
 
         acf_values = np.array(acf_values)
-        cat_new = np.array(cat_new)
+        cl_idx = np.array(cl_idx)
 
         # Compute mean ACF for each cat block
-        acf_means = {start_cat: np.mean(acf_values[cat_new == start_cat], axis=0) for start_cat in cat_blocks if start_cat in cat_new}
-        # print(acf_means.keys())
+        acf_means = {i: np.mean(acf_values[i == cl_idx], axis=0) for i in range(n_clusters)}
+        # print(acf_means.values())
+
+        # Avg cat inside each cluster
+        avg_cat = np.array([np.mean(cat_data[labels == i]) for i in range(n_clusters)])
+        err_cat = np.array([np.std(cat_data[labels == i])/np.sqrt(len(cat_data[labels == i])) for i in range(n_clusters)])
 
         # Fit the ACF means to the Gaussian correlation function
         fit_params = {}
         fit_errors = {}
         tr_idx = 21 # 21 means all data
-        for start_cat, acf_mean in acf_means.items():
+        for cl_idx, acf_mean in acf_means.items():
             try:
                 if region == 'inside':
                     popt, pcorr = curve_fit(corrGauss, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1, 2], bounds=((0, -1, 0), (20, 1, 20)))
                 elif region == 'outside':
                     popt, pcorr = curve_fit(corrExp, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1], bounds=((0, -1), (20, 1)))
-                fit_params[start_cat] = popt
-                fit_errors[start_cat] = np.sqrt(np.diag(pcorr))
+                fit_params[cl_idx] = popt
+                fit_errors[cl_idx] = np.sqrt(np.diag(pcorr))
             except RuntimeError:
-                print(f"Fit failed for {cat_str} block {start_cat}")
+                print(f"Fit failed for {cat_str} cluster {cl_idx}")
 
         # Plot fit parameters vs cat
         cats = list(fit_params.keys())
@@ -419,15 +359,10 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
                 ax_fit[2].errorbar(1150/np.array(cats), l2_values, yerr=dl2_values, fmt='o', capsize=2, color='tab:blue')
                 ax_fit[2].set_xlabel('$kn/\Omega$')
         else:
-            # Create bins from start_cat to end_cat for each block
-            bin_semiwidths = [cat_block_sizes[i]/2 for i in range(len(cat_block_sizes))]
-            bin_centers = [cat_blocks[i] + bin_semiwidths[i] for i in range(len(cat_blocks))]
-            # print(len(bin_centers), len(bin_semiwidths), len(l1_values))
-# 
-            ax_fit[0].errorbar(bin_centers, l1_values, xerr=bin_semiwidths, yerr=dl1_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
-            ax_fit[1].errorbar(bin_centers, off_values, xerr=bin_semiwidths, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
+            ax_fit[0].errorbar(avg_cat, l1_values, xerr=err_cat, yerr=dl1_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
+            ax_fit[1].errorbar(avg_cat, off_values, xerr=err_cat, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
             if region == 'inside':
-                ax_fit[2].errorbar(bin_centers, l2_values, xerr=bin_semiwidths, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
+                ax_fit[2].errorbar(avg_cat, l2_values, xerr=err_cat, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
                 ax_fit[2].set_xlabel(f'{cat_str}')
             ax_fit[0].set_xlabel(f'{cat_str}')
             ax_fit[1].set_xlabel(f'{cat_str}')
@@ -435,41 +370,46 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
         if cat_str == 'time':
             xlim = [0.5, 500]
         elif cat_str == 'size':
-            xlim = [25, 280]
+            xlim = [25, 300]
         elif cat_str == 'slope':
             xlim = [1e-1, 4e2]
         elif cat_str == 'omega':
             xlim = [1, 4] # kn/omega, not omega
         ax_fit[0].set_title(f'First Fit Parameter ($\ell_1$) vs {cat_str}')
         ax_fit[0].set_ylabel('$\ell_1\ [\mu m]$')
-        # ax_fit[0].set_xscale('log')
         ax_fit[0].set_xlim(xlim)
         ax_fit[0].legend()
 
         ax_fit[1].set_title(f'Second Fit Parameter ($\Delta$) vs {cat_str}')
         ax_fit[1].set_ylabel('$\Delta$')
-        # ax_fit[1].set_xscale('log')
         # ax_fit[1].set_yscale('log')
         ax_fit[1].set_xlim(xlim)
         ax_fit[1].legend()
 
+        if cat_str == 'time':
+            ax_fit[0].set_xscale('log')
+            ax_fit[1].set_xscale('log')
+            ax_fit[2].set_xscale('log')
+
         if region == 'inside':
             ax_fit[2].set_title(f'Third Fit Parameter ($\ell_2$) vs {cat_str}')
             ax_fit[2].set_ylabel('$\ell_2\ [\mu m]$')
-            ax_fit[2].set_xscale('log')
             ax_fit[2].set_xlim(xlim)
             ax_fit[2].legend()
 
         ## Plot ACF means and fits
         if cat_str != 'omega':
-            colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
-            for color, (start_cat, acf_mean) in zip(colors, acf_means.items()):
-                ax_pro[k].plot(CLG, acf_mean, color=color, label=f'{cat_str} {start_cat:.1f}', alpha=0.5)
-                if start_cat in fit_params:
+            sorted_indices = np.argsort(avg_cat)
+            sorted_colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
+            for idx, color in zip(sorted_indices, sorted_colors):
+                cl_idx = cats[idx]
+                acf_mean = acf_means[cl_idx]
+                ax_pro[k].plot(CLG, acf_mean, color=color, label=f'{cl_idx}', alpha=0.5)
+                if cl_idx in fit_params:
                     if region == 'inside':
-                        fitted_curve = corrGauss(CLG, *fit_params[start_cat])
+                        fitted_curve = corrGauss(CLG, *fit_params[cl_idx])
                     elif region == 'outside':
-                        fitted_curve = corrExp(CLG, *fit_params[start_cat])
+                        fitted_curve = corrExp(CLG, *fit_params[cl_idx])
                     ax_pro[k].plot(CLG, fitted_curve, linestyle='--', color=color)
             ax_pro[k].set_title(fr'$\Omega_R/2\pi = {om:.0f}$ Hz')
             ax_pro[k].set_xlabel('$\Delta x\ [\mu m]$')
@@ -480,9 +420,9 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
             color = colors_om[k]
             ax_om.plot(CLG, acf_mean, color=color, label=fr'$\Omega_R/2\pi = {om:.0f}$ Hz')
             if region == 'inside':
-                fitted_curve = corrGauss(CLG, *fit_params[start_cat])
+                fitted_curve = corrGauss(CLG, *fit_params[cl_idx])
             elif region == 'outside':
-                fitted_curve = corrExp(CLG, *fit_params[start_cat])
+                fitted_curve = corrExp(CLG, *fit_params[cl_idx])
             ax_om.plot(CLG, fitted_curve, linestyle='--', color=color)
             ax_om.set_xlabel('$\Delta x\ [\mu m]$')
             ax_om.set_ylabel('ACF')
@@ -496,5 +436,5 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, size_raw, ce
     fig_om.tight_layout()
     # fig_pro.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
     # fig_fit.savefig(f"thesis/figures/chap2/param_{cat_str}_{region}.png", dpi=500)
-    fig_om.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
+    # fig_om.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
     plt.show()
