@@ -1,4 +1,4 @@
-In this chapter we describe the experimental platform in which the measurements were carried out (Ref. \cite{zenesini2024false}) and we will then proceed with the FFT and ACF data analysis. The code for the analysis was written in the \textbf{\texttt{Python}} programming language.
+In this chapter we describe the experimental platform in which the measurements were carried out (Ref.\ \cite{zenesini2024false}) and we will then proceed with the FFT and ACF data analysis. The code for the analysis was written in the \textbf{\texttt{Python}} programming language.
 
 \section{Experimental platform}
 The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom 
@@ -100,6 +100,7 @@ Once the bubble width $\sigma_B$ is retrieved, it is useful to order the shots i
 An example of sorting by both time and size is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
 
 \section{Parameters analysis}
+\label{sec:params}
 In order to look at the distribution of the bubble parameters versus the experimental time or the bubble size, we decide to group all shots by the radiation coupling $\Omega_R$ (ignoring the detuning $\delta$) and plot the bubble width and tail width, the latter being the left-right average $(w_1+w_2)/2$ from Eq.\ \eqref{eq:fit_exp}. 
 \begin{figure}[h!]
     \centering
@@ -196,7 +197,7 @@ The routine is the following:
     \item Gather all shots with the same $\Omega_R$ and save their bubble parameters;
     \item Select only the shots where the inside or outside region is at least $4W$ pixels long;
     \item Sort the shots based on the waiting time or the bubble size;
-    \item Cluster the shots based on the sorting parameter;
+    \item Cluster the shots based on the sorting parameter (as in Sec.\ \ref{sec:params});
     \item Compute the ACF profile for each shot in a cluster and take the average;
     \item Plot the ACF averages for each cluster and fit them;
     \item Plot the fit results vs the time or size averages in each cluster.
@@ -218,28 +219,29 @@ The number of analyzed inside and outside shots is shown in Tab.\ \ref{tab:shots
 
 \paragraph{Inside}
 The ACF outside profiles can be fitted with a damped cosine of the form
-\begin{equation*}
+\begin{equation}
     \mathcal{A}_{\rm fit}(x) = (1 - \Delta)\cos(\frac{x}{\ell_2})\exp[-\left(\frac{x}{\ell_1}\right)^\alpha] + \Delta\, ,
-\end{equation*}
+    \label{eq:damp}
+\end{equation}
 with $\alpha = 1.7$ fine-tuned in order to capture the profile in the best way possible.\footnote{Literature suggests to use $\alpha = 2$, a gaussian damping.} One could theoretically set $\alpha$ as a fit parameter, but this would result in a worse estimation of the length $\ell_1$, with the fit that adapts to the data by changing only $\alpha$.
 
 An example of fit on the inside shots is presented in Fig.\ \ref{fig:fit_time_inside}, where the shots are grouped by time. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside} and \ref{fig:param_size_inside}. A global fit on all shots with the same radiation coupling is in Fig.\ \ref{fig:fit_omega_inside}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_size_inside.png}
-    \caption{ACF average profiles of inside shots grouped by size in 10 blocks (solid lines) and fitted with the damped cosine (dotted lines) for each value of $\Omega_R$. Size increases from darker to lighter colors.}
+    \caption{ACF average profiles of inside shots clustered by size in 10 blocks (solid lines) and fitted with the damped cosine of Eq.\ \eqref{eq:damp} (dotted lines) for each value of $\Omega_R$. Size increases from darker to lighter colors.}
     \label{fig:fit_time_inside}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_size_inside.png}
-    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots grouped by size (in log scale).}
+    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots clustered by size (in log scale).}
     \label{fig:param_size_inside}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_time_inside.png}
-    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots grouped by time (in log scale).}
+    \caption{Fit parameters $\ell_1$, $\Delta$ and $\ell_2$ of inside shots clustered by time (in log scale).}
     \label{fig:param_time_inside}
 \end{figure}
 \begin{figure}[h!]
@@ -248,30 +250,31 @@ An example of fit on the inside shots is presented in Fig.\ \ref{fig:fit_time_in
     \caption{ACF average profiles of inside shots grouped by $\Omega_R$ (solid lines) and fitted with the damped cosine (dotted lines).}
     \label{fig:fit_omega_inside}
 \end{figure}
-The time dependence seems to be the most noticeable. From Fig.\ \ref{fig:param_time_inside}, the first parameter $\ell_1$ is decreasing with time, while the second parameter $\Delta$ is increasing and approaching 1. This behaviour could mean that the magnetization inside the bubble loses (?) its spatial information with time.
+The size dependence seems to be the most noticeable. From Fig.\ \ref{fig:param_size_inside}, the first parameter $\ell_1$ is decreasing with size, while the second parameter $\Delta$ is increasing and approaching 1. This behaviour could mean that the magnetization inside the bubble loses (?) its spatial information with size.
 
 \paragraph{Outside}
 On the other hand, for the outside region ACF fit we use an exponential
-\begin{equation*}
+\begin{equation}
     \mathcal{A}_{\rm fit}(x) = (1-\Delta)\exp[-\frac{x}{\ell_1}] + \Delta\, .
-\end{equation*}
+    \label{eq:exp}
+\end{equation}
 An example of fit on the outside shots is presented in Fig.\ \ref{fig:fit_time_outside}, where the shots are grouped by time. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_outside}, \ref{fig:param_size_outside}. A global fit on all shots with the same radiation coupling is in Fig.\ \ref{fig:fit_omega_outside}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_size_outside.png}
-    \caption{ACF average profiles of outside shots grouped by size in 10 blocks (solid lines) and fitted with the exponential (dotted lines) for each value of $\Omega_R$. Size increases from darker to lighter colors.}
+    \caption{ACF average profiles of outside shots clustered by size in 10 blocks (solid lines) and fitted with the exponential of Eq.\ \eqref{eq:exp} (dotted lines) for each value of $\Omega_R$. Size increases from darker to lighter colors.}
     \label{fig:fit_time_outside}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_size_outside.png}
-    \caption{Fit parameters $\ell_1$ and $\Delta$ of outside shots grouped by size.}
+    \caption{Fit parameters $\ell_1$ and $\Delta$ of outside shots clustered by size.}
     \label{fig:param_size_outside}
 \end{figure}
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_time_outside.png}
-    \caption{Fit parameters $\ell_1$ and $\Delta$ and of outside shots grouped by time (in log scale).}
+    \caption{Fit parameters $\ell_1$ and $\Delta$ and of outside shots clustered by time (in log scale).}
     \label{fig:param_time_outside}
 \end{figure}
 \begin{figure}[h!]
@@ -280,6 +283,6 @@ An example of fit on the outside shots is presented in Fig.\ \ref{fig:fit_time_o
     \caption{ACF average profiles of outside shots grouped by $\Omega_R$ (solid lines) and fitted with the exponential (dotted lines).}
     \label{fig:fit_omega_outside}
 \end{figure}
-In contrast to the inside bubble region, what emerges outside the bubble is that the characteristic length of the autocorrelation $\ell_1$ is increasing with time and the offset is decreasing (Fig.\ \ref{fig:param_time_outside}), which is the opposite behaviour.
+In contrast to the inside bubble region, what emerges outside the bubble is that the characteristic length of the autocorrelation $\ell_1$ is increasing with size and the offset is decreasing (Fig.\ \ref{fig:param_time_outside}), which is the opposite behaviour.
 
 % \subsection{Border alignment}
