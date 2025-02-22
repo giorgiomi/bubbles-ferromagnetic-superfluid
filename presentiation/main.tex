@@ -1,0 +1,155 @@
+\documentclass[handout]{beamer}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz-cd,wrapfig}
+\usepackage{tcolorbox}
+\usepackage{listings}
+
+% Maths
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{physics}
+\usepackage{siunitx}
+
+% Backup slides
+\newcommand{\backupbegin}{
+    \newcounter{finalframe}
+    \setcounter{finalframe}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+    \setcounter{framenumber}{\value{finalframe}}
+}
+
+% Infos
+\title{Bubbles in a ferromagnetic superfluid}
+\author{\\\textbf{Candidate:} Giorgio Micaglio\\ \textbf{Supervisor:} Alessandro Zenesini }
+%\subtitle{}
+\date{March 10, 2025}
+\institute{\\~\\Bachelor's Degree in Physics}
+%\titlegraphic{...} 
+
+%Bibliography
+\usepackage[style=numeric, maxnames=4,backend=bibtex]{biblatex}
+% other styles: numeric authortitle
+\addbibresource{biblio.bib}
+\DeclareBibliographyCategory{fullcited} %for not citing in bibliography
+\newcommand{\mybibexclude}[1]{\addtocategory{fullcited}{#1}}
+
+% Theme settings
+\usetheme[physics]{beunitn}
+\usecolortheme{rose}
+\setbeamercovered{dynamic}
+
+
+\begin{document}
+
+\begin{frame}[plain]
+    \maketitle
+\end{frame}
+
+\begin{frame}{Overview}
+    \begin{itemize}
+        \item \textbf{Introduction}: What is a ferromagnetic superfluid?
+        \item \textbf{Theoretical background}: Coherently coupled BEC spin-mixtures
+        \item \textbf{Data analysis}: False Vacuum Decay bubbles
+        \item \textbf{Conclusions}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Introduction}
+    What is a \textbf{ferromagnetic superfluid}?
+\end{frame}
+
+\begin{frame}{Theoretical background: Ideal Bose gas}
+    The ideal Bose gas is a quantum system of $N$ non-interacting bosons, described by statistical mechanics.
+    \begin{equation*}
+        \langle n_i \rangle = \frac{1}{e^{\beta(\epsilon_i - \mu)}-1}
+    \end{equation*}
+    The occupation number of the ground state $N_0 = \langle n_0\rangle$ corresponds to the condensation. There is a phase transition at $T = T_c$.
+    \begin{equation*}
+        \frac{N_0}{N} = 1-\left(\frac{T}{T_c}\right)^\alpha \quad \text{for } T < T_c
+    \end{equation*}
+    In a finite box $\alpha = 3/2$, in harmonic confinement $\alpha = 3$.
+\end{frame}
+
+\begin{frame}{Theoretical background: Gross-Pitaevskii equation}
+    A system of weakly-interacting bosons can be described by a single wavefunction by a mean-field approximation, yielding the GPE
+    \begin{equation*}
+        i\hbar \pdv{\psi(x,t)}{t} = \left[ 
+            -\frac{\hbar^2}{2m}\nabla^2 + V(x,t) + g|\psi(x,t)|^2
+        \right] \psi(x,t)
+    \end{equation*}
+    In the stationary case
+    \begin{equation*}
+        \left[ 
+            -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g|\psi(x)|^2
+        \right] \psi(x) = \mu \psi(x)
+    \end{equation*}
+    When the interaction dominates
+    \begin{equation*}
+        n(x) = \frac{\mu - V(x)}{g}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Theoretical background: Two-component mixtures}
+    The GPEs are coupled because of the interspecies interaction constant
+    \begin{align*}
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{aa}|\psi_a(x)|^2 + g_{ab}|\psi_b(x)|^2
+        \right] \psi_a(x) = \mu_a \psi_a(x) \\
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{ab}|\psi_a(x)|^2 + g_{bb}|\psi_b(x)|^2
+        \right] \psi_b(x) = \mu_b \psi_b(x)
+    \end{align*}
+    Depending on the values of $g_{aa}$, $g_{bb}$ and $g_{ab}$, the system GS can behave in different manners
+\end{frame}
+
+\begin{frame}{Theoretical background: Two-component mixtures}
+    The mixture can be miscible or immiscible: buoyancy effect
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../thesis/figures/chap1/buoyancy.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Theoretical background: Coherent coupling}
+    
+\end{frame}
+
+\begin{frame}{Theoretical background: False Vacuum Decay}
+    
+\end{frame}
+
+\begin{frame}{Data analysis: Experimental platform}
+
+\end{frame}
+
+\begin{frame}{Data analysis: Bubble fit}
+
+\end{frame}
+
+\begin{frame}{Data analysis: Shot sorting}
+
+\end{frame}
+
+\begin{frame}{Data analysis: Parameters clustering}
+
+\end{frame}
+
+\begin{frame}{Data analysis: FFT and ACF}
+
+\end{frame}
+
+\begin{frame}{Conclusions}
+    
+\end{frame}
+
+\begin{frame}
+    Thank you for the attention
+\end{frame}
+
+\backupbegin
+\begin{frame}
+    
+\end{frame}
+\backupend
+
+\end{document}

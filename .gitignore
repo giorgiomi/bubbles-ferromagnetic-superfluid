@@ -51,6 +51,9 @@ main-frn.pdf
 main-frn.tex
 *.bcf-SAVE-ERROR
 *.bbl-SAVE-ERROR
+*.nav
+*.snm
+main-blx.bib
 
 # images
 *.png
@@ -58,3 +61,4 @@ main-frn.tex
 
 # articles and books
 *.pdf
+!main.pdf

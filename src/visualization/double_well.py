@@ -71,7 +71,10 @@ for i, om in enumerate(range(200, 1400, 100)):
         min1, min2, _ = find_minima(par)
         
         Z = np.linspace(-1, 1, 1000)
-        axs[i].plot(Z, V_MF(Z, par) - min2[1], color='tab:gray')
+        norm = plt.Normalize(-1, 1)
+        colors = plt.cm.RdBu(norm(Z))
+        for j in range(len(Z) - 1):
+            axs[i].plot(Z[j:j+2], V_MF(Z[j:j+2], par) - min2[1], color=colors[j])
 
         param_text = f"$\Omega_R/2\pi$ = {par[0]}\n$\delta$ = {par[1]}\n|k|n = {np.abs(par[2])*par[3]}"
         axs[i].annotate(param_text, xy=(0.75, 0.95), xycoords='axes fraction', fontsize=12,

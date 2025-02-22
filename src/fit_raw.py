@@ -159,25 +159,54 @@ for fs in sel_days: # all seqs
                     chi_squared = np.sum((M[i] - bubblePieces(xx, *best_pieces)) ** 2)
 
                     # if not save_flag and best_BS_left[3] < 4 and best_BS_left[3] > 0: 
-                    if not save_flag and best_BS_right[1] - best_BS_left[1] > 300:
+                    if not save_flag: #and best_BS_right[1] - best_BS_left[1] > 300:
                         # print(f"{best_BS_left[1]:.2f} +/- {best_BS_left[3]:.2f}")
                         print(chi_squared, best_BS_left[1], best_BS_right[1])
                         print(best_pieces[1], best_pieces[2])
                         # Plot bubble and bubbleshoulder fit
-                        plt.figure(figsize=(8,4))
-                        plt.plot(xx, M[i], label="Data")
-                        plt.plot(xx, bubble(xx, *best_2arctan), label="Double arctan fit")
-                        plt.plot(xx, bubblePieces(xx, *best_pieces), label="Piecewise fit")
-                        plt.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
-                        plt.plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
-                        plt.title(f'Day: {fs}, Sequence: {ei}, Shot: {i}')
-                        # plt.text(0.7, 0.1, f'Chi-squared: {chi_squared:.2f}', transform=plt.gca().transAxes,
-                        #          fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white'))
-                        plt.xlabel('$x\ [\mu m]$')
-                        plt.ylabel('$Z(x)$')
-                        plt.legend()
+                        fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+
+                        # Left subplot: fit with bubbles and bubbleshoulders
+                        axs[0].plot(xx, M[i], label="Data")
+                        axs[0].plot(xx, bubble(xx, *best_2arctan), label="Double arctan fit")
+                        axs[0].plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
+                        axs[0].plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
+                        axs[0].set_title(f'Day: {fs}, Sequence: {ei}, Shot: {i} - Bubble and Shoulder Fits')
+                        axs[0].set_xlabel('$x\ [\mu m]$')
+                        axs[0].set_ylabel('$Z(x)$')
+                        axs[0].legend()
+
+                        # Zoomed box for left shoulder
+                        ax_inset = axs[0].inset_axes([0.55, 0.55, 0.4, 0.4])
+                        ax_inset.plot(xx_left, Mi_left, label="Left shoulder data")
+                        ax_inset.plot(xx_left, bubble(xx_left, *best_2arctan), color='tab:orange')
+                        ax_inset.plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit", color='tab:green')
+                        ax_inset.set_xlim(xx_left[0], xx_left[-1])
+                        ax_inset.set_ylim(min(Mi_left), max(Mi_left))
+                        ax_inset.set_xticks([])
+                        ax_inset.set_yticks([])
+                        # ax_inset.set_title('Zoomed Left Shoulder')
+                        # ax_inset.legend()
+
+                        # Add a rectangle to indicate the zoomed region
+                        rect = plt.Rectangle((xx_left[0], min(Mi_left)), xx_left[-1] - xx_left[0], max(Mi_left) - min(Mi_left), 
+                                             edgecolor='black', facecolor='none', linestyle='--')
+                        axs[0].add_patch(rect)
+
+                        # # Add lines connecting the rectangle to the zoomed box
+                        # axs[0].plot([xx_left[0], 222], [0.52, 0.93], color='black', linestyle='-')
+                        # axs[0].plot([xx_left[0], xx_left[0]], [max(Mi_left), axs[0].get_ylim()[1]], color='black', linestyle='-')
+
+                        # Right subplot: fit with pieces
+                        axs[1].plot(xx, M[i], label="Data")
+                        axs[1].plot(xx, bubblePieces(xx, *best_pieces), label="Piecewise fit")
+                        axs[1].set_title(f'Day: {fs}, Sequence: {ei}, Shot: {i} - Piecewise Fit')
+                        axs[1].set_xlabel('$x\ [\mu m]$')
+                        axs[1].set_ylabel('$Z(x)$')
+                        axs[1].legend()
+
                         plt.tight_layout()
-                        # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
+                        plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
                         plt.show()
 
                     # Selection on shots
