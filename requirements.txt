@@ -4,3 +4,4 @@ matplotlib=3.10.0
 pandas=2.2.3
 scipy=1.15.1
 pytables=3.10.2
+scikit-learn=1.6.1

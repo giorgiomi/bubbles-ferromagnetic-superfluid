@@ -48,17 +48,29 @@
 \end{frame}
 
 \begin{frame}{Overview}
-    \begin{itemize}
-        \item \textbf{Introduction}: What is a ferromagnetic superfluid?
-        \item \textbf{Theoretical background}: Coherently coupled BEC spin-mixtures
-        \item \textbf{Data analysis}: False Vacuum Decay bubbles
-        \item \textbf{Conclusions}
-    \end{itemize}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \begin{itemize}
+                \item \textbf{Introduction}: What is a ferromagnetic superfluid?
+                \item \textbf{Theoretical background}: Coherently coupled BEC spin-mixtures
+                \item \textbf{Data analysis}: False Vacuum Decay bubbles
+                \item \textbf{Conclusions}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=\linewidth]{../thesis/figures/chap1/artistic.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 \begin{frame}{Introduction}
     What is a \textbf{ferromagnetic superfluid}?
 \end{frame}
+
+% \section{Theoretical background}
 
 \begin{frame}{Theoretical background: Ideal Bose gas}
     The ideal Bose gas is a quantum system of $N$ non-interacting bosons, described by statistical mechanics.
@@ -114,28 +126,83 @@
     
 \end{frame}
 
+\begin{frame}{Theoretical background: Ferromagnetism}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../thesis/figures/chap1/ferro.png}
+    \end{figure}
+\end{frame}
+
 \begin{frame}{Theoretical background: False Vacuum Decay}
-    
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{../thesis/figures/chap1/FVD.png}
+    \end{figure}    
 \end{frame}
 
 \begin{frame}{Data analysis: Experimental platform}
+    The experiment uses $^{23}$Na atoms prepared in the state
+    \begin{equation*}
+        \ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}
+    \end{equation*}
+    which is coupled to the state $\ket{1, -1} = \ket{\downarrow}$.
 
+    The system is cigar-shaped with Thomas-Fermi radii 
+    \begin{equation*}
+        R_x = 200\ \unit{\micro\meter} \quad R_\rho = 2\ \unit{\micro\meter}
+    \end{equation*}
+
+    The magnetization is computed from the densities $n_\uparrow(x)$, $n_\downarrow(x)$
+    \begin{equation*}
+        Z(x) = \frac{n_\uparrow(x) - n_\downarrow(x)}{n_\uparrow(x) + n_\downarrow(x)}
+    \end{equation*}
 \end{frame}
 
 \begin{frame}{Data analysis: Bubble fit}
-
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../thesis/figures/chap2/arctan_fit.png}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Data analysis: Shot sorting}
-
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../thesis/figures/chap2/shot_sorting.png}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Data analysis: Parameters clustering}
-
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.9\textwidth]{../thesis/figures/chap2/b_param_cluster.png}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Data analysis: FFT and ACF}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.9\textwidth]{../thesis/figures/chap2/inside_omdet.png}
+    \end{figure}
+\end{frame}
 
+\begin{frame}{Data analysis: FFT and ACF}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../thesis/figures/chap2/inside_fft_avg.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Data analysis: FFT and ACF}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_size_inside.png}
+    \end{figure}
+    \vspace{-0.5cm}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_size_outside.png}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Conclusions}
@@ -143,7 +210,7 @@
 \end{frame}
 
 \begin{frame}
-    Thank you for the attention
+    Thank you for your attention
 \end{frame}
 
 \backupbegin

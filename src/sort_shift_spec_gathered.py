@@ -75,6 +75,25 @@ for om in omega_vals:
         # plt.savefig("thesis/figures/chap2/shot_sorting.png", dpi=500)
         plt.show()
 
+        # artistic plot
+        # Align shots based on center
+        aligned_Z = []
+        for i in range(len(Z_sorted)):
+            shift = int(center[non_zero_indices][sorted_indices][i])
+            aligned_shot = np.roll(Z_sorted[i], -shift + w)
+            aligned_Z.append(aligned_shot)
+        aligned_Z = np.array(aligned_Z)
+        aligned_Z = aligned_Z[:, 20:-20]
+        print(max(center[non_zero_indices][sorted_indices]))
+
+        fig, ax = plt.subplots(figsize=(6, 8), ncols=1)
+        ax.pcolormesh(aligned_Z, vmin=-1, vmax=1, cmap='RdBu')
+        ax.set_xticks([])
+        ax.set_yticks([])
+        plt.tight_layout()
+        plt.savefig("thesis/figures/chap1/artistic.png", dpi=500)
+        plt.show()
+
         in_left_sorted = in_left[non_zero_indices][sorted_indices]
         in_right_sorted = in_right[non_zero_indices][sorted_indices]
         inside_fft_magnitudes_TRUE = []
