@@ -4,12 +4,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from util.parameters import importParameters
 from sklearn.cluster import KMeans
+import matplotlib.gridspec as gridspec
 
 # Data
 selected_flag = int(pd.read_csv(f"data/gathered/selected.csv", header=None).to_numpy().flatten()[0])
 f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters(selected_flag)
 w = 200 # Thomas-Fermi radius, always the same
 n_clusters = 20
+wlim = 50
 
 # Print script purpose
 print(f"We are clustering guys, n_cl = {n_clusters}")
@@ -31,7 +33,16 @@ omega_fix = {300: 300, 400: 600, 600: 400, 800:800} #?? what is going on
 
 # create figures
 fig1 = plt.figure(figsize=(12,8))
-ax = [plt.subplot(321), plt.subplot(323), plt.subplot(325), plt.subplot(122)]
+# ax = [plt.subplot(321), plt.subplot(323), plt.subplot(325), plt.subplot(322), plt.subplot(326)]
+gs = gridspec.GridSpec(3, 2, height_ratios=[1, 1, 1], width_ratios=[2, 2]) 
+
+# Assigning subplots
+ax1 = fig1.add_subplot(gs[0, 0])  # Upper left
+ax2 = fig1.add_subplot(gs[1, 0])  # Middle left
+ax3 = fig1.add_subplot(gs[2, 0])  # Lower left
+ax4 = fig1.add_subplot(gs[0:2, 1])  # Expands full height (right side)
+ax5 = fig1.add_subplot(gs[2, 1])  # Lower right
+
 
 fig2, ax_cl = plt.subplots(len(omega_vals), 3, figsize=(15, 8), sharex='col')
 
@@ -69,8 +80,8 @@ for om in omega_vals:
     clustered_t = np.array([np.mean(time[labels == i]) for i in range(n_clusters)])
     err_t = np.array([np.std(time[labels == i])/np.sqrt(len(time[labels == i])) for i in range(n_clusters)])
 
-    ax[1].errorbar(clustered_t, avg_exp_width, xerr=err_t, yerr=err_exp_width, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
-    ax[2].errorbar(clustered_t, avg_size, xerr=err_t, yerr=err_size, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
+    ax2.errorbar(clustered_t, avg_exp_width, xerr=err_t, yerr=err_exp_width, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
+    ax3.errorbar(clustered_t, avg_size, xerr=err_t, yerr=err_size, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
 
     # Perform linear fit on avg_size vs clustered_t
     sorted_indices = np.argsort(clustered_t)
@@ -85,7 +96,7 @@ for om in omega_vals:
     print(om, m, dm)
 
     # Plot the linear fit
-    ax[2].plot(sorted_clustered_t[:7], fit_line(sorted_clustered_t[:7]), '--', label=f'Fit $\Omega_R/2\pi = {om}$ Hz', color=ax[2].lines[-1].get_color())
+    ax3.plot(sorted_clustered_t[:7], fit_line(sorted_clustered_t[:7]), '--', label=f'Fit $\Omega_R/2\pi = {om}$ Hz', color=ax3.lines[-1].get_color())
     
     # Reshape size for KMeans
     size_reshaped = size.reshape(-1, 1)
@@ -106,39 +117,48 @@ for om in omega_vals:
     for i in range(n_clusters):
         # print(om, len(time[labels == i]), len(time[labels_size == i]))
         ax_cl[omega_vals.index(om), 0].plot(time[labels == i], size[labels == i], 'o', markersize=4, alpha=1)
-        ax_cl[omega_vals.index(om), 1].plot(time[labels == i], exp_width[labels == i], 'o', markersize=4, alpha=1)
-        ax_cl[omega_vals.index(om), 2].plot(size[labels_size == i], exp_width[labels_size == i], 'o', markersize=4, alpha=1)
+        ax_cl[omega_vals.index(om), 1].plot(time[(labels == i) & (exp_width < wlim)], exp_width[(labels == i) & (exp_width < wlim)], 'o', markersize=4, alpha=1)
+        ax_cl[omega_vals.index(om), 2].plot(size[(labels_size == i) & (exp_width < wlim)], exp_width[(labels_size == i) & (exp_width < wlim)], 'o', markersize=4, alpha=1)
 
-    ax_cl[omega_vals.index(om), 0].set_ylabel("$\sigma_B\ [\mu m]$")
+    str = rf"$\Omega_R/2\pi = {om}$ Hz" + "\n\n" + r"$\sigma_B\ [\mu m]$"
+    ax_cl[omega_vals.index(om), 0].set_ylabel(str)
     ax_cl[omega_vals.index(om), 0].set_xscale("log")
     ax_cl[omega_vals.index(om), 1].set_ylabel("w $[\mu m]$")
     ax_cl[omega_vals.index(om), 1].set_xscale("log")
+    # ax_cl[omega_vals.index(om), 1].set_ylim([-2, 52])
     ax_cl[omega_vals.index(om), 2].set_ylabel("w $[\mu m]$")
+    # ax_cl[omega_vals.index(om), 2].set_ylim([-2, 52])
+    ax_cl[omega_vals.index(om), 2].set_xlim([20, 300])
 
-    ax[0].errorbar(clustered_s, avg_exp_width_size, xerr=err_s, yerr=err_exp_width_size, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2) 
+    ax1.errorbar(clustered_s, avg_exp_width_size, xerr=err_s, yerr=err_exp_width_size, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2) 
 
-    ax[3].errorbar(om, np.mean(exp_width), yerr=np.std(exp_width)/np.sqrt(len(exp_width)), fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz', color='grey')
+    ax4.errorbar(om, np.mean(exp_width), yerr=np.std(exp_width)/np.sqrt(len(exp_width)), fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz', color='grey')
 
-ax[0].set_xlabel("$\sigma_B\ [\mu m]$")
-ax[0].set_ylabel("w $[\mu m]$")
-# ax[0].set_yscale("log")
-ax[0].legend(fontsize='small', loc='upper left')
+    ax5.errorbar(om, m, yerr=dm, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz', color='grey')
 
-ax[1].set_xlabel("t [ms]")
-ax[1].set_ylabel("w $[\mu m]$")
-# ax[1].set_yscale("log")
-ax[1].set_xscale("log")
-ax[1].legend(fontsize='small', loc='upper left')
+ax1.set_xlabel("$\sigma_B\ [\mu m]$")
+ax1.set_ylabel("w $[\mu m]$")
+# ax1.set_yscale("log")
+ax1.legend(fontsize='small', loc='upper left')
 
-ax[2].set_xlabel("t [ms]")
-ax[2].set_ylabel("$\sigma_B\ [\mu m]$")
-ax[2].set_xscale("log")
-ax[2].set_yscale('log')
-# ax[2].legend(fontsize='small', loc='upper right')
+ax2.set_xlabel("t [ms]")
+ax2.set_ylabel("w $[\mu m]$")
+# ax2.set_yscale("log")
+ax2.set_xscale("log")
+ax2.legend(fontsize='small', loc='upper left')
 
-ax[3].set_xlabel("$\Omega_R/2\pi$ [Hz]")
-ax[3].set_ylabel(r"$\langle w \rangle\ [\mu m]$")
-# ax[1].set_yscale("log")
+ax3.set_xlabel("t [ms]")
+ax3.set_ylabel("$\sigma_B\ [\mu m]$")
+ax3.set_xscale("log")
+ax3.set_yscale('log')
+# ax3.legend(fontsize='small', loc='upper right')
+
+ax4.set_xlabel("$\Omega_R/2\pi$ [Hz]")
+ax4.set_ylabel(r"$\langle w \rangle\ [\mu m]$")
+# ax2.set_yscale("log")
+
+ax5.set_xlabel("$\Omega_R/2\pi$ [Hz]")
+ax5.set_ylabel("$B$")
 
 ax_cl[3, 0].set_xlabel("t [ms]")
 ax_cl[3, 1].set_xlabel("t [ms]")

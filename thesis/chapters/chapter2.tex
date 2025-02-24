@@ -82,33 +82,28 @@ An example of sorting by both time and size is shown in Fig.\ \ref{fig:sorting} 
 
 \section{Parameters analysis}
 \label{sec:params}
-In order to look at the distribution of the bubble parameters versus the experimental time or the bubble size, we decide to group all shots by the radiation coupling $\Omega_R$ (ignoring the detuning $\delta$) and plot the bubble width $\sigma_B$ and border width $w_B$. 
 \begin{figure}[h!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/clustering.png}
     \caption{Data clustering with the K-Means algorithm and $n_{\rm clusters} = 20$ based only on $t$ (first two columns from the left) or $\sigma_B$ (third column). The first column shows the $\sigma_B$ data on the y-axis, while the last two show the $w_B$ data.}
     \label{fig:clust}
 \end{figure} 
+In order to look at the distribution of the bubble parameters versus the experimental time or the bubble size, we decide to group all shots by the radiation coupling $\Omega_R$ (ignoring the detuning $\delta$) and plot the bubble width $\sigma_B$ and border width $w_B$. 
+
 An approach to this might be the one of ordering the shots by time or size and then dividing all shots in blocks with a fixed number of shots per block. However, the distributions of $t$ and $\sigma_B$ are not continous (especially $t$, which is discretized), and it may be convenient to look for clustered data. 
 The clustering approach can be implemented by the K-Means algorithm from the Scikit-Learn Python library, which lets us choose the number of clusters. The clustered data is shown in Fig.\ \ref{fig:clust}. 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width = 0.8\textwidth]{figures/chap2/b_param_cluster.png}
-    \caption{Bubble parameters distribution averaged on all shots of the same cluster. The left panel shows, from top to bottom, $w_B$ vs $\sigma_B$, $w_B$ vs $t$ and $\sigma_B$ vs $t$ (the last one in log-log scale). In the last, a linear fit on the log-log increasing data is performed in order to estimate the rate of growth. The right panel presented the average border width over all shots with the same coupling radiation $\Omega_R$.}
+    \includegraphics[width = \textwidth]{figures/chap2/b_param_cluster.png}
+    \caption{Bubble parameters distribution averaged on all shots of the same cluster. The left panel shows, from top to bottom, $w_B$ vs $\sigma_B$, $w_B$ vs $t$ and $\sigma_B$ vs $t$ (the last one in log-log scale). The right panel presents on the top the average border width over all shots with the same coupling radiation $\Omega_R$. A linear fit on the log-log increasing data is performed in order to estimate the rate of growth, shown on the bottom of the right panel.}
     \label{fig:b_param}
 \end{figure}
-The bubble parameters, averaged in each cluster and in relation one to another, are shown in Fig.\ \ref{fig:b_param}, along with the average on all shots with the same radiation coupling. While the border width looks constant when varying the bubble size, the bubble size is increasing with time at first, and then decreases. The initial behaviour corresponds to the power-law growth of $\sigma_B$ in time of the type
+
+The bubble parameters, averaged in each cluster and in relation one to another, are shown in Fig.\ \ref{fig:b_param}. The border width does not show any visible pattern when varying the bubble size, and for this reason it is averaged and shown as a function of $\Omega_R$ in the upper right plot. The behaviour against time is slightly increasing for small time and decreasing for long times, but the most significant trend is clearly the one of $\sigma_B$ vs $t$, where the bubble size is increasing with time at first, and then decreases. The initial behaviour corresponds to the power-law growth of $\sigma_B$ in time of the type
 \[
     \sigma_B(t) = At^B\, , 
 \]
-the final one is probability an artifact due to the low-density tails of the Thomas-Fermi distribution. Eventually, a linear fit is performed on the log-log data with the aim of finding the power-law coefficient $B$ for each value of the radiation coupling, yielding
-\begin{align*}
-    &B_{300} = 0.21 \pm 0.03\, ,\\
-    &B_{400} = 0.21 \pm 0.04\, ,\\
-    &B_{600} = 0.23 \pm 0.03\, ,\\
-    &B_{800} = 0.22 \pm 0.06\, ,
-\end{align*}
-all compatible among them, hence revealing that the bubble grows with the same profile at different values of $\Omega_R$.
+the final one is probability an artifact due to the low-density tails of the Thomas-Fermi distribution. Eventually, a linear fit is performed on the log-log data with the aim of finding the power-law coefficient $B$ for each value of the radiation coupling, shown in the lower right corner of Fig.\ \ref{fig:b_param}. The values are all compatible among them, hence revealing that the bubble grows with the same profile at different values of $\Omega_R$.
 
 \section{Spectral analysis}
 Since we are interested in the properties of the bubble throughout its evolution, periodic signals in the magnetization channel and their relation to the waiting time or the bubble size are important features to focus on. In order to study them, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signals and, most importantly, the typical length scales of the system.
@@ -126,20 +121,26 @@ When the input $Z_n$ is real-valued, the transform is too, and it is also symmet
 The result of the Fourier transform of a signal is the extraction of the main frequency components of the signal itself. In fact, as we know, the transform of a pure sinusoidal signal with frequency $\omega_0$ results in a Dirac delta at $\omega = \omega_0$ (excluding the negative frequencies). In the general case of a signal made up of more frequency components and with noise, the peaks in the Fourier transform will correspond the most relevant frequencies. Note that in our case the signal is in the space-domain, and by taking the inverse of the points in the frequency-domain, one can get information about the spatial periodicity of the system, hence the typical length scale.
 
 \paragraph{ACF}
-Another tool that can be used to study the periodic properties of a signal is the autocorrelation function (ACF). Similarly to the DFT, the ACF is also a particular type of convolution, where the signal is convoluted with itself. The caveat here is that since our signal is of finite length, the whole convolution would show boundary effects, as shown in Fig.\ \ref{fig:ACF_bound}.
+Another tool that can be used to study the periodic properties of a signal is the autocorrelation function (ACF). Similarly to the DFT, the ACF is also a particular type of convolution, where the signal is convoluted with itself. The caveat here is that since our signal is of finite length, the whole convolution would show boundary effects, as shown in Fig.\ \ref{fig:ACF_b+w}.
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{figures/chap2/ACF_bound.jpeg}
+%     \caption{[TO IMPROVE] Schematic representiation of boundary effects when computing the autocorrelation function on the whole signal. Since the signal is finite, the contributions on the borders are set to zero.}
+%     \label{fig:ACF_bound}
+% \end{figure}
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=0.5\textwidth]{figures/chap2/ACF_window.jpeg}
+%     \caption{[TO IMPROVE] Schematic representiation of windowed autocorrelation. In contrast to a full-width ACF, here no boundary effects arise.}
+%     \label{fig:ACF_window}
+% \end{figure}
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/chap2/ACF_bound.jpeg}
-    \caption{[TO IMPROVE] Schematic representiation of boundary effects when computing the autocorrelation function on the whole signal. Since the signal is finite, the contributions on the borders are set to zero.}
-    \label{fig:ACF_bound}
+    \includegraphics[width=\textwidth]{figures/chap2/ACF_b+w.jpeg}
+    \caption{Schematic representiation of ACF. Boundary effects arise when computing the autocorrelation function on the whole signal (top). Since the signal is finite, the contributions on the borders are set to zero. When restricting to windowed autocorrelation, no boundary effects are present anymore (bottom).}
+    \label{fig:ACF_b+w}
 \end{figure}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/chap2/ACF_window.jpeg}
-    \caption{[TO IMPROVE] Schematic representiation of windowed autocorrelation. In contrast to a full-width ACF, here no boundary effects arise.}
-    \label{fig:ACF_window}
-\end{figure}
-It is then worth limiting the signal in a central window of length $2W$ and computing the ACF on the windowed signal (Fig.\ \ref{fig:ACF_window}). Taking as input the latter as $Z_0,\dots,Z_{2W-1}$, the output will be a series of values $\mathcal{A}_0,\dots,\mathcal{A}_{W}$ living in the space-domain\footnote{While the FFT domain is made of frequencies, the ACF domain is instead made of lag values, corresponding to the spatial shifts of the signal.} such that:
+It is then worth limiting the signal in a central window of length $2W$ and computing the ACF on the windowed signal (Fig.\ \ref{fig:ACF_b+w}). Taking as input the latter as $Z_0,\dots,Z_{2W-1}$, the output will be a series of values $\mathcal{A}_0,\dots,\mathcal{A}_{W}$ living in the space-domain\footnote{While the FFT domain is made of frequencies, the ACF domain is instead made of lag values, corresponding to the spatial shifts of the signal.} such that:
 \begin{equation*}
     \mathcal{A}_k = \frac{1}{2} \left( \frac{\sum_{n} Z_n Z_{n+k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n+k}^2}} + \frac{\sum_{n} Z_n Z_{n-k}}{\sqrt{\sum_{n} Z_n^2 \sum_{n} Z_{n-k}^2}} \right)\, .
 \end{equation*}
