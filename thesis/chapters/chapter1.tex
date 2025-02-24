@@ -69,7 +69,7 @@ For a 1D single-component BEC, namely made of only one species of $N$ indistingu
         -\frac{\hbar^2}{2m}\nabla^2 + V(x,t) + g|\psi(x,t)|^2
     \right] \psi(x,t)\, .
 \end{equation}
-The unusual term in this equation is the one proportional to the square modulus of the wavefunction through the constant $g$, called the \textit{contact interaction constant}, that describes the interactions between bosons. In fact, for an ideal gas of non-interacting bosons, $g = 0$ and one retrieves the standard Schrödinger equation, but this situation is not realistic for our purposes. The interaction constant can be written in terms of the boson-boson scattering length $a$, a typical property of elastic collisions, by
+The unusual term in this equation is the one proportional to the square modulus of the wavefunction through the constant $g$, called the \textit{contact interaction constant}, that describes the interactions between bosons. In fact, for an ideal gas of non-interacting bosons, $g = 0$ and one retrieves the standard Schrödinger equation. The interaction constant can be written in terms of the boson-boson scattering length $a$, a typical property of elastic collisions, by
 \[
     g = \frac{4\pi\hbar^2}{m}a\, ,
 \]
@@ -110,14 +110,17 @@ with $R_{\rm TF}$ being the Thomas-Fermi radius, a parameter indicating the spat
 %     \xi = \frac{1}{\sqrt{8\pi n a}} = \frac{\hbar}{\sqrt{2m n g}}\, .
 % \end{equation*}
 
-\section{Two-component spin mixture}
+\section{Two-component mixture}
 When the system is composed of two different species ($a$ and $b$), Eq.\ \eqref{eq:GPE_stat} splits into two coupled stationary GPEs:
-\begin{align*}
-    &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{aa}|\psi_a(x)|^2 + g_{ab}|\psi_b(x)|^2
-    \right] \psi_a(x) = \mu_a \psi_a(x)\, , \\
-    &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{ab}|\psi_a(x)|^2 + g_{bb}|\psi_b(x)|^2
-    \right] \psi_b(x) = \mu_b \psi_b(x)\, .
-\end{align*}
+\begin{equation}
+    \begin{aligned}
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{aa}|\psi_a(x)|^2 + g_{ab}|\psi_b(x)|^2
+        \right] \psi_a(x) = \mu_a \psi_a(x)\, , \\
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{ab}|\psi_a(x)|^2 + g_{bb}|\psi_b(x)|^2
+        \right] \psi_b(x) = \mu_b \psi_b(x)\, .
+    \end{aligned}
+    \label{eq:GPE_two}
+\end{equation}
 This is due to the possibility of collisions not only between bosons $a$-$a$ or $b$-$b$, but also of the type $a$-$b$, thus producing three interaction constants $g_{aa}, g_{bb}, g_{ab}$. Depending on those constants' values, the system can assume different behaviours and GS configurations. 
 
 For example, take the case of a flat box potential in a total fixed volume $V$, yielding constant densities. Letting $n_a = |\psi_a|^2$ and $n_b = |\psi_b|^2$, we can express the energy density in the following way:
@@ -148,7 +151,7 @@ In the more general case of a non-uniform trapping potential, the densities depe
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/chap1/buoyancy.png}
-    \caption{GPE simulation of a two-component balanced mixture in a harmonic potential. The shaded purple region shows the density distribution of population $a$ and the yellow one the population $b$. Here, a small magnetic field is used to break the left-right simmetry. The total density profile is drawn in black.} 
+    \caption{GPE simulation of a two-component balanced mixture in a harmonic potential. The shaded purple region shows the density distribution of population $a$ and the yellow one the population $b$. Here, a small magnetic field is used to break the left-right simmetry. The total density profile is drawn in black. \textit{From Ref. \cite{lamporesi2023two}}.} 
     \label{fig:buoy}
 \end{figure}
 This is shown in the lower section of Fig.\ \ref{fig:buoy}, while the upper section shows the immiscible case and the buoyancy (again, $g_a > g_b$). One notes that the total density profile is not Thomas-Fermi anymore when $g_a \neq g_b$.
@@ -174,22 +177,58 @@ When the system is composed of two species of the same atom, such as two hyperfi
 \end{equation*}
 Here, $\omega_{ab}$ is the transition frequency between the two coupled states, and in the case of two hyperfine states of the same angular momentum level it includes the linear Zeeman splitting of a small external magnetic field. The coupling frequency $\omega_{\rm cpl}$ differs from $\omega_{ab}$ by a parameter $\delta_B$ called \textit{detuning}.
 
+In this setting, the two-component GPEs of Eq.\ \eqref{eq:GPE_two} become coupled in the following way:
+\begin{equation}
+    \begin{aligned}
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) - \frac{\delta_B}{2} + g_{aa}|\psi_a(x)|^2 + g_{ab}|\psi_b(x)|^2
+        \right] \psi_a(x) - \frac{\hbar\Omega_R}{2}\psi_b(x) = \mu_a \psi_a(x)\, , \\
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + \frac{\delta_B}{2} + g_{ab}|\psi_a(x)|^2 + g_{bb}|\psi_b(x)|^2
+        \right] \psi_b(x) - \frac{\hbar\Omega_R}{2}\psi_a(x) = \mu_b \psi_b(x)\, .
+    \end{aligned}
+    \label{eq:GPE_coupled}
+\end{equation}
+Thanks to this type of coupling, even an immiscible mixture can spatially overlap. In this context, the system can be studied by looking at two distinct energy channels separately, namely the spin $n_a-n_b$ and density $n_a+n_b$. The behaviour of the spin channel is of great interest, because it shows magnetic properties.
+
 \subsection{Ferromagnetism}
-In this scenario, the system exhibits magnetic properties, namely a phase transition from \textit{paramagnetism} to \textit{ferromagnetism}. 
+The magnetic model of the system is shown in the phase diagram of Fig.\ \ref{fig:ferro}, where a phase transition from \textit{paramagnetism} to \textit{ferromagnetism} occurs.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/chap1/ferro.png}
+    \caption{Phase diagram of the magnetic properties of the system, showing the magnetization of the ground state. When $|\delta g|n < \hbar\Omega_R$ we are in the paramagnetic (PM) region. On the contrary, when $|\delta g|n > \hbar\Omega_R$ the system can be either in the saturated ferromagnetic (SFM) region if $\delta$ is large enough or in the ferromagnetic (FM) region. \textit{From Ref. \cite{cominotti2023ferro}}}
+    \label{fig:ferro}
+\end{figure}
+Similarly to the miscible-immiscible phase transition, here the order parameter takes into account the interaction constants, but with the addition of the coupling radiation. Eventually, it is $|\delta g|n/\hbar\Omega_R$, with $\delta g = (g_{aa}+g_{bb})/2 - g_{ab}$.
+
+The mean-field energy landscape of the system spin channel is given by the asymmetric double well
+\begin{equation}
+    V_{\rm MF}(Z) \propto -\delta_{\rm eff} Z + \frac{|\delta g|n}{2}Z^2 - \Omega_R \sqrt{1-Z^2}\cos\phi\, ,
+    \label{eq:V_MF}
+\end{equation}
+where the coupling strength $\Omega_R$ plays the role of the height of the barrier between the wells and the effective detuning $\delta_{\rm eff} = \delta_B + n(g_{aa}-g_{bb})$ contributes to the asymmetry of the wells. Depending on those values, different behaviours may occur. One may set a fixed value for $\Omega_R$ and then probe the magnetic properties by changing $\delta_{\rm eff}$.
+
+\paragraph{Paramagnetism}
+In the case of $|\delta g|n < \hbar\Omega_R$, the energy landscape reduces to a single well and thus the system exhibits paramagnetic properties. The magnetization of the ground state changes continously from $Z=-1$ to $Z=1$ and does not depend on the history of the system. 
+
+\paragraph{Ferromagnetism}
+On the other hand, when $|\delta g|n > \hbar\Omega_R$ and $\delta_{\rm eff}$ is not large enough to be in the saturated ferromagnetic region,\footnote{As for the paramagnetic case, in the saturated ferromagnetic the energy landscape has only one minimum} the double well creates a metastable state, which can be the ground state depending on the history of the system, yielding an hysteresis cycle and a ferromagnetic behaviour. This will lead directly to the phenomenon of domain walls and bubble formation analyzed in the following section.
+
 
 \section{False vacuum decay and bubble formation}
-Given the asymmetric double well
-\begin{equation*}
-    V_{\rm MF}(Z) = -\delta_{\rm eff} Z + \frac{|k|n}{2}Z^2 - \Omega_R \sqrt{1-Z^2}\cos\phi
-\end{equation*}
-describing the spin channel mean-field energy landscape of the condensate (Fig.\ \ref{fig:FVD}), the metastable state A in which all atoms are in the state $\ket{\uparrow}$ is called False Vacuum (FV), since it is not the true ground state.
+False vacuum decay (FVD) is the process of transition between the metastable state and the true ground state of the system (as the lowest in energy). Let us explore the reasons why it happens and how it happens.
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/chap1/FVD.png}
-    \caption{Mean field energy and bubble formation.}
+    \caption{Ferromagnetic mean-field energy landscape and false vacuum decay via bubble formation. \textit{From Ref. \cite{zenesini2024false}}.}
     \label{fig:FVD}
 \end{figure}
-The possibility of tunneling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain wall) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunneling can occur resonantly from A to B. Once happened, the system is not in a metastable state anymore, hence the decaying into C, the True Vacuum (TV), via bubble expansion.\footnote{Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails.}
 
-What is interesting to study is the energy dissipation of the decay during the expansion. The key point is that since the coherent coupling prohibits the system to emit photons, the energy must dissipate through the spin and/or density channel, possibly with waves. Investigating this phenomenon is the purpose of this thesis' data analysis.
+Given the asymmetric double well describing the spin channel mean-field energy landscape of the condensate in the ferromagnetic region (schematic representation in Fig.\ \ref{fig:FVD}), the metastable state A in which all atoms are in the state $\ket{\uparrow}$ is called false vacuum (FV), since it is not the true ground state.
+The possibility of tunneling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain wall) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunneling can occur resonantly from A to B.\footnote{Pure quantum tunneling occurs at $T = 0$. At non-zero temperature the processed is helped by thermal excitations.} Once happened, the system is not in a metastable state anymore, hence the decaying into the ground state C, the true vacuum (TV), via bubble expansion with more atoms flipping into the $\ket{\downarrow}$ state. Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails.
+
+From an experimental point of view, the parameters to vary are $\Omega_R$ and $\delta_{\rm eff}$, that contribute to the energy landscape and hence to the decay process. However, another important factor to focus on is time. The reason is that the tunneling through the energy barrier is a stochastic process and does not happen at a fixed time. The problem arises when one is willing to study the bubble evolution during the decay. After the condensate is prepared in the metastable state, we can wait for an interval of time $\Delta t$ and then decide to look at the system, but due to its quantum nature, a measure will destroy our information, and we will not be able to study its evolution. The system will have to be prepared again in the initial state and so on. By recreating the experiment many times, changing the experimental wating time, one should get a fair picture of the bubble evolution, but relying on time only may not be enough. Since we know the bubble expands, it will be useful to look at its size, $\sigma_B$, as an evolution parameter.
+
+
+
+% What is interesting to study is the energy dissipation of the decay during the expansion. The key point is that since the coherent coupling prohibits the system to emit photons, the energy must dissipate through the spin and/or density channel, possibly with waves. Investigating this phenomenon is the purpose of this thesis' data analysis.
 
