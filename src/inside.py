@@ -141,7 +141,7 @@ for day in chosen_days:
 
 fig = doublePlot(omega_fft_dict, omega_acf_dict, CFG, CLG, "inside")
 fig.canvas.manager.set_window_title('Magnetization data')
-plt.savefig(f"thesis/figures/chap2/inside_fft_avg.png", dpi=500)
+# plt.savefig(f"thesis/figures/chap2/inside_fft_avg.png", dpi=500)
 plt.show()
 
 # FFTs and ACFs as a function of detuning

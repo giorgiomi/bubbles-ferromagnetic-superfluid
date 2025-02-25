@@ -148,7 +148,7 @@ where the first three terms represent the interactions between particles of the 
 The first two conditions ensure that neither $a$ nor $b$ collapse, while the latter expresses the condition for miscibility. Intuitively, if $g_{ab}$ is small with respect to the other constants, it means that the two species do not interact much one with the other, thus letting themselves mix and spatially overlap. On the other hand, if $g_{ab}$ is big (and positive), they strongly repulse and undergo a phase separation. From now on, only repulsive interactions will be considered, so the only possibilities will be immiscible or miscible (no collapse).
 
 In the more general case of a non-uniform trapping potential, the densities depend from the position and the distributions are correlated with the interaction constants. Considering the harmonic trap and the miscible case, if $g_a > g_b$ then the species $b$ will be confined in a small central region, while the species $a$ will occupy more space.
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/chap1/buoyancy.png}
     \caption{GPE simulation of a two-component balanced mixture in a harmonic potential. The shaded purple region shows the density distribution of population $a$ and the yellow one the population $b$. Here, a small magnetic field is used to break the left-right simmetry. The total density profile is drawn in black. \textit{From Ref. \cite{lamporesi2023two}}.} 
@@ -191,7 +191,7 @@ Thanks to this type of coupling, even an immiscible mixture can spatially overla
 
 \subsection{Ferromagnetism}
 The magnetic model of the system is shown in the phase diagram of Fig.\ \ref{fig:ferro}, where a phase transition from \textit{paramagnetism} to \textit{ferromagnetism} occurs.
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/chap1/ferro.png}
     \caption{Phase diagram of the magnetic properties of the system, showing the magnetization of the ground state. When $|\delta g|n < \hbar\Omega_R$ we are in the paramagnetic (PM) region. On the contrary, when $|\delta g|n > \hbar\Omega_R$ the system can be either in the saturated ferromagnetic (SFM) region if $\delta$ is large enough or in the ferromagnetic (FM) region. \textit{From Ref. \cite{cominotti2023ferro}}}
@@ -201,8 +201,8 @@ Similarly to the miscible-immiscible phase transition, here the order parameter 
 
 The mean-field energy landscape of the system spin channel is given by the asymmetric double well
 \begin{equation}
-    V_{\rm MF}(Z) \propto -\delta_{\rm eff} Z + \frac{|\delta g|n}{2}Z^2 - \Omega_R \sqrt{1-Z^2}\cos\phi\, ,
-    \label{eq:V_MF}
+    E_{\rm MF}(Z) \propto -\delta_{\rm eff} Z + \frac{|\delta g|n}{2}Z^2 - \Omega_R \sqrt{1-Z^2}\cos\phi\, ,
+    \label{eq:E_MF}
 \end{equation}
 where the coupling strength $\Omega_R$ plays the role of the height of the barrier between the wells and the effective detuning $\delta_{\rm eff} = \delta_B + n(g_{aa}-g_{bb})$ contributes to the asymmetry of the wells. Depending on those values, different behaviours may occur. One may set a fixed value for $\Omega_R$ and then probe the magnetic properties by changing $\delta_{\rm eff}$.
 
@@ -216,17 +216,25 @@ On the other hand, when $|\delta g|n > \hbar\Omega_R$ and $\delta_{\rm eff}$ is 
 \section{False vacuum decay and bubble formation}
 False vacuum decay (FVD) is the process of transition between the metastable state and the true ground state of the system (as the lowest in energy). Let us explore the reasons why it happens and how it happens.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/chap1/FVD.png}
     \caption{Ferromagnetic mean-field energy landscape and false vacuum decay via bubble formation. \textit{From Ref. \cite{zenesini2024false}}.}
     \label{fig:FVD}
 \end{figure}
 
-Given the asymmetric double well describing the spin channel mean-field energy landscape of the condensate in the ferromagnetic region (schematic representation in Fig.\ \ref{fig:FVD}), the metastable state A in which all atoms are in the state $\ket{\uparrow}$ is called false vacuum (FV), since it is not the true ground state.
-The possibility of tunneling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain wall) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunneling can occur resonantly from A to B.\footnote{Pure quantum tunneling occurs at $T = 0$. At non-zero temperature the processed is helped by thermal excitations.} Once happened, the system is not in a metastable state anymore, hence the decaying into the ground state C, the true vacuum (TV), via bubble expansion with more atoms flipping into the $\ket{\downarrow}$ state. Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails.
+Given the asymmetric double well describing the spin channel mean-field energy landscape of the condensate in the ferromagnetic region (schematic representation in Fig.\ \ref{fig:FVD}), the metastable state A in which all atoms are in the state $\ket{\uparrow}$ is called false vacuum (FV), since it is not the true ground state. The preparation of the system  in this state, as shown in Fig.\ \ref{fig:meta_prep} is not trivial. 
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/chap1/meta_prep.png}
+    \caption{Preparation of the system in the metastable FV state by changing the detuning from a positive to a negative value until the energy configuration is the one of Fig.\ \ref{fig:FVD} at $t = 0$. After a waiting time $t > 0$, the system decays into the TV state. \textit{From Ref. \cite{zenesini2024false}}.}
+    \label{fig:meta_prep}
+\end{figure}
+At first, one has to set $\Omega_R$ to a fixed value and $\delta > 0$ such that the system is in the saturated ferromagnetic region and the ground state is at positive magnetization. Then, by lowering $\delta$, the asymmetry can be shifted until the system is in the metastable state (one must not lower too much $\delta$ because it would return to the saturated region). 
 
-From an experimental point of view, the parameters to vary are $\Omega_R$ and $\delta_{\rm eff}$, that contribute to the energy landscape and hence to the decay process. However, another important factor to focus on is time. The reason is that the tunneling through the energy barrier is a stochastic process and does not happen at a fixed time. The problem arises when one is willing to study the bubble evolution during the decay. After the condensate is prepared in the metastable state, we can wait for an interval of time $\Delta t$ and then decide to look at the system, but due to its quantum nature, a measure will destroy our information, and we will not be able to let it evolve. The system will have to be prepared again in the initial state and so on. By recreating the experiment many times, changing the experimental wating time, one should get a fair picture of the bubble evolution, but relying on time only may not be enough. Since we know the bubble expands, it will be useful to look at its size, $\sigma_B$, as an evolution parameter.
+The possibility of tunnelling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain wall) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunnelling can occur resonantly from A to B.\footnote{Pure quantum tunnelling occurs at $T = 0$. At non-zero temperature the processed is helped by thermal excitations.} Once happened, the system is not in a metastable state anymore, hence the decaying into the ground state C, the true vacuum (TV), via bubble expansion with more atoms flipping into the $\ket{\downarrow}$ state. Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails.
+
+From an experimental point of view, the parameters to vary are $\Omega_R$ and $\delta_{\rm eff}$, that contribute to the energy landscape and hence to the decay process. However, another important factor to focus on is time. The reason is that the tunnelling through the energy barrier is a stochastic process and does not happen at a fixed time. The problem arises when one is willing to study the bubble evolution during the decay. After the condensate is prepared in the metastable state, we can wait for an interval of time $\Delta t$ and then decide to look at the system, but due to its quantum nature, a measure will destroy our information, and we will not be able to let it evolve. The system will have to be prepared again in the initial state and so on. By recreating the experiment many times, changing the experimental wating time, one should get a fair picture of the bubble evolution, but relying on time only may not be enough. Since we know the bubble expands, it will be useful to look at its size, $\sigma_B$, as an evolution parameter.
 
 
 

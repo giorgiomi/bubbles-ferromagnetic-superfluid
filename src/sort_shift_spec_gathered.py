@@ -91,7 +91,7 @@ for om in omega_vals:
         ax.set_xticks([])
         ax.set_yticks([])
         plt.tight_layout()
-        plt.savefig("thesis/figures/chap1/artistic.png", dpi=500)
+        # plt.savefig("thesis/figures/chap1/artistic.png", dpi=500)
         plt.show()
 
         in_left_sorted = in_left[non_zero_indices][sorted_indices]
@@ -157,18 +157,19 @@ for om in omega_vals:
         axs[1, 0].set_xticks(np.arange(0, 21, 2))
 
         # Average Autocorrelation
-        axs[1, 1].plot(CLG, inside_acf_mean, '-', color='tab:green', label='zero mean')
+        axs[1, 1].plot(CLG, inside_acf_mean, '-', color='tab:blue', label='Zero-mean data ACF')
         ax2 = axs[1, 1].twinx()
-        ax2.plot(CLG, inside_acf_mean_TRUE, '-', color='tab:red', label='true data')
-        # ax2.set_ylabel("ACF (true data)", color='r')
+        ax2.plot(CLG, inside_acf_mean_TRUE, '-', color='tab:red', label='True data ACF')
         ax2.tick_params(axis='y', labelcolor='tab:red')
-        axs[1, 1].legend(loc='upper left')
-        ax2.legend(loc='upper right')
+
+        # Combine legends
+        lines, labels = axs[1, 1].get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax2.legend(lines + lines2, labels + labels2, loc='upper right')
         axs[1, 1].set_title(region + f" ACF (average)")
         axs[1, 1].set_xlabel("$\Delta x\ [\mu m]$")
         axs[1, 1].set_ylabel("ACF")
         axs[1, 1].set_xticks(np.arange(0, 21, 2))
-        axs[1, 1].legend()
 
         plt.suptitle(f"FFT and ACF on shots with $\Omega_R/2\pi = {om}$ Hz and $\delta/2\pi = {det}$ Hz")
         plt.tight_layout()
