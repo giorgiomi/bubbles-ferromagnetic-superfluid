@@ -28,8 +28,10 @@ def bubblePieces(x, A, w0, w1, x0, x1, d0, d1):
 
 def corrGauss(x, l1, off, l2):
     ex = 1.7
+    # l2 = 20.0
+    # l1 = 7.0
     # gauss corrected by exp factor 1.7 instead of 2.0
-    return np.cos(x/l2) * (1 - off) * np.exp(-(x/l1)**ex) + off
+    return np.cos(np.pi*x/l2) * (1 - off) * np.exp(-0.5*(x/l1)**ex) + off
     # return (1 - off) * np.exp(-(x/l1)**ex) + off
     # return (1 - off - A) * np.exp(-(x/l1)**ex) + A * np.cos(x/l2) + off
 

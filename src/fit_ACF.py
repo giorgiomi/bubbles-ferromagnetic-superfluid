@@ -10,6 +10,7 @@ f, seqs, Omega, knT, Detuning, sel_days, sel_seq = importParameters(selected_fla
 w = 200 # Thomas-Fermi radius, always the same
 sampling_rate = 1.0 # 1/(1 pixel)
 window_len = 20
+n_clusters = 10
 
 # Print script purpose
 if selected_flag: 
@@ -44,9 +45,9 @@ dE = np.sqrt(omega*(1150-omega))
 if gather_flag == 'omega':
     groupFitACF('omega', omega, omega, 1, Z, window_len, zero_mean_flag, region_flag, in_left, in_right, 1)
 elif gather_flag == 'time':
-    groupFitACF('time', time, omega, 10, Z, window_len, zero_mean_flag, region_flag, in_left, in_right, 10)
+    groupFitACF('time', time, omega, 10, Z, window_len, zero_mean_flag, region_flag, in_left, in_right, n_clusters)
 elif gather_flag == 'size':
-    groupFitACF('size', size, omega, 10, Z, window_len, zero_mean_flag, region_flag, in_left, in_right, 10)
+    groupFitACF('size', size, omega, 10, Z, window_len, zero_mean_flag, region_flag, in_left, in_right, n_clusters)
 elif gather_flag == 'detuning':
     print("Detuning not available")
     # groupFitACF('detuning', detuning, 10, Z, window_len, zero_mean_flag, region_flag)
