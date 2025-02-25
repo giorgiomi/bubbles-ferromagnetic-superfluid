@@ -28,12 +28,13 @@ raw_in_left = pd.read_csv(f"data/gathered/in_left.csv", header=None).to_numpy().
 raw_in_right = pd.read_csv(f"data/gathered/in_right.csv", header=None).to_numpy().flatten()
 raw_Z = pd.read_csv(f"data/gathered/Z.csv", header=None).to_numpy()
 
-# omega_vals = [300, 400, 600, 800]
+omega_vals = [300, 400, 600, 800]
 # det_vals = np.unique(raw_detuning)
-omega_vals = [400]
-det_vals = [596.5]
+# omega_vals = [400]
+# det_vals = [596.5]
 
 for om in omega_vals:
+    det_vals = np.unique(raw_detuning[raw_omega == om])
     for det in det_vals:
         indices = np.where((raw_omega == om) & (raw_detuning == det))[0]
         size = raw_size[indices]
@@ -76,23 +77,23 @@ for om in omega_vals:
         plt.show()
 
         # artistic plot
-        # Align shots based on center
-        aligned_Z = []
-        for i in range(len(Z_sorted)):
-            shift = int(center[non_zero_indices][sorted_indices][i])
-            aligned_shot = np.roll(Z_sorted[i], -shift + w)
-            aligned_Z.append(aligned_shot)
-        aligned_Z = np.array(aligned_Z)
-        aligned_Z = aligned_Z[:, 20:-20]
-        print(max(center[non_zero_indices][sorted_indices]))
+        # # Align shots based on center
+        # aligned_Z = []
+        # for i in range(len(Z_sorted)):
+        #     shift = int(center[non_zero_indices][sorted_indices][i])
+        #     aligned_shot = np.roll(Z_sorted[i], -shift + w)
+        #     aligned_Z.append(aligned_shot)
+        # aligned_Z = np.array(aligned_Z)
+        # aligned_Z = aligned_Z[:, 20:-20]
+        # print(max(center[non_zero_indices][sorted_indices]))
 
-        fig, ax = plt.subplots(figsize=(6, 8), ncols=1)
-        ax.pcolormesh(aligned_Z, vmin=-1, vmax=1, cmap='RdBu')
-        ax.set_xticks([])
-        ax.set_yticks([])
-        plt.tight_layout()
-        # plt.savefig("thesis/figures/chap1/artistic.png", dpi=500)
-        plt.show()
+        # fig, ax = plt.subplots(figsize=(6, 8), ncols=1)
+        # ax.pcolormesh(aligned_Z, vmin=-1, vmax=1, cmap='RdBu')
+        # ax.set_xticks([])
+        # ax.set_yticks([])
+        # plt.tight_layout()
+        # # plt.savefig("thesis/figures/chap1/artistic.png", dpi=500)
+        # plt.show()
 
         in_left_sorted = in_left[non_zero_indices][sorted_indices]
         in_right_sorted = in_right[non_zero_indices][sorted_indices]

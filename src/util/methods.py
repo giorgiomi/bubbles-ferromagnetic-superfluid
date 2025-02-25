@@ -175,7 +175,6 @@ def computeFFT_ACF(zero_mean_flag, data, CFG, CLG, fft_magnitudes, acf_values, w
     spectrum /= np.max(spectrum) # normalization
     freq_grid = rfftfreq(len(data), d=1.0)
     interpolated_magnitude = np.interp(CFG, freq_grid, spectrum)
-    max_freq = CFG[np.argmax(interpolated_magnitude)]
     fft_magnitudes.append(interpolated_magnitude)
 
     # Compute the lag grid for this signal and iterpolate
