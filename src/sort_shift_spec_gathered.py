@@ -13,7 +13,7 @@ window_len = 20
 
 # Print script purpose
 print("Sort shift gathered")
-zero_mean_flag = int(input("Zero mean flag: "))
+# zero_mean_flag = int(input("Zero mean flag: "))
 
 CFG = rfftfreq(2*w, d=1.0)
 CLG = np.arange(0, window_len+1)
@@ -28,13 +28,13 @@ raw_in_left = pd.read_csv(f"data/gathered/in_left.csv", header=None).to_numpy().
 raw_in_right = pd.read_csv(f"data/gathered/in_right.csv", header=None).to_numpy().flatten()
 raw_Z = pd.read_csv(f"data/gathered/Z.csv", header=None).to_numpy()
 
-omega_vals = [300, 400, 600, 800]
+# omega_vals = [300, 400, 600, 800]
 # det_vals = np.unique(raw_detuning)
-# omega_vals = [400]
-# det_vals = [596.5]
+omega_vals = [400]
+det_vals = [596.5]
 
 for om in omega_vals:
-    det_vals = np.unique(raw_detuning[raw_omega == om])
+    # det_vals = np.unique(raw_detuning[raw_omega == om])
     for det in det_vals:
         indices = np.where((raw_omega == om) & (raw_detuning == det))[0]
         size = raw_size[indices]
@@ -74,6 +74,51 @@ for om in omega_vals:
         plt.suptitle(f"Bubble shots with $\Omega_R/2\pi = {om}$ Hz and $\delta/2\pi = {det}$ Hz")
         plt.tight_layout()
         # plt.savefig("thesis/figures/chap2/shot_sorting.png", dpi=500)
+        # plt.show()
+
+        
+
+        # two-bubble plot
+        fig, axs = plt.subplots(2, 1, figsize=(12, 4))
+        axs[0].imshow(Z_sorted[7].reshape(1, -1), aspect='auto', cmap='RdBu', vmin=-1, vmax=1)
+        axs[1].imshow(Z_sorted[-10].reshape(1, -1), aspect='auto', cmap='RdBu', vmin=-1, vmax=1)
+
+        # Adjust the heights of the axes
+        axs[0].set_box_aspect(0.05)  # Aspect ratio is height/width
+        axs[1].set_box_aspect(0.05)
+        # plt.subplots_adjust(hspace=0.5)
+
+        axs[0].set_xticks([])
+        axs[1].set_xticks([])
+        # axs[1].set_xlabel('$x\ [\mu m]$')
+        axs[0].set_yticks([])
+        axs[1].set_yticks([])
+
+        # plt.suptitle(f"First two shots with $\Omega_R/2\pi = {om}$ Hz and $\delta/2\pi = {det}$ Hz")
+        # Add annotations for inside, outside, and border regions
+        # fig.text(0.5, 0.5, "Comparison of Two Heatmaps", ha='center', va='top', fontsize=14)
+        fig.text(0.5, 0.9, 'Inside\n region', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='tab:red', alpha=0.75))
+        fig.text(0.4, 0.9, 'Left border', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='black', alpha=0.75))
+        fig.text(0.6, 0.9, 'Right border', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='black', alpha=0.75))
+        fig.text(0.1, 0.9, 'Outside\n region', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='tab:blue', alpha=0.75))
+        fig.text(0.9, 0.9, 'Outside\n region', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='tab:blue', alpha=0.75))
+        axs[0].annotate(
+            '',  # No inline text (handled by fig.text)
+            xy=(158, 0), xycoords='data',  # Point to annotate in data coordinates
+            xytext=(0.4, 0.9), textcoords='figure fraction',  # Location of text (matches fig.text)
+            arrowprops=dict(facecolor='black', arrowstyle="->")
+        )
+        axs[0].annotate(
+            '',  # No inline text (handled by fig.text)
+            xy=(243, 0), xycoords='data',  # Point to annotate in data coordinates
+            xytext=(0.6, 0.9), textcoords='figure fraction',  # Location of text (matches fig.text)
+            arrowprops=dict(facecolor='black', arrowstyle="->")
+        )
+        fig.add_artist(plt.Line2D((0.4, 0.2), (0.58, 0.4), color="black", transform=fig.transFigure))
+        fig.add_artist(plt.Line2D((0.81, 0.61), (0.4, 0.58), color="black", transform=fig.transFigure))
+        plt.tight_layout()
+        # plt.colorbar(im, ax=axs, orientation='vertical', fraction=0.02, pad=0.04)
+        # plt.savefig("thesis/figures/chap2/two_bubbles.png", dpi=500)
         plt.show()
 
         # artistic plot

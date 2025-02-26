@@ -82,7 +82,7 @@ The GPE can be written in its stationary form as
     \right] \psi(x) = \mu \psi(x)\, ,
     \label{eq:GPE_stat}
 \end{equation}
-where $\mu \approx \pdv{E}{N}$ is the chemical potential and accounts for the energy contribution of a single particle. Spatial properties of the condensate can arise from this equation, especially in the case of $N \gg 1$ and when the interaction term is dominating. By neglecting the kinetic energy term from Eq.\ \eqref{eq:GPE_stat}, one easily gets the stationary solution
+where $\mu \approx \pdv{E}{N}$ is the chemical potential and accounts for the energy contribution of a single particle. Spatial properties of the condensate can arise from this equation, especially in the case of $N \gg 1$ and when the interaction term is dominating on the kinetic energy term. By neglecting the kinetic term from Eq.\ \eqref{eq:GPE_stat}, one easily gets the stationary solution
 \[
     |\psi(x)|^2 = n(x) = \frac{\mu - V(x)}{g}\, ,
 \]
@@ -187,21 +187,29 @@ In this setting, the two-component GPEs of Eq.\ \eqref{eq:GPE_two} become couple
     \end{aligned}
     \label{eq:GPE_coupled}
 \end{equation}
-Thanks to this type of coupling, even an immiscible mixture can spatially overlap. In this context, the system can be studied by looking at two distinct energy channels separately, namely the spin $n_a-n_b$ and density $n_a+n_b$. The behaviour of the spin channel is of great interest, because it shows magnetic properties.
+Thanks to this type of coupling, even an immiscible mixture can spatially overlap. In this context, the system can be studied by looking at two distinct energy channels separately, namely the spin $n_a-n_b$ and density $n_a+n_b$. The behaviour of the spin channel is of great interest, because it shows magnetic properties and is what we will focus on. 
+
+In this coupling regime, the wavefunction spatial changes of the condensate have characteristic lengths related to the spin/density channel and the coupling radiation, called \textit{healing lengths}. Here are the spin and the (Rabi) coupling lengths:
+\begin{equation*}
+    \xi_s = \frac{\hbar}{\sqrt{2mn\delta g}} \approx 0.8\ \unit{\micro\meter}\, ,
+    \qquad
+    \xi_R = \sqrt{\frac{\hbar}{m\Omega_R}} \approx 2.6\ \unit{\micro\meter}\, ,
+\end{equation*} 
+where $\delta g = (g_{aa}+g_{bb})/2 - g_{ab}$.
 
 \subsection{Ferromagnetism}
 The magnetic model of the system is shown in the phase diagram of Fig.\ \ref{fig:ferro}, where a phase transition from \textit{paramagnetism} to \textit{ferromagnetism} occurs.
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/chap1/ferro.png}
-    \caption{Phase diagram of the magnetic properties of the system, showing the magnetization of the ground state. When $|\delta g|n < \hbar\Omega_R$ we are in the paramagnetic (PM) region. On the contrary, when $|\delta g|n > \hbar\Omega_R$ the system can be either in the saturated ferromagnetic (SFM) region if $\delta$ is large enough or in the ferromagnetic (FM) region. \textit{From Ref. \cite{cominotti2023ferro}}}
+    \caption{Phase diagram of the magnetic properties of the system, showing the magnetization of the ground state. When $|\delta g|n < \hbar\Omega_R$ we are in the paramagnetic (PM) region. On the contrary, when $|\delta g|n > \hbar\Omega_R$ the system can be either in the saturated ferromagnetic (SFM) region if $\delta_{\rm eff}$ is large enough or in the ferromagnetic (FM) region. \textit{From Ref. \cite{cominotti2023ferro}}}
     \label{fig:ferro}
 \end{figure}
-Similarly to the miscible-immiscible phase transition, here the order parameter takes into account the interaction constants, but with the addition of the coupling radiation. Eventually, it is $|\delta g|n/\hbar\Omega_R$, with $\delta g = (g_{aa}+g_{bb})/2 - g_{ab}$.
+Similarly to the miscible-immiscible phase transition, here the order parameter takes into account the interaction constants, but with the addition of the coupling radiation, and it is the ratio $|\delta g|n/\hbar\Omega_R$, where from now on $n = n(x = 0)$.
 
 The mean-field energy landscape of the system spin channel is given by the asymmetric double well
 \begin{equation}
-    E_{\rm MF}(Z) \propto -\delta_{\rm eff} Z + \frac{|\delta g|n}{2}Z^2 - \Omega_R \sqrt{1-Z^2}\cos\phi\, ,
+    E_{\rm MF}(Z) = -\hbar\left(|\delta g|n Z^2 + 2\Omega_R \sqrt{1-Z^2} + 2\delta_{\rm eff} Z\right)\, ,
     \label{eq:E_MF}
 \end{equation}
 where the coupling strength $\Omega_R$ plays the role of the height of the barrier between the wells and the effective detuning $\delta_{\rm eff} = \delta_B + n(g_{aa}-g_{bb})$ contributes to the asymmetry of the wells. Depending on those values, different behaviours may occur. One may set a fixed value for $\Omega_R$ and then probe the magnetic properties by changing $\delta_{\rm eff}$.
@@ -210,7 +218,7 @@ where the coupling strength $\Omega_R$ plays the role of the height of the barri
 In the case of $|\delta g|n < \hbar\Omega_R$, the energy landscape reduces to a single well and thus the system exhibits paramagnetic properties. The magnetization of the ground state changes continously from $Z=-1$ to $Z=1$ and does not depend on the history of the system. 
 
 \paragraph{Ferromagnetism}
-On the other hand, when $|\delta g|n > \hbar\Omega_R$ and $\delta_{\rm eff}$ is not large enough to be in the saturated ferromagnetic region,\footnote{As for the paramagnetic case, in the saturated ferromagnetic the energy landscape has only one minimum} the double well creates a metastable state, which can be the ground state depending on the history of the system, yielding an hysteresis cycle and a ferromagnetic behaviour. This will lead directly to the phenomenon of domain walls and bubble formation analyzed in the following section.
+On the other hand, when $|\delta g|n > \hbar\Omega_R$ and $|\delta_{\rm eff}| < \delta_{\rm crit}$ to avoid being in the saturated ferromagnetic region,\footnote{As for the paramagnetic case, in the saturated ferromagnetic the energy landscape has only one minimum} the double well creates a metastable state, which can be the ground state depending on the history of the system, yielding an hysteresis cycle and a ferromagnetic behaviour. This will lead directly to the phenomenon of domain walls and bubble formation analyzed in the following section.
 
 
 \section{False vacuum decay and bubble formation}
@@ -230,11 +238,13 @@ Given the asymmetric double well describing the spin channel mean-field energy l
     \caption{Preparation of the system in the metastable FV state by changing the detuning from a positive to a negative value until the energy configuration is the one of Fig.\ \ref{fig:FVD} at $t = 0$. After a waiting time $t > 0$, the system decays into the TV state. \textit{From Ref. \cite{zenesini2024false}}.}
     \label{fig:meta_prep}
 \end{figure}
-At first, one has to set $\Omega_R$ to a fixed value and $\delta > 0$ such that the system is in the saturated ferromagnetic region and the ground state is at positive magnetization. Then, by lowering $\delta$, the asymmetry can be shifted until the system is in the metastable state (one must not lower too much $\delta$ because it would return to the saturated region). 
+At first, one has to set $\Omega_R$ to a fixed value and $\delta_{\rm eff} > 0$ such that the system is in the saturated ferromagnetic region and the ground state is at positive magnetization. Then, by lowering $\delta_{\rm eff}$, the asymmetry can be shifted until the system is in the metastable state (one must not go beyond $\delta_{\rm eff} = \delta_{\rm crit}$ because it would return to the saturated region). 
 
-The possibility of tunnelling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain wall) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunnelling can occur resonantly from A to B.\footnote{Pure quantum tunnelling occurs at $T = 0$. At non-zero temperature the processed is helped by thermal excitations.} Once happened, the system is not in a metastable state anymore, hence the decaying into the ground state C, the true vacuum (TV), via bubble expansion with more atoms flipping into the $\ket{\downarrow}$ state. Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails.
+The possibility of tunnelling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain wall) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunnelling can occur resonantly from A to B.\footnote{Pure quantum tunnelling occurs at $T = 0$. At non-zero temperature the processed is helped by thermal excitations.} Once happened, the system is not in a metastable state anymore, hence the decaying into the ground state C, the true vacuum (TV), via bubble expansion with more atoms flipping into the $\ket{\downarrow}$ state. Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails, due to the dependence of the effective detuning on the density.
 
-From an experimental point of view, the parameters to vary are $\Omega_R$ and $\delta_{\rm eff}$, that contribute to the energy landscape and hence to the decay process. However, another important factor to focus on is time. The reason is that the tunnelling through the energy barrier is a stochastic process and does not happen at a fixed time. The problem arises when one is willing to study the bubble evolution during the decay. After the condensate is prepared in the metastable state, we can wait for an interval of time $\Delta t$ and then decide to look at the system, but due to its quantum nature, a measure will destroy our information, and we will not be able to let it evolve. The system will have to be prepared again in the initial state and so on. By recreating the experiment many times, changing the experimental wating time, one should get a fair picture of the bubble evolution, but relying on time only may not be enough. Since we know the bubble expands, it will be useful to look at its size, $\sigma_B$, as an evolution parameter.
+From an experimental point of view, the parameters to vary are $\Omega_R$ and $\delta_{\rm eff}$, that contribute to the energy landscape and hence to the decay process. However, we expect FVD to be greatly influenced by the depth of the well (the energy difference between FV and TV) and not by the detuning, beacuse the framework where one realizes the experiment is that of $\delta_{\rm eff} \gg \delta_{\rm eff}-\delta_{\rm crit}$, where the tunnelling barrier is shallow.
+
+Another important factor to focus on is time. The reason is that the tunnelling through the energy barrier is a stochastic process and does not happen at a fixed time. The problem arises when one is willing to study the bubble evolution during the decay. After the condensate is prepared in the metastable state, we can wait for an interval of time $\Delta t$ and then decide to look at the system, but due to its quantum nature, a measure will destroy our information, and we will not be able to let it evolve. The system will have to be prepared again in the initial state and so on. By recreating the experiment many times, changing the experimental wating time, one should get a fair picture of the bubble evolution, but relying on time only may not be enough. Since we know the bubble expands, it will be useful to look at its size, $\sigma_B$, as an evolution parameter.
 
 
 

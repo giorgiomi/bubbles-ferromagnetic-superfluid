@@ -87,16 +87,20 @@ for om in omega_vals:
     sorted_indices = np.argsort(clustered_t)
     sorted_clustered_t = clustered_t[sorted_indices]
     sorted_avg_size = avg_size[sorted_indices]
+    sorted_err_size = err_size[sorted_indices]
 
-    log_clustered_t = np.log(sorted_clustered_t[:7])
-    log_avg_size = np.log(sorted_avg_size[:7])
-    [m, b], cov = np.polyfit(log_clustered_t, log_avg_size, 1, cov=True)
+    if om == 800: tr = 11
+    else: tr = 7
+
+    log_clustered_t = np.log(sorted_clustered_t[:tr])
+    log_avg_size = np.log(sorted_avg_size[:tr])
+    [m, b], cov = np.polyfit(log_clustered_t, log_avg_size, w=sorted_avg_size[:tr]/sorted_err_size[:tr], deg=1, cov=True)
     dm, db = np.sqrt(np.diag(cov))
     fit_line = lambda x: np.exp(b) * x**m
     print(om, m, dm)
 
     # Plot the linear fit
-    ax3.plot(sorted_clustered_t[:7], fit_line(sorted_clustered_t[:7]), '--', label=f'Fit $\Omega_R/2\pi = {om}$ Hz', color=ax3.lines[-1].get_color())
+    ax3.plot(sorted_clustered_t[:tr], fit_line(sorted_clustered_t[:tr]), '--', label=f'Fit $\Omega_R/2\pi = {om}$ Hz', color=ax3.lines[-1].get_color())
     
     # Reshape size for KMeans
     size_reshaped = size.reshape(-1, 1)
