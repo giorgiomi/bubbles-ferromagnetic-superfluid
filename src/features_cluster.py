@@ -34,14 +34,14 @@ omega_fix = {300: 300, 400: 600, 600: 400, 800:800} #?? what is going on
 # create figures
 fig1 = plt.figure(figsize=(12,8))
 # ax = [plt.subplot(321), plt.subplot(323), plt.subplot(325), plt.subplot(322), plt.subplot(326)]
-gs = gridspec.GridSpec(3, 2, height_ratios=[1, 1, 1], width_ratios=[2, 2]) 
+gs = gridspec.GridSpec(2, 3, height_ratios=[2, 2], width_ratios=[1, 1, 1]) 
 
 # Assigning subplots
 ax1 = fig1.add_subplot(gs[0, 0])  # Upper left
-ax2 = fig1.add_subplot(gs[1, 0])  # Middle left
-ax3 = fig1.add_subplot(gs[2, 0])  # Lower left
-ax4 = fig1.add_subplot(gs[0:2, 1])  # Expands full height (right side)
-ax5 = fig1.add_subplot(gs[2, 1])  # Lower right
+ax2 = fig1.add_subplot(gs[0, 1])  # Middle left
+ax3 = fig1.add_subplot(gs[0, 2])  # Lower left
+ax4 = fig1.add_subplot(gs[1, 0:2])  # Expands full height (right side)
+ax5 = fig1.add_subplot(gs[1, 2])  # Lower right
 
 
 fig2, ax_cl = plt.subplots(len(omega_vals), 3, figsize=(15, 8), sharex='col')
@@ -80,8 +80,9 @@ for om in omega_vals:
     clustered_t = np.array([np.mean(time[labels == i]) for i in range(n_clusters)])
     err_t = np.array([np.std(time[labels == i])/np.sqrt(len(time[labels == i])) for i in range(n_clusters)])
 
-    ax2.errorbar(clustered_t, avg_exp_width, xerr=err_t, yerr=err_exp_width, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
-    ax3.errorbar(clustered_t, avg_size, xerr=err_t, yerr=err_size, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
+    mask_exp_width = avg_exp_width < 40
+    ax2.errorbar(clustered_t[mask_exp_width], avg_exp_width[mask_exp_width], xerr=err_t[mask_exp_width], yerr=err_exp_width[mask_exp_width], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
+    ax3.errorbar(clustered_t[mask_exp_width], avg_size[mask_exp_width], xerr=err_t[mask_exp_width], yerr=err_size[mask_exp_width], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
 
     # Perform linear fit on avg_size vs clustered_t
     sorted_indices = np.argsort(clustered_t)
@@ -100,7 +101,7 @@ for om in omega_vals:
     print(om, m, dm)
 
     # Plot the linear fit
-    ax3.plot(sorted_clustered_t[:tr], fit_line(sorted_clustered_t[:tr]), '--', label=f'Fit $\Omega_R/2\pi = {om}$ Hz', color=ax3.lines[-1].get_color())
+    ax3.plot(sorted_clustered_t[:tr], fit_line(sorted_clustered_t[:tr]), '--', color=ax3.lines[-1].get_color())
     
     # Reshape size for KMeans
     size_reshaped = size.reshape(-1, 1)
@@ -127,26 +128,27 @@ for om in omega_vals:
     str = rf"$\Omega_R/2\pi = {om}$ Hz" + "\n\n" + r"$\sigma_B\ [\mu m]$"
     ax_cl[omega_vals.index(om), 0].set_ylabel(str)
     ax_cl[omega_vals.index(om), 0].set_xscale("log")
-    ax_cl[omega_vals.index(om), 1].set_ylabel("w $[\mu m]$")
+    ax_cl[omega_vals.index(om), 1].set_ylabel("$w_B\ [\mu m]$")
     ax_cl[omega_vals.index(om), 1].set_xscale("log")
     # ax_cl[omega_vals.index(om), 1].set_ylim([-2, 52])
-    ax_cl[omega_vals.index(om), 2].set_ylabel("w $[\mu m]$")
+    ax_cl[omega_vals.index(om), 2].set_ylabel("$w_B\ [\mu m]$")
     # ax_cl[omega_vals.index(om), 2].set_ylim([-2, 52])
     ax_cl[omega_vals.index(om), 2].set_xlim([20, 300])
 
-    ax1.errorbar(clustered_s, avg_exp_width_size, xerr=err_s, yerr=err_exp_width_size, fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2) 
+    mask = (clustered_s > 50) & (clustered_s < 300) & (avg_exp_width_size < 35)
+    ax1.errorbar(clustered_s[mask], avg_exp_width_size[mask], xerr=err_s[mask], yerr=err_exp_width_size[mask], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
 
     ax4.errorbar(om, np.mean(exp_width), yerr=np.std(exp_width)/np.sqrt(len(exp_width)), fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz', color='grey')
 
     ax5.errorbar(om, m, yerr=dm, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz', color='grey')
 
 ax1.set_xlabel("$\sigma_B\ [\mu m]$")
-ax1.set_ylabel("w $[\mu m]$")
+ax1.set_ylabel("$w_B\ [\mu m]$")
 # ax1.set_yscale("log")
 ax1.legend(fontsize='small', loc='upper left')
 
 ax2.set_xlabel("t [ms]")
-ax2.set_ylabel("w $[\mu m]$")
+ax2.set_ylabel("$w_B\ [\mu m]$")
 # ax2.set_yscale("log")
 ax2.set_xscale("log")
 ax2.legend(fontsize='small', loc='upper left')
@@ -155,10 +157,10 @@ ax3.set_xlabel("t [ms]")
 ax3.set_ylabel("$\sigma_B\ [\mu m]$")
 ax3.set_xscale("log")
 ax3.set_yscale('log')
-# ax3.legend(fontsize='small', loc='upper right')
+ax3.legend(fontsize='small', loc='upper left')
 
 ax4.set_xlabel("$\Omega_R/2\pi$ [Hz]")
-ax4.set_ylabel(r"$\langle w \rangle\ [\mu m]$")
+ax4.set_ylabel(r"$\langle w_B \rangle\ [\mu m]$")
 # ax2.set_yscale("log")
 
 ax5.set_xlabel("$\Omega_R/2\pi$ [Hz]")

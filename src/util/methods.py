@@ -338,7 +338,8 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
         # Fit the ACF means to the Gaussian correlation function
         fit_params = {}
         fit_errors = {}
-        tr_idx = 21 # 21 means all data
+        if om == 300: tr_idx = 21 # 21 means all data
+        else: tr_idx = 12
         for cl_idx, acf_mean in acf_means.items():
             try:
                 if region == 'inside':
@@ -417,16 +418,17 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
             sorted_indices = np.argsort(avg_cat)
             sorted_colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
             for idx, color in zip(sorted_indices, sorted_colors):
-                cl_idx = cats[idx]
-                acf_mean = acf_means[cl_idx]
-                acf_err = acf_errs[cl_idx]
-                ax_pro[k].errorbar(CLG, acf_mean, yerr=acf_err, color=color, label=f'{cl_idx}', fmt='o', capsize=2, alpha=0.5)
-                if cl_idx in fit_params:
-                    if region == 'inside':
-                        fitted_curve = corrGauss(CLG, *fit_params[cl_idx])
-                    elif region == 'outside':
-                        fitted_curve = corrExp(CLG, *fit_params[cl_idx])
-                    ax_pro[k].plot(CLG, fitted_curve, linestyle='--', color=color)
+                if idx != sorted_indices[0]:
+                    cl_idx = cats[idx]
+                    acf_mean = acf_means[cl_idx]
+                    acf_err = acf_errs[cl_idx]
+                    ax_pro[k].plot(CLG, acf_mean, color=color, label=f'{cl_idx}', alpha=0.5)
+                    if cl_idx in fit_params:
+                        if region == 'inside':
+                            fitted_curve = corrGauss(CLG, *fit_params[cl_idx])
+                        elif region == 'outside':
+                            fitted_curve = corrExp(CLG, *fit_params[cl_idx])
+                        ax_pro[k].plot(CLG[:tr_idx], fitted_curve[:tr_idx], linestyle='--', color=color)
             ax_pro[k].set_title(fr'$\Omega_R/2\pi = {om:.0f}$ Hz')
             ax_pro[k].set_xlabel('$\Delta x\ [\mu m]$')
             ax_pro[k].set_ylabel('ACF')
