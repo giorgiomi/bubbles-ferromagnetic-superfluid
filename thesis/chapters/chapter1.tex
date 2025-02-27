@@ -56,14 +56,14 @@ In a finite box of volume $V$, where the lowest energy eigenvalue is $\epsilon_0
 \end{equation*}
 Since $N_0 \approx 0$ for $T > T_c$, the function has a discontinuity of its derivative at the critical temperature: a typical symptom of phase transitions.
 
-The behaviour is similar for a system trapped in an external harmonic potential, where the condensate fraction is
+The behavior is similar for a system trapped in an external harmonic potential, where the condensate fraction is
 \begin{equation*}
     \frac{N_0}{N} = 1-\left(\frac{T}{T_c}\right)^3
 \end{equation*}
 and the critical temperature depends on the oscillation frequencies.
 
 \section{Gross-Pitaevskii equation}
-For a 1D single-component BEC, namely made of only one species of $N$ indistinguishable bosons, one can use a single wavefunction $\psi(x,t)$ to describe its ground state (GS) by exploiting a mean-field approximation, thus revealing the Gross-Pitaevskii equation (GPE):
+For a 1D single-component BEC, namely made of only one species of $N$ indistinguishable bosons, one can use a single wavefunction $\psi(x,t)$ to describe its ground state by exploiting a mean-field approximation, thus revealing the Gross-Pitaevskii equation (GPE):
 \begin{equation}
     i\hbar \pdv{\psi(x,t)}{t} = \left[ 
         -\frac{\hbar^2}{2m}\nabla^2 + V(x,t) + g|\psi(x,t)|^2
@@ -121,7 +121,7 @@ When the system is composed of two different species ($a$ and $b$), Eq.\ \eqref{
     \end{aligned}
     \label{eq:GPE_two}
 \end{equation}
-This is due to the possibility of collisions not only between bosons $a$-$a$ or $b$-$b$, but also of the type $a$-$b$, thus producing three interaction constants $g_{aa}, g_{bb}, g_{ab}$. Depending on those constants' values, the system can assume different behaviours and GS configurations. 
+This is due to the possibility of collisions not only between bosons $a$-$a$ or $b$-$b$, but also of the type $a$-$b$, thus producing three interaction constants $g_{aa}, g_{bb}, g_{ab}$. Depending on those constants' values, the system can assume different behaviors and ground state configurations. 
 
 For example, take the case of a flat box potential in a total fixed volume $V$, yielding constant densities. Letting $n_a = |\psi_a|^2$ and $n_b = |\psi_b|^2$, we can express the energy density in the following way:
 \begin{equation*}
@@ -151,7 +151,7 @@ In the more general case of a non-uniform trapping potential, the densities depe
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/chap1/buoyancy.png}
-    \caption{GPE simulation of a two-component balanced mixture in a harmonic potential. The shaded purple region shows the density distribution of population $a$ and the yellow one the population $b$. Here, a small magnetic field is used to break the left-right simmetry. The total density profile is drawn in black. \textit{From Ref. \cite{lamporesi2023two}}.} 
+    \caption{GPE simulation of a two-component balanced mixture in a harmonic potential. The shaded purple region shows the density distribution of population $a$ and the yellow one the population $b$. Here, a small magnetic field is used to break the left-right symmetry. The total density profile is drawn in black. \textit{From Ref. \cite{lamporesi2023two}}.} 
     \label{fig:buoy}
 \end{figure}
 This is shown in the lower section of Fig.\ \ref{fig:buoy}, while the upper section shows the immiscible case and the buoyancy (again, $g_a > g_b$). One notes that the total density profile is not Thomas-Fermi anymore when $g_a \neq g_b$.
@@ -170,7 +170,7 @@ This is shown in the lower section of Fig.\ \ref{fig:buoy}, while the upper sect
 % \end{equation*}
 
 \section{Coherently coupled mixture}
-When the system is composed of two species of the same atom, such as two hyperfine states, the dynamics become more interesting because of the possible interconversion processes. One possibility is to use a homogeneous microwave radiation, which couples the two internal states $\ket{a}$ and $\ket{b}$, of the type
+When the system is composed of two species of the same atom, such as two hyperfine states, the dynamics become more interesting because of the possible interconversion processes. One possibility is to use a homogeneous microwave radiation, which couples by a Rabi process (i.\ e.\ single-photon exchange) the two internal states $\ket{a}$ and $\ket{b}$. The time-dependent field of the radiation is of the type
 \begin{equation*}
     \Omega_R(t) \exp{-i\omega_{\rm cpl}t + \phi}\, ,\qquad \text{with }
     \omega_{\rm cpl} = \omega_{ab} + \delta_B\, .
@@ -187,7 +187,7 @@ In this setting, the two-component GPEs of Eq.\ \eqref{eq:GPE_two} become couple
     \end{aligned}
     \label{eq:GPE_coupled}
 \end{equation}
-Thanks to this type of coupling, even an immiscible mixture can spatially overlap. In this context, the system can be studied by looking at two distinct energy channels separately, namely the spin $n_a-n_b$ and density $n_a+n_b$. The behaviour of the spin channel is of great interest, because it shows magnetic properties and is what we will focus on. 
+Thanks to this type of coupling, even an immiscible mixture can spatially overlap. In this context, the system can be studied by looking at two distinct energy channels separately, namely the spin $n_a-n_b$ and density $n_a+n_b$. The behavior of the spin channel is of great interest, because it shows magnetic properties, which are what we will focus on. 
 
 In this coupling regime, the wavefunction spatial changes of the condensate have characteristic lengths related to the spin/density channel and the coupling radiation, called \textit{healing lengths}. Here are the spin and the (Rabi) coupling lengths:
 \begin{equation}
@@ -203,7 +203,7 @@ The magnetic model of the system is shown in the phase diagram of Fig.\ \ref{fig
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/chap1/ferro.png}
-    \caption{Phase diagram of the magnetic properties of the system, showing the magnetization of the ground state. When $|\delta g|n < \hbar\Omega_R$ we are in the paramagnetic (PM) region. On the contrary, when $|\delta g|n > \hbar\Omega_R$ the system can be either in the saturated ferromagnetic (SFM) region if $\delta_{\rm eff}$ is large enough or in the ferromagnetic (FM) region. \textit{From Ref. \cite{cominotti2023ferro}}}
+    \caption{Phase diagram of the magnetic properties of the system, showing the magnetization of the ground state. The association between the diagram labels and the system quantities is $\alpha\to \delta g$, $B_3 \to \delta_{\rm eff}$ and $B_1 \to \Omega_R$. When $|\delta g|n < \hbar\Omega_R$ we are in the paramagnetic (PM) region. On the contrary, when $|\delta g|n > \hbar\Omega_R$ the system can be either in the saturated ferromagnetic (SFM) region if $\delta_{\rm eff}$ is large enough or in the ferromagnetic (FM) region. \textit{From Ref. \cite{cominotti2023ferro}}}
     \label{fig:ferro}
 \end{figure}
 Similarly to the miscible-immiscible phase transition, here the order parameter takes into account the interaction constants, but with the addition of the coupling radiation, and it is the ratio $|\delta g|n/\hbar\Omega_R$, where from now on $n = n(x = 0)$.
@@ -213,17 +213,18 @@ The mean-field energy landscape of the system spin channel is given by the asymm
     E_{\rm MF}(Z) = -\hbar\left(|\delta g|n Z^2 + 2\Omega_R \sqrt{1-Z^2} + 2\delta_{\rm eff} Z\right)\, ,
     \label{eq:E_MF}
 \end{equation}
-where the coupling strength $\Omega_R$ plays the role of the height of the barrier between the wells and the effective detuning $\delta_{\rm eff} = \delta_B + n(g_{aa}-g_{bb})$ contributes to the asymmetry of the wells. Depending on those values, different behaviours may occur. One may set a fixed value for $\Omega_R$ and then probe the magnetic properties by changing $\delta_{\rm eff}$.
+where the coupling strength $\Omega_R$ plays the role of the height of the barrier between the wells and the effective detuning $\delta_{\rm eff} = \delta_B + n(g_{aa}-g_{bb})$ contributes to the asymmetry of the wells. Depending on those values, different behaviors may occur. One may set a fixed value for $\Omega_R$ and then probe the magnetic properties by changing $\delta_{\rm eff}$.
 
 \paragraph{Paramagnetism}
-In the case of $|\delta g|n < \hbar\Omega_R$, the energy landscape reduces to a single well and thus the system exhibits paramagnetic properties. The magnetization of the ground state changes continously from $Z=-1$ to $Z=1$ and does not depend on the history of the system. 
+In the case of $|\delta g|n < \hbar\Omega_R$, the energy landscape reduces to a single well and thus the system exhibits paramagnetic properties. The magnetization of the ground state changes continuously from $Z=-1$ to $Z=1$ and does not depend on the history of the system. 
 
 \paragraph{Ferromagnetism}
-On the other hand, when $|\delta g|n > \hbar\Omega_R$ and $|\delta_{\rm eff}| < \delta_{\rm crit}$ to avoid being in the saturated ferromagnetic region,\footnote{As for the paramagnetic case, in the saturated ferromagnetic the energy landscape has only one minimum} the double well creates a metastable state, which can be the ground state depending on the history of the system, yielding an hysteresis cycle and a ferromagnetic behaviour. This will lead directly to the phenomenon of domain walls and bubble formation analyzed in the following section.
+On the other hand, when $|\delta g|n > \hbar\Omega_R$ and $|\delta_{\rm eff}| < \delta_{\rm crit}$ to avoid being in the saturated ferromagnetic region,\footnote{As for the paramagnetic case, in the saturated ferromagnetic the energy landscape has only one minimum.} the double well creates a metastable state, which can be the ground state depending on the history of the system, yielding an hysteresis cycle and a ferromagnetic behavior. This will lead directly to the phenomenon of domain walls and bubble formation analyzed in the following section.
 
 
 \section{False vacuum decay and bubble formation}
-False vacuum decay (FVD) is the process of transition between the metastable state and the true ground state of the system (as the lowest in energy). Let us explore the reasons why it happens and how it happens.
+False vacuum decay (FVD) is the process of transition between the metastable state and the true ground state of the system (as the lowest in energy). 
+To understand the underlying mechanisms and dynamics of this process, let us delve into the reasons and methods by which it occurs.
 
 \begin{figure}[ht!]
     \centering
@@ -243,9 +244,9 @@ At first, one has to set $\Omega_R$ to a fixed value and $\delta_{\rm eff} > 0$ 
 
 The possibility of tunnelling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain wall) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunnelling can occur resonantly from A to B.\footnote{Pure quantum tunnelling occurs at $T = 0$. At non-zero temperature the processed is helped by thermal excitations.} Once happened, the system is not in a metastable state anymore, hence the decaying into the ground state C, the true vacuum (TV), via bubble expansion with more atoms flipping into the $\ket{\downarrow}$ state. Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails, due to the dependence of the effective detuning on the density.
 
-From an experimental point of view, the parameters to vary are $\Omega_R$ and $\delta_{\rm eff}$, that contribute to the energy landscape and hence to the decay process. However, we expect FVD to be greatly influenced by the depth of the well (the energy difference between FV and TV) and not by the detuning, beacuse the framework where one realizes the experiment is that of $\delta_{\rm eff} \gg \delta_{\rm eff}-\delta_{\rm crit}$, where the tunnelling barrier is shallow.
+From an experimental point of view, the parameters to vary are $\Omega_R$ and $\delta_{\rm eff}$, that contribute to the energy landscape and hence to the decay process. However, we expect FVD to be greatly influenced by the depth of the well (the energy difference between FV and TV) and not by the detuning, because the framework where one realizes the experiment is that of $\delta_{\rm eff} \gg \delta_{\rm eff}-\delta_{\rm crit}$, where the tunnelling barrier is shallow.
 
-Another important factor to focus on is time. The reason is that the tunnelling through the energy barrier is a stochastic process and does not happen at a fixed time. The problem arises when one is willing to study the bubble evolution during the decay. After the condensate is prepared in the metastable state, we can wait for an interval of time $\Delta t$ and then decide to look at the system, but due to its quantum nature, a measure will destroy our information, and we will not be able to let it evolve. The system will have to be prepared again in the initial state and so on. By recreating the experiment many times, changing the experimental wating time, one should get a fair picture of the bubble evolution, but relying on time only may not be enough. Since we know the bubble expands, it will be useful to look at its size, $\sigma_B$, as an evolution parameter.
+Another important factor to focus on is time. The reason is that the tunnelling through the energy barrier is a stochastic process and does not happen at a fixed time. The problem arises when one is willing to study the bubble evolution during the decay. After the condensate is prepared in the metastable state, we can wait for an interval of time $\Delta t$ and then decide to look at the system, but due to its quantum nature, a measure will destroy our information, and we will not be able to let it evolve. The system will have to be prepared again in the initial state and so on. By recreating the experiment many times, changing the experimental waiting time, one should get a fair picture of the bubble evolution, but relying on time only may not be enough. Since we know the bubble expands, it will be useful to look at its size, $\sigma_B$, as an evolution parameter.
 
 
 

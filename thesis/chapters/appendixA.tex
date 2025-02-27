@@ -1,13 +1,13 @@
 \label{chap:app_ACF}
-The autocorrelation function is a powerful tool for a spectral analysis of the data, since it can extract the main frequency of the signal. Let us compute the expected model for the ACF in some example cases, using the function
+The autocorrelation function is a powerful tool for a spectral analysis of the data, since it can extract the main frequency of the signal. Let us compute the expected model for the ACF in a simple example case, using the function
 \begin{equation}
     \mathcal{A}(m) = \frac{1}{2} \left( \frac{\sum_{n} f_n f_{n+m}}{\sqrt{\sum_{n} f_n^2 \sum_{n} f_{n+m}^2}} + \frac{\sum_{n} f_n f_{n-m}}{\sqrt{\sum_{n} f_n^2 \sum_{n} f_{n-m}^2}} \right)
     \label{eq:ACF}
 \end{equation}
 and supposing to run the sums over $N$ values covering many periods of the signal $f(x)$.
 
-\section{Pure sinusoid}
-First, let us take a pure sinusoidal signal
+% \section{Pure sinusoid}
+Let us take a pure sinusoidal signal
 \[
     f(x) = A\cos(k_0 x + \phi)\, ,
 \]  
