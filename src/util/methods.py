@@ -247,11 +247,18 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
     colors_om = plt.cm.tab10([0, 1, 2, 3])
     k = 0
 
-    fig_fit, ax_fit = plt.subplots(1, 3, figsize=(12, 5))
+    # fig_fit, ax_fit = plt.subplots(1, 3, figsize=(12, 5))
     fig_pro, ax_pro = plt.subplots(1, len(omega_vals), figsize=(15, 5))
-    # fig_om, ax_om = plt.subplots(1, 1, figsize=(8, 4))
+
     fig_om = plt.figure(figsize=(15, 5))
-    ax_om = [plt.subplot(141), plt.subplot(142), plt.subplot(143), plt.subplot(144)]
+    ax_om = [plt.subplot(131), plt.subplot(132), plt.subplot(133)]
+
+    if region == 'inside':
+        fig_fit = plt.figure(figsize=(12, 5))
+        ax_fit = [plt.subplot(131), plt.subplot(132), plt.subplot(133)]
+    else:
+        fig_fit = plt.figure(figsize=(8, 6))
+        ax_fit = [plt.subplot(121), plt.subplot(122)]
 
     
     if cat_str == 'omega':
@@ -338,14 +345,24 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
         # Fit the ACF means to the Gaussian correlation function
         fit_params = {}
         fit_errors = {}
-        if om == 300: tr_idx = 21 # 21 means all data
-        else: tr_idx = 12
+        if cat_str != 'omega':
+            if om == 300: tr_idx = 21 # 21 means all data
+            else: tr_idx = 12
+        else:
+            tr_idx = 21
+            # if om in [300, 800]: tr_idx = 21
+            # else: tr_idx = 14
+        tr_idx_out = 12
         for cl_idx, acf_mean in acf_means.items():
             try:
                 if region == 'inside':
                     popt, pcorr = curve_fit(corrGauss, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1, 12], bounds=((0, -1, 0), (20, 1, 20)))
+                    if np.abs(popt[2] - 20.0) < 1e-4 and cat_str != 'omega':
+                        # print(f"{om} Bound value")
+                        popt[2] = 12
+                        popt, pcorr = curve_fit(corrGauss, CLG, acf_mean, p0=popt, bounds=((0, -1, 11.99), (20, 1, 12)))
                 elif region == 'outside':
-                    popt, pcorr = curve_fit(corrExp, CLG[:tr_idx], acf_mean[:tr_idx], p0=[2, -0.1], bounds=((0, -1), (20, 1)))
+                    popt, pcorr = curve_fit(corrExp, CLG[:tr_idx_out], acf_mean[:tr_idx_out], p0=[2, -0.1], bounds=((0, -1), (20, 1)))
                 fit_params[cl_idx] = popt
                 fit_errors[cl_idx] = np.sqrt(np.diag(pcorr))
             except RuntimeError:
@@ -357,78 +374,105 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
         dl1_values = [err[0] for err in fit_errors.values()]
         off_values = [params[1] for params in fit_params.values()]
         doff_values = [err[1] for err in fit_errors.values()]
-        if region == 'inside':
+        if region == 'inside' and len(cats) > 2:
             l2_values = [params[2] for params in fit_params.values()]
             dl2_values = [err[2] for err in fit_errors.values()]
 
         if cat_str == 'omega':
-            ax_om[1].errorbar(om, l1_values, yerr=dl1_values, fmt='o', capsize=2, color='tab:blue')
-            ax_om[1].set_xlabel(displ_str)
+            if region == 'outside':
+                if om == 300:
+                    ax_om[1].errorbar(1/np.sqrt(om), l1_values, yerr=dl1_values, fmt='o', capsize=2, color='tab:grey', label='ACF data')
+                else:
+                    ax_om[1].errorbar(1/np.sqrt(om), l1_values, yerr=dl1_values, fmt='o', capsize=2, color='tab:grey')
+                ax_om[1].set_xlabel('$1/\sqrt{\Omega_R/2\pi}$ [$Hz^{-1/2}$]')
+            else:
+                ax_om[1].errorbar(om, l1_values, yerr=dl1_values, fmt='o', capsize=2, color='tab:grey')
+                ax_om[1].set_xlabel(displ_str)
             ax_om[1].set_ylabel(r"$\ell_1\ [\mu $m]")
 
-            ax_om[2].errorbar(om, off_values, yerr=doff_values, fmt='o', capsize=2, color='tab:blue')
+            ax_om[2].errorbar(om, off_values, yerr=doff_values, fmt='o', capsize=2, color='tab:grey')
             ax_om[2].set_xlabel(displ_str)
             ax_om[2].set_ylabel(r"$\Delta$")
 
-            if region == 'inside':
-                ax_om[3].errorbar(om, l2_values, yerr=dl2_values, fmt='o', capsize=2, color='tab:blue')
+            if region == 'inside' and len(cats) > 2:
+                ax_om[3].errorbar(om, l2_values, yerr=dl2_values, fmt='o', capsize=2, color='tab:grey')
                 ax_om[3].set_xlabel(displ_str)
                 ax_om[3].set_ylabel(r"$\ell_2\ [\mu $m]")
         else:
             ax_fit[0].errorbar(avg_cat, l1_values, xerr=err_cat, yerr=dl1_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
-            ax_fit[1].errorbar(avg_cat, off_values, xerr=err_cat, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
             if region == 'inside':
-                ax_fit[2].errorbar(avg_cat, l2_values, xerr=err_cat, yerr=dl2_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
+                ax_fit[2].errorbar(avg_cat, off_values, xerr=err_cat, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
+                l2_values = np.array(l2_values)
+                dl2_values = np.array(dl2_values)
+                mask = (np.abs(l2_values - 12.0) > 1e-4) & (l2_values < 19.0)
+                # print(mask)
+                ax_fit[1].errorbar(avg_cat[mask], l2_values[mask], xerr=err_cat[mask], yerr=dl2_values[mask], fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
                 ax_fit[2].set_xlabel(f'{displ_str}')
-            ax_fit[0].set_xlabel(f'{displ_str}')
+            else:
+                ax_fit[1].errorbar(avg_cat, off_values, xerr=err_cat, yerr=doff_values, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz')
+            
             ax_fit[1].set_xlabel(f'{displ_str}')
+            ax_fit[0].set_xlabel(f'{displ_str}')
+
 
         if cat_str == 'time':
-            xlim = [0.5, 500]
+            xlim = [1, 500]
         elif cat_str == 'size':
             xlim = [25, 300]
         elif cat_str == 'slope':
             xlim = [1e-1, 4e2]
         elif cat_str == 'omega':
             xlim = [1, 4] # kn/omega, not omega
-        # ax_fit[0].set_title(f'First Fit Parameter ($\ell_1$) vs {displ_str}')
+
         ax_fit[0].set_ylabel('$\ell_1\ [\mu m]$')
-        ax_fit[0].set_xlim(xlim)
+        
         ax_fit[0].legend()
 
-        # ax_fit[1].set_title(f'Second Fit Parameter ($\Delta$) vs {displ_str}')
-        ax_fit[1].set_ylabel('$\Delta$')
-        # ax_fit[1].set_yscale('log')
-        ax_fit[1].set_xlim(xlim)
-        ax_fit[1].legend()
-
         if cat_str == 'time':
+            ax_fit[0].set_xlim(xlim)
+            ax_fit[1].set_xlim(xlim)
             ax_fit[0].set_xscale('log')
             ax_fit[1].set_xscale('log')
-            ax_fit[2].set_xscale('log')
+            if region == 'inside':
+                ax_fit[2].set_xscale('log')
 
         if region == 'inside':
-            # ax_fit[2].set_title(f'Third Fit Parameter ($\ell_2$) vs {displ_str}')
-            ax_fit[2].set_ylabel('$\ell_2\ [\mu m]$')
+            ax_fit[0].set_xlim(xlim)
+
+            ax_fit[1].set_ylabel('$\ell_2\ [\mu m]$')
+            ax_fit[1].set_xlim(xlim)
+            ax_fit[1].legend()
+
+            ax_fit[2].set_ylabel('$\Delta$')
             ax_fit[2].set_xlim(xlim)
-            ax_fit[2].legend()
+            ax_fit[2].legend(loc='upper right')
+        else:
+            if cat_str == 'size':
+                ax_fit[0].set_xlim([25, 260])
+                ax_fit[1].set_xlim([25, 260])
+                ax_fit[0].set_ylim((1,4.2))
+                ax_fit[1].set_ylim((0.88,1.01))
+            ax_fit[1].legend(loc='lower left')
+            ax_fit[1].set_ylabel("$\Delta$")
 
         ## Plot ACF means and fits
         if cat_str != 'omega':
             sorted_indices = np.argsort(avg_cat)
             sorted_colors = plt.cm.viridis(np.linspace(0, 1, len(acf_means)))
             for idx, color in zip(sorted_indices, sorted_colors):
-                if idx != sorted_indices[0]:
-                    cl_idx = cats[idx]
-                    acf_mean = acf_means[cl_idx]
-                    acf_err = acf_errs[cl_idx]
-                    ax_pro[k].plot(CLG, acf_mean, color=color, label=f'{cl_idx}', alpha=0.5)
-                    if cl_idx in fit_params:
-                        if region == 'inside':
-                            fitted_curve = corrGauss(CLG, *fit_params[cl_idx])
-                        elif region == 'outside':
-                            fitted_curve = corrExp(CLG, *fit_params[cl_idx])
+                if (om == 300 and idx == sorted_indices[0]) or (om == 400 and idx == sorted_indices[-1]):
+                    continue
+                cl_idx = cats[idx]
+                acf_mean = acf_means[cl_idx]
+                acf_err = acf_errs[cl_idx]
+                ax_pro[k].plot(CLG, acf_mean, color=color, label=f'{cl_idx}', alpha=0.5)
+                if cl_idx in fit_params:
+                    if region == 'inside':
+                        fitted_curve = corrGauss(CLG, *fit_params[cl_idx])
                         ax_pro[k].plot(CLG[:tr_idx], fitted_curve[:tr_idx], linestyle='--', color=color)
+                    elif region == 'outside':
+                        fitted_curve = corrExp(CLG, *fit_params[cl_idx])
+                        ax_pro[k].plot(CLG[:tr_idx_out], fitted_curve[:tr_idx_out], linestyle='--', color=color)
             ax_pro[k].set_title(fr'$\Omega_R/2\pi = {om:.0f}$ Hz')
             ax_pro[k].set_xlabel('$\Delta x\ [\mu m]$')
             ax_pro[k].set_ylabel('ACF')
@@ -442,17 +486,26 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
             ax_om[0].errorbar(CLG, acf_mean, yerr=acf_err, color=color, label=fr'$\Omega_R/2\pi = {om:.0f}$ Hz', fmt='o', capsize=2, alpha=0.5)
             if region == 'inside':
                 fitted_curve = corrGauss(CLG, *fit_params[cl_idx])
+                ax_om[0].plot(CLG[:tr_idx], fitted_curve[:tr_idx], linestyle='--', color=color)
             elif region == 'outside':
                 fitted_curve = corrExp(CLG, *fit_params[cl_idx])
-            ax_om[0].plot(CLG, fitted_curve, linestyle='--', color=color)
+                ax_om[0].plot(CLG[:tr_idx_out], fitted_curve[:tr_idx_out], linestyle='--', color=color)
             ax_om[0].set_xlabel('$\Delta x\ [\mu m]$')
             ax_om[0].set_ylabel('ACF')
-            ax_om[0].set_title(f"ACF of {region} shots vs $\Omega_R$")
+            # ax_om[0].set_title(f"ACF of {region} shots vs $\Omega_R$")
             ax_om[0].set_xticks(np.arange(0, 21, 4))
             ax_om[0].legend()
+
         k += 1
 
-    fig_fit.suptitle(f"ACF of {region} shots - Fit parameters $\ell_1$, $\ell_2$, $\Delta$")
+    xi_R = [np.sqrt(0.2741/om)*100 for om in omega_vals]
+    ax_om[1].plot([1/np.sqrt(om) for om in omega_vals], xi_R, '-', color='tab:green', label=r'$\xi_R$')
+    ax_om[1].legend()
+    fig_om.suptitle(f"ACF of {region} shots - Fits and parameters $\ell_1$, $\Delta$")
+    if region == 'inside':
+        fig_fit.suptitle(f"ACF of {region} shots - Fit parameters $\ell_1$, $\ell_2$, $\Delta$")
+    else:
+        fig_fit.suptitle(f"ACF of {region} shots - Fit parameters $\ell_1$, $\Delta$")
     fig_fit.tight_layout()
     fig_pro.tight_layout()
     fig_om.tight_layout()

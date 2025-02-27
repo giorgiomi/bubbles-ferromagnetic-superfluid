@@ -219,19 +219,19 @@ Lastly, the exponent $\alpha = 1.7$ was fine-tuned in order to capture the profi
 \begin{figure}[ht!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_size_inside.png}
-    \caption{ACF average profiles of inside shots clustered by size in 10 blocks (solid lines) and fitted with the damped cosine of Eq.\ \eqref{eq:damp} (dotted lines) for each value of $\Omega_R$. Size increases from darker to lighter colors.}
+    \caption{ACF average profiles of inside shots clustered by size in 9 blocks (solid lines) and fitted with the damped cosine of Eq.\ \eqref{eq:damp} (dotted lines) for each value of $\Omega_R$. Size increases from darker to lighter colors.}
     \label{fig:fit_size_inside}
 \end{figure}
 \begin{figure}[ht!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_size_inside.png}
-    \caption{ACF fit parameters $\ell_1$, $\ell_2$ and $\Delta$ of inside shots clustered by size.}
+    \caption{ACF fit parameters $\ell_1$, $\ell_2$ and $\Delta$ of inside shots clustered by size. The $\ell_2$ data when the fit fails is not shown.}
     \label{fig:param_size_inside}
 \end{figure}
 \begin{figure}[ht!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/param_time_inside.png}
-    \caption{ACF fit parameters $\ell_1$, $\ell_2$ and $\Delta$ of inside shots clustered by time (in log scale).}
+    \caption{ACF fit parameters $\ell_1$, $\ell_2$ and $\Delta$ of inside shots clustered by time (in log scale). The $\ell_2$ data when the fit fails is not shown.}
     \label{fig:param_time_inside}
 \end{figure}
 \begin{figure}[ht!]
@@ -240,19 +240,23 @@ Lastly, the exponent $\alpha = 1.7$ was fine-tuned in order to capture the profi
     \caption{On the first plot from the left, ACF average profiles of inside shots grouped by $\Omega_R$ (solid lines) and fitted with the damped cosine (dotted lines). Errors are estimated with the standard deviation of the ACF values. On the other plots, fit parameters $\ell_1$, $\ell_2$ and $\Delta$ vs $\Omega_R$.}
     \label{fig:fit_omega_inside}
 \end{figure}
-An example of fit on the ACF average profiles of the inside shots is presented in Fig.\ \ref{fig:fit_size_inside}, where the shots are clustered by size. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_time_inside}, along with the ones from the fit on time-clustered data in \ref{fig:param_size_inside}. 
-The size dependence seems to be the most noticeable. While the length $\ell_1$ is constant, the offset $\Delta$ is clearly increasing (note the clean data of 300 Hz, where the number of shots is bigger) and approaching the value of 1. As mentioned before, this means that when the bubble grows in size its magnetization becomes more uniformed, the system progressively loses local information and its periodic structures disappear. The length $\ell_2$ does not show a clear trend.
+An example of fit on the ACF average profiles of the inside shots is presented in Fig.\ \ref{fig:fit_size_inside}, where the shots are clustered by size. Due to the noise of profiles with a little number of shots, except from $\Omega_R/2\pi = 300$ \unit{\hertz} the fits are performed until $\Delta x = 11$ \unit{\micro\meter}. Sometimes the estimation of $\ell_2$ fails, it is then set to $\ell_2 = 12$ \unit{\micro\meter} and the fit is repeated for the other parameters.
 
-Eventually, a global fit on all shots with the same radiation coupling is made and shown in Fig.\ \ref{fig:fit_omega_inside}. Here it is interesting to notice the behaviour of $\Delta$ as a function of $\Omega_R$, because it reminds of the average border width $\langle w \rangle$ in Fig.\ \ref{fig:b_param}, especially when looking at the strange 400 Hz and 600 Hz points.
+The parameters retrieved from the fits are in Fig.\ \ref{fig:param_size_inside}, along with the ones from the fits on time-clustered data in \ref{fig:param_time_inside}. 
+The size dependence seems to be the most noticeable. The offset $\Delta$ is clearly increasing (note the clean data of 300 Hz, where the number of shots is bigger) and approaching the value of 1. As mentioned before, this means that when the bubble grows in size its magnetization becomes more uniformed, the system progressively loses local information and its periodic structures disappear.
+The length $\ell_1$ is constant and bigger than the spin healing length $\xi_s \approx 0.8$ \unit{\micro\meter} of Eq.\ \ref{eq:heal}. 
+The length $\ell_2$ does not show a clear trend, due to the many failed fits.
+
+Eventually, a global fit on all shots with the same radiation coupling is made and shown in Fig.\ \ref{fig:fit_omega_inside}. The $\ell_2$ plot is not shown because its estimation succeeds only for $\Omega_R/2\pi = 300$ \unit{\hertz}. Here it is interesting to notice the behaviour of $\Delta$ as a function of $\Omega_R$, because it reminds of the average border width $\langle w_B \rangle$ in Fig.\ \ref{fig:b_param}, especially when looking at the strange 400 Hz and 600 Hz points. The length $\ell_1$ does not show a noticeable behaviour.
 
 \paragraph{Outside}
-On the other hand, for the outside region ACF fit we use a decreasing exponential
+For the outside region ACF fit we prefer to use a decreasing exponential
 \begin{equation}
-    \mathcal{A}_{\rm fit}(x) = (1-\Delta)\exp[-\frac{x}{\ell_1}] + \Delta\, .
+    \mathcal{A}_{\rm fit}(x) = (1-\Delta)\exp[-\frac{x}{2\ell_1}] + \Delta\, .
     \label{eq:exp}
 \end{equation}
-The reason is that the outside region does not show particular patterns and the ACF profiles are very noisy.
-An example of fit on the outside shots is presented in Fig.\ \ref{fig:fit_size_outside}, where the shots are clustered by size as in Fig.\ \ref{fig:fit_size_inside}. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_size_outside}, along with those from the time-clustered data in \ref{fig:param_time_outside}. 
+The reason is that the outside region does not show any particular patterns and the ACF profiles are very noisy.
+An example of fit (performed until $\Delta x == 11$ \unit{\micro\meter}) on the outside shots is presented in Fig.\ \ref{fig:fit_size_outside}, where the shots are clustered by size as in Fig.\ \ref{fig:fit_size_inside}. The parameters retrieved from the fit are in Fig.\ \ref{fig:param_size_outside}, along with those from the time-clustered data in \ref{fig:param_time_outside}. 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_size_outside.png}
@@ -261,24 +265,28 @@ An example of fit on the outside shots is presented in Fig.\ \ref{fig:fit_size_o
 \end{figure}
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width = \textwidth]{figures/chap2/param_size_outside.png}
-    \caption{ACF fit parameters $\ell_1$ and $\Delta$ of outside shots clustered by size.}
-    \label{fig:param_size_outside}
-\end{figure}
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width = \textwidth]{figures/chap2/param_time_outside.png}
-    \caption{ACF fit parameters $\ell_1$ and $\Delta$ of outside shots clustered by time (in log scale).}
-    \label{fig:param_time_outside}
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{figures/chap2/param_size_outside.png}
+        \caption{ACF fit parameters $\ell_1$ and $\Delta$ of outside shots clustered by size.}
+        \label{fig:param_size_outside}
+    \end{minipage}
+    \hspace{0.02\textwidth}
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{figures/chap2/param_time_outside.png}
+        \caption{ACF fit parameters $\ell_1$ and $\Delta$ of outside shots clustered by time (in log scale).}
+        \label{fig:param_time_outside}
+    \end{minipage}
 \end{figure}
 \begin{figure}[ht!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/fit_omega_outside.png}
-    \caption{On the first plot from the left, ACF average profiles of outside shots grouped by $\Omega_R$ (solid lines) and fitted with the damped cosine (dotted lines). On the other plots, fit parameters $\ell_1$ and $\Delta$ vs $\Omega_R$.}
+    \caption{On the first plot from the left, ACF average profiles of outside shots grouped by $\Omega_R$ (solid lines) and fitted with the damped cosine (dotted lines). On the other plots, fit parameters $\ell_1$ vs $1/\sqrt{\Omega_R}$ and $\Delta$ vs $\Omega_R$. In the central plot, the Rabi healing length is shown as a function of the coupling.}
     \label{fig:fit_omega_outside}
 \end{figure}
-In contrast to the inside bubble region, what emerges outside of the bubble is that the characteristic length $\ell_1$ is increasing with size and the offset $\Delta$ is decreasing. The latter is the exact opposite behaviour of the inside region, where the offset increases with the bubble size. The meaning of this is that outside of the bubble structures begin to appear and the system during the bubble expansion acquires information that was previously stored inside.
+What emerges outside of the bubble is that the offset $\Delta$ is decreasing with size, while $\ell_1$ remains constant like in the inside. The decrease of $\Delta$ is the exact opposite behaviour of the inside region, where the offset increases with the bubble size. The meaning of this is that outside of the bubble structures begin to appear and it is possible that the system during the bubble expansion acquires information that was previously stored inside.
 
-A global fit on all shots with the same radiation coupling is in Fig.\ \ref{fig:fit_omega_outside}. No patterns are visible here.
+A global fit on all shots with the same radiation coupling is in Fig.\ \ref{fig:fit_omega_outside}. Here, we plot the length $\ell_1$ against $1/\sqrt{\Omega_R}$ and we observe that the two quantities are correlated. Furthermore, by looking at Eq.\ \eqref{eq:heal}, it is the Rabi healing length $\xi_R$ that scales in this manner, and after plotting it we same a clear correspondence between $\xi_R$ and $\ell_1$, thus we can suggest that the system, outside of the bubble, has a typical length of information equal to its Rabi healing length.
 
 % \subsection{Border alignment}

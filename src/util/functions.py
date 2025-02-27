@@ -35,5 +35,9 @@ def corrGauss(x, l1, off, l2):
     # return (1 - off) * np.exp(-(x/l1)**ex) + off
     # return (1 - off - A) * np.exp(-(x/l1)**ex) + A * np.cos(x/l2) + off
 
+def corrGaussNoCos(x, l1, off):
+    ex = 1.7
+    return (1 - off) * np.exp(-0.5*(x/l1)**ex) + off
+
 def corrExp(x, l1, off):
     return (1 - off) * np.exp(-(x/l1)) + off
