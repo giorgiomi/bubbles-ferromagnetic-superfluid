@@ -22,7 +22,7 @@
 
 % Infos
 \title{Bubbles in a ferromagnetic superfluid}
-\author{\\\textbf{Candidate:} Giorgio Micaglio\\ \textbf{Supervisor:} Alessandro Zenesini }
+\author{\\\textbf{Candidate:} Giorgio Micaglio\\ \textbf{Supervisor:} dr.\ Alessandro Zenesini }
 %\subtitle{}
 \date{March 10, 2025}
 \institute{\\~\\Bachelor's Degree in Physics}
@@ -30,7 +30,7 @@
 
 %Bibliography
 \usepackage[style=numeric, maxnames=4,backend=bibtex]{biblatex}
-% other styles: numeric authortitle
+% other styles: numeric author title
 \addbibresource{biblio.bib}
 \DeclareBibliographyCategory{fullcited} %for not citing in bibliography
 \newcommand{\mybibexclude}[1]{\addtocategory{fullcited}{#1}}
@@ -51,9 +51,9 @@
     \begin{columns}
         \begin{column}{0.6\textwidth}
             \begin{itemize}
-                \item \textbf{Introduction}: What is a ferromagnetic superfluid?
-                \item \textbf{Theoretical background}: Coherently coupled BEC spin-mixtures
-                \item \textbf{Data analysis}: False Vacuum Decay bubbles
+                \item \textbf{Introduction}
+                \item \textbf{Theoretical background}: Ferromagnetism in coherently coupled BEC spin-mixtures
+                \item \textbf{Data analysis}: Characterization of false vacuum decay bubbles
                 \item \textbf{Conclusions}
             \end{itemize}
         \end{column}
@@ -67,7 +67,15 @@
 \end{frame}
 
 \begin{frame}{Introduction}
-    What is a \textbf{ferromagnetic superfluid}?
+    Why \textbf{bubbles} in a ferromagnetic superfluid?
+
+    First \textbf{experimental observation} of false vacuum decay (FVD) in the Pitaevskii BEC Center laboratories of the University of Trento.
+
+    FVD provides information on \textbf{metastability} and is studied from quantum systems to cosmology
+
+    Framework: \textbf{quantum spin mixture} optically trapped and cooled below the condensation temperature
+
+    Bubbles originate in 
 \end{frame}
 
 % \section{Theoretical background}
@@ -77,6 +85,7 @@
     \begin{equation*}
         \langle n_i \rangle = \frac{1}{e^{\beta(\epsilon_i - \mu)}-1}
     \end{equation*}
+    \onslide<2->
     The occupation number of the ground state $N_0 = \langle n_0\rangle$ corresponds to the condensation. There is a phase transition at $T = T_c$.
     \begin{equation*}
         \frac{N_0}{N} = 1-\left(\frac{T}{T_c}\right)^\alpha \quad \text{for } T < T_c
@@ -91,20 +100,21 @@
             -\frac{\hbar^2}{2m}\nabla^2 + V(x,t) + g|\psi(x,t)|^2
         \right] \psi(x,t)
     \end{equation*}
+    \onslide<2->
     In the stationary case
     \begin{equation*}
         \left[ 
             -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g|\psi(x)|^2
         \right] \psi(x) = \mu \psi(x)
     \end{equation*}
-    When the interaction dominates
+    When the interaction dominates on the kinetic term
     \begin{equation*}
         n(x) = \frac{\mu - V(x)}{g}
     \end{equation*}
 \end{frame}
 
 \begin{frame}{Theoretical background: Two-component mixtures}
-    The GPEs are coupled because of the interspecies interaction constant
+    The GPEs are coupled because of the inter-species interaction constant
     \begin{align*}
         &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{aa}|\psi_a(x)|^2 + g_{ab}|\psi_b(x)|^2
         \right] \psi_a(x) = \mu_a \psi_a(x) \\
@@ -123,7 +133,18 @@
 \end{frame}
 
 \begin{frame}{Theoretical background: Coherent coupling}
-    
+    Coupling radiation between $\ket{a}$ and $\ket{b}$:
+    \[
+        \Omega_R(t)\exp{-i\omega_{\rm cpl}t+\phi} \quad \omega_{\rm cpl} = \omega_{ab} + \delta_B
+    \]
+
+    Double-well energy landscape
+    \begin{equation*}
+        E_{\rm MF}(Z) = -\hbar\left(|\delta g|n Z^2 + 2\Omega_R \sqrt{1-Z^2} + 2\delta_{\rm eff} Z\right)
+        \label{eq:E_MF}
+    \end{equation*}
+
+    The order parameter is the ratio $|\delta g|n/\hbar\Omega_R$
 \end{frame}
 
 \begin{frame}{Theoretical background: Ferromagnetism}
@@ -141,11 +162,7 @@
 \end{frame}
 
 \begin{frame}{Data analysis: Experimental platform}
-    The experiment uses $^{23}$Na atoms prepared in the state
-    \begin{equation*}
-        \ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}
-    \end{equation*}
-    which is coupled to the state $\ket{1, -1} = \ket{\downarrow}$.
+    The experiment uses $^{23}$Na atoms prepared in the state $\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}$, which is coupled to the state $\ket{1, -1} = \ket{\downarrow}$.
 
     The system is cigar-shaped with Thomas-Fermi radii 
     \begin{equation*}
@@ -193,7 +210,7 @@
     \end{figure}
 \end{frame}
 
-\begin{frame}{Data analysis: FFT and ACF}
+\begin{frame}{Data analysis: ACF fits}
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_size_inside.png}
@@ -202,6 +219,30 @@
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_size_outside.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Data analysis: ACF inside}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/param_size_inside.png}
+    \end{figure}
+    \vspace{-0.5cm}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/fit_omega_inside.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Data analysis: ACF outside}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/param_size_inside.png}
+    \end{figure}
+    \vspace{-0.5cm}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/fit_omega_inside.png}
     \end{figure}
 \end{frame}
 
