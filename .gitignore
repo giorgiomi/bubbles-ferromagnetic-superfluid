@@ -58,6 +58,7 @@ main-blx.bib
 # images
 *.png
 *.jpeg
+!poster.png
 
 # articles and books
 *.pdf

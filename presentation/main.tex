@@ -50,8 +50,9 @@
 \begin{frame}{Overview}
     \begin{columns}
         \begin{column}{0.6\textwidth}
+            This presentation will cover:
             \begin{itemize}
-                \item \textbf{Introduction}
+                \item \textbf{Introduction}: Why this thesis?
                 \item \textbf{Theoretical background}: Ferromagnetism in coherently coupled BEC spin-mixtures
                 \item \textbf{Data analysis}: Characterization of false vacuum decay bubbles
                 \item \textbf{Conclusions}
@@ -69,13 +70,12 @@
 \begin{frame}{Introduction}
     Why \textbf{bubbles} in a ferromagnetic superfluid?
 
-    First \textbf{experimental observation} of false vacuum decay (FVD) in the Pitaevskii BEC Center laboratories of the University of Trento.
-
-    FVD provides information on \textbf{metastability} and is studied from quantum systems to cosmology
-
-    Framework: \textbf{quantum spin mixture} optically trapped and cooled below the condensation temperature
-
-    Bubbles originate in 
+    \begin{itemize}
+        \item First \textbf{experimental observation} of false vacuum decay (FVD) in the Pitaevskii BEC Center laboratories of the University of Trento.
+        \item FVD provides information on \textbf{metastability} and is studied from quantum systems to cosmology
+        \item Framework: \textbf{quantum spin mixture} optically trapped and cooled below the condensation temperature
+    \end{itemize}
+    
 \end{frame}
 
 % \section{Theoretical background}
@@ -124,13 +124,13 @@
     Depending on the values of $g_{aa}$, $g_{bb}$ and $g_{ab}$, the system GS can behave in different manners
 \end{frame}
 
-\begin{frame}{Theoretical background: Two-component mixtures}
-    The mixture can be miscible or immiscible: buoyancy effect
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{../thesis/figures/chap1/buoyancy.png}
-    \end{figure}
-\end{frame}
+% \begin{frame}{Theoretical background: Two-component mixtures}
+%     The mixture can be miscible or immiscible: buoyancy effect
+%     \begin{figure}
+%         \centering
+%         \includegraphics[width=\textwidth]{../thesis/figures/chap1/buoyancy.png}
+%     \end{figure}
+% \end{frame}
 
 \begin{frame}{Theoretical background: Coherent coupling}
     Coupling radiation between $\ket{a}$ and $\ket{b}$:
@@ -175,7 +175,13 @@
     \end{equation*}
 \end{frame}
 
-\begin{frame}{Data analysis: Bubble fit}
+\begin{frame}{Data analysis: Bubble shots and fits}
+    \vspace{-0.2cm}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{../thesis/figures/chap2/two_bubbles.png}
+    \end{figure}
+    \vspace{-0.5cm}
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{../thesis/figures/chap2/arctan_fit.png}
@@ -190,16 +196,18 @@
 \end{frame}
 
 \begin{frame}{Data analysis: Parameters clustering}
+    \vspace{-0.2cm}
     \begin{figure}
         \centering
-        \includegraphics[width=0.9\textwidth]{../thesis/figures/chap2/b_param_cluster.png}
+        \includegraphics[width=\textwidth]{../thesis/figures/chap2/b_param_cluster.png}
     \end{figure}
 \end{frame}
 
 \begin{frame}{Data analysis: FFT and ACF}
+    \vspace{-0.2cm}
     \begin{figure}
         \centering
-        \includegraphics[width=0.9\textwidth]{../thesis/figures/chap2/inside_omdet.png}
+        \includegraphics[width=\textwidth]{../thesis/figures/chap2/inside_omdet.png}
     \end{figure}
 \end{frame}
 
@@ -237,27 +245,43 @@
 \begin{frame}{Data analysis: ACF outside}
     \begin{figure}
         \centering
-        \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/param_size_inside.png}
+        \begin{minipage}[t]{0.47 \textwidth}
+            \centering
+            \includegraphics[width = \textwidth]{../thesis/figures/chap2/param_size_outside.png}
+        \end{minipage}
+        \hspace{0.02\textwidth}
+        \begin{minipage}[t]{0.47 \textwidth}
+            \centering
+            \includegraphics[width = \textwidth]{../thesis/figures/chap2/param_time_outside.png}
+        \end{minipage}
     \end{figure}
     \vspace{-0.5cm}
     \begin{figure}
         \centering
-        \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/fit_omega_inside.png}
+        \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/fit_omega_outside.png}
     \end{figure}
 \end{frame}
 
 \begin{frame}{Conclusions}
-    
+    What did we learn from this work?
+    \begin{itemize}
+        \item The system shows \textbf{different properties} between inside and outside of the bubble
+        \item Border width of the bubble \textbf{depends on the coupling} strength $\Omega_R$
+        \item Growth factor of the bubble size in time is \textbf{independent} of $\Omega_R$
+        \item In the bubble, periodic structures \textbf{disappear} with size increasing. They \textbf{appear}, instead, outside of the bubble.
+        \item Length scale of information outside is related to the Rabi \textbf{healing length}
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
-    Thank you for your attention
+    \huge
+    Thank you for your attention!
 \end{frame}
 
-\backupbegin
-\begin{frame}
+% \backupbegin
+% \begin{frame}
     
-\end{frame}
-\backupend
+% \end{frame}
+% \backupend
 
 \end{document}

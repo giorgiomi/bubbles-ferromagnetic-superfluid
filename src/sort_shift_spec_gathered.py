@@ -97,25 +97,25 @@ for om in omega_vals:
         # plt.suptitle(f"First two shots with $\Omega_R/2\pi = {om}$ Hz and $\delta/2\pi = {det}$ Hz")
         # Add annotations for inside, outside, and border regions
         # fig.text(0.5, 0.5, "Comparison of Two Heatmaps", ha='center', va='top', fontsize=14)
-        fig.text(0.5, 0.9, 'Inside\n region', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='tab:red', alpha=0.75))
-        fig.text(0.4, 0.9, 'Left border', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='black', alpha=0.75))
-        fig.text(0.6, 0.9, 'Right border', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='black', alpha=0.75))
-        fig.text(0.1, 0.9, 'Outside\n region', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='tab:blue', alpha=0.75))
-        fig.text(0.9, 0.9, 'Outside\n region', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='tab:blue', alpha=0.75))
-        axs[0].annotate(
-            '',  # No inline text (handled by fig.text)
-            xy=(158, 0), xycoords='data',  # Point to annotate in data coordinates
-            xytext=(0.4, 0.9), textcoords='figure fraction',  # Location of text (matches fig.text)
-            arrowprops=dict(facecolor='black', arrowstyle="->")
-        )
-        axs[0].annotate(
-            '',  # No inline text (handled by fig.text)
-            xy=(243, 0), xycoords='data',  # Point to annotate in data coordinates
-            xytext=(0.6, 0.9), textcoords='figure fraction',  # Location of text (matches fig.text)
-            arrowprops=dict(facecolor='black', arrowstyle="->")
-        )
-        fig.add_artist(plt.Line2D((0.4, 0.2), (0.58, 0.4), color="black", transform=fig.transFigure))
-        fig.add_artist(plt.Line2D((0.81, 0.61), (0.4, 0.58), color="black", transform=fig.transFigure))
+        # fig.text(0.5, 0.9, 'Inside\n region', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='tab:red', alpha=0.75))
+        # fig.text(0.4, 0.9, 'Left border', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='black', alpha=0.75))
+        # fig.text(0.6, 0.9, 'Right border', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='black', alpha=0.75))
+        # fig.text(0.1, 0.9, 'Outside\n region', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='tab:blue', alpha=0.75))
+        # fig.text(0.9, 0.9, 'Outside\n region', ha='center', va='center', fontsize=12, color='white', bbox=dict(facecolor='tab:blue', alpha=0.75))
+        # axs[0].annotate(
+        #     '',  # No inline text (handled by fig.text)
+        #     xy=(158, 0), xycoords='data',  # Point to annotate in data coordinates
+        #     xytext=(0.4, 0.9), textcoords='figure fraction',  # Location of text (matches fig.text)
+        #     arrowprops=dict(facecolor='black', arrowstyle="->")
+        # )
+        # axs[0].annotate(
+        #     '',  # No inline text (handled by fig.text)
+        #     xy=(243, 0), xycoords='data',  # Point to annotate in data coordinates
+        #     xytext=(0.6, 0.9), textcoords='figure fraction',  # Location of text (matches fig.text)
+        #     arrowprops=dict(facecolor='black', arrowstyle="->")
+        # )
+        # fig.add_artist(plt.Line2D((0.4, 0.2), (0.58, 0.4), color="black", transform=fig.transFigure))
+        # fig.add_artist(plt.Line2D((0.81, 0.61), (0.4, 0.58), color="black", transform=fig.transFigure))
         plt.tight_layout()
         # plt.colorbar(im, ax=axs, orientation='vertical', fraction=0.02, pad=0.04)
         # plt.savefig("thesis/figures/chap2/two_bubbles.png", dpi=500)
