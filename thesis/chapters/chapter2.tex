@@ -1,11 +1,11 @@
-In this chapter we describe the experimental platform in which the measurements were carried out and we then proceed with the characterization of the false vacuum decay bubbles through data analysis. Data is taken from the measurements done for the FVD experiment of Ref.\ \cite{zenesini2024false}. Our aim is to study the magnetization properties of the system in the bubble (\textit{inside} region), around its domain walls (\textit{border} regions) and also in the \textit{outside} region, as seen in Fig.\ \ref{fig:2bubbles}. 
+In this chapter we describe the experimental platform in which the measurements were carried out and we then proceed with the characterization of the false vacuum decay bubbles through data analysis. Data is taken from the measurements done for the FVD experiment of Ref.\ \cite{zenesini2024false}. Our aim is to study the magnetization properties of the system in the bubble (\textit{inside} region), around its \textit{domain walls} and also in the \textit{outside} region, as sketched in Fig.\ \ref{fig:2bubbles}. 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{figures/chap2/two_bubbles.png}
-    \caption{Separation of the system into inside and outside region by left and right borders for two example bubbles. The lower bubble is measured after a higher waiting time and it has a bigger size.}
+    \caption{Separation of the system into inside and outside region by left and right domain walls for two example bubbles. The lower bubble is measured after a higher waiting time and it has a bigger size.}
     \label{fig:2bubbles}
 \end{figure}
-We are looking for correlations between the external parameters $\Omega_R$ and $\delta_{\rm eff}$, and the bubble properties such as its size $\sigma_B$, its border width $w_B$ and the experimental waiting time $t$. It is also possible to notice some periodic structures in the system, both inside and outside. Then, for a spectral analysis, FFT and ACF will be utilized. 
+We are looking for correlations between the external parameters $\Omega_R$ and $\delta_{\rm eff}$, and the bubble properties such as its size $\sigma_B$, its domain wall width $w_D$ and the experimental waiting time $t$. It is also possible to notice some periodic structures in the system, both inside and outside. Then, for a spectral analysis, FFT and ACF will be utilized. 
 
 The code for the analysis was written in the \textbf{\texttt{Python}} programming language. The references used in this chapter are mainly \cite{cominotti2023ferro}, \cite{farolfi2021}, \cite{cominotti2023experiments} and \cite{cominotti2024ultracold}.
 
@@ -37,7 +37,7 @@ Since our focus is to characterize the bubble properties, first we need to extra
 \begin{figure}[ht!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/arctan_fit.png}
-    \caption{Example of fit results performed on a shot. First, the data is fitted with the double-arctangent function of Eq.\ \eqref{eq:double-atan}, then each shoulder is fitted with a single-arctangent, namely the one of Eq.\ \eqref{eq:atan}. This ensures a better estimation of the shoulder centers and thus of the bubble width. Eventually, a last fit is done with the piecewise function of Eq.\ \eqref{eq:fit_exp}, in order to capture the inside/outside discontinuity and the exponential tails.}
+    \caption{Example of fit results performed on a shot. First, the data is fitted with the double-arctangent function of Eq.\ \eqref{eq:double-atan}, then each domain wall is fitted with a single-arctangent, namely the one of Eq.\ \eqref{eq:atan}. This ensures a better estimation of the domain wall centers and thus of the bubble width. Eventually, a last fit is done with the piecewise function of Eq.\ \eqref{eq:fit_exp}, in order to capture the inside/outside discontinuity and the exponential tails.}
     \label{fig:atan-fit}
 \end{figure}
 In order to localize the bubble in a shot, the most interesting parameters to retrieve are the bubble center $x_0$ and its width $\sigma_B$.
@@ -48,13 +48,13 @@ To parametrize the bubble, the magnetization data is fitted with a double-arctan
     Z_{\rm fit}(x) = -A \left[\frac{2}{\pi}\arctan(\frac{x-c_1}{w_1}) - \frac{2}{\pi}\arctan(\frac{x-c_2}{w_2})\right] + \Delta\, ,
     \label{eq:double-atan}
 \end{equation}
-where $c_1$ and $c_2$ are the centers' positions of the arctangent "shoulders", and $w_1$ and $w_2$ are their characteristic widths. 
-Then, for a better result, a further fit is performed on each shoulder with a single-arctangent function
+where $c_1$ and $c_2$ are the centers' positions of the arctangent "shoulders", corresponding to the domain walls, and $w_1$ and $w_2$ are their characteristic widths. 
+Then, for a better result, a further fit is performed on each domain wall with a single-arctangent function
 \begin{equation}
     Z_{\rm fit}(x) = -A \frac{2}{\pi}\arctan(\frac{x-c_{1,2}}{w_{1,2}}) + \Delta\, ,
     \label{eq:atan}
 \end{equation}
-yielding the shoulder center position $c_{1,2}$. Eventually, we obtain the bubble center position $x_0 = (c_1 + c_2)/2$ and the bubble width $\sigma_B = c_2 - c_1$.
+yielding the domain wall center position $c_{1,2}$. Eventually, we obtain the bubble center position $x_0 = (c_1 + c_2)/2$ and the bubble width $\sigma_B = c_2 - c_1$.
 % In some cases, especially when the bubble is narrow, the fitting procedure to optimize the parameters of Eq.\ \eqref{eq:double-atan}'s function fails and we are forced to use a gaussian profile such as
 % \begin{equation*}
 %     Z_{\rm fit}(x) = - A \exp\left[-\frac{(x-c)^2}{2\sigma^2}\right] + \Delta\, ,
@@ -62,7 +62,7 @@ yielding the shoulder center position $c_{1,2}$. Eventually, we obtain the bubbl
 % with $x_0 = c$ being the bubble center and $\sigma_B = \num{2.335}\ \sigma$ its width.
 
 % While this routine is very accurate for determining the shoulder profile and hence the bubble width, the transition between the shoulders and the inside region (the bubble itself) shows no continuity in many shots. In order to capture the entire profile and especially the boundaries of the inside region, we can fit the data with a continous piecewise function made of two exponential tails and a constant value in the middle, such as
-While this routine is very accurate for determining the shoulder profile and hence the bubble width, it may be useful to try fitting the data to another function, such as
+While this routine is very accurate for determining the domain wall profile and hence the bubble width, it may be useful to try fitting the data to another function, such as
 \begin{equation}
     Z_{\rm fit}(x) = 
     \begin{cases}
@@ -72,12 +72,12 @@ While this routine is very accurate for determining the shoulder profile and hen
     \end{cases}\, ,
     \label{eq:fit_exp}
 \end{equation}
-which is made of two exponentials and a constant value in the middle. As it turns out, this approach ensures a better estimation of the inside region, whose limits are $x_1$ and $x_2$. The exponential tails give also a characteristic width for the border region, namely $w_B = (w_1 + w_2)/2$.
+which is made of two exponentials and a constant value in the middle. As it turns out, this approach ensures a better estimation of the inside region, whose limits are $x_1$ and $x_2$. The exponential tails give also a characteristic width for the domain wall region, namely $w_D = (w_1 + w_2)/2$.
 
 An example of fitting with the arctangent and stepwise exponential functions is provided in Fig.\ \ref{fig:atan-fit}.
 
 \subsection{Shot sorting}
-Once the bubble width $\sigma_B$ is retrieved, it is useful to order the shots in a sequence by this parameter. This process lets us display the system evolution, in contrast to the original shot ordering based on the experimental time waited before observing the bubble. The reason why we are more interested in the size dependence is that the bubble formation event is a stochastic process (the tunneling through the mean-field energy barrier), and the time at which a bubble forms is not determined. However, theory suggests that once the bubble is formed, its evolution (the decay from FV to TV) is determined. 
+Once the bubble width $\sigma_B$ is retrieved, it is useful to order the shots in a sequence by this parameter. This process lets us display the system evolution, in contrast to the original shot ordering based on the experimental time waited before observing the bubble. The reason why we are more interested in the size dependence is that the bubble formation event is a stochastic process (the tunneling through the energy barrier), and the time at which a bubble forms is not determined. However, theory suggests that once the bubble is formed, its evolution (the decay from FV to TV) is determined. 
 An example of sorting by both time and size is shown in Fig.\ \ref{fig:sorting} with a colormap displaying the magnetization profiles (blue is for positive $Z$ and red for negative $Z$).
 
 \begin{figure}[ht!]
@@ -92,21 +92,21 @@ An example of sorting by both time and size is shown in Fig.\ \ref{fig:sorting} 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/clustering.png}
-    \caption{Data clustering with the K-Means algorithm and $n_{\rm clusters} = 20$ based only on $t$ (first two columns from the left) or $\sigma_B$ (third column). The first column shows the $\sigma_B$ data on the y-axis, while the last two show the $w_B$ data.}
+    \caption{Data clustering with the K-Means algorithm and $n_{\rm clusters} = 20$ based only on $t$ (first two columns from the left) or $\sigma_B$ (third column). The first column shows the $\sigma_B$ data on the y-axis, while the last two show the $w_D$ data.}
     \label{fig:clust}
 \end{figure} 
-In order to look at the distribution of the bubble parameters versus the experimental time or the bubble size, we decide to group all shots by the radiation coupling $\Omega_R$ (ignoring the detuning $\delta_{\rm eff}$) and plot the bubble width $\sigma_B$ and border width $w_B$. 
+In order to look at the distribution of the bubble parameters versus the experimental time or the bubble size, we decide to group all shots by the radiation coupling $\Omega_R$ (ignoring the detuning $\delta_{\rm eff}$) and plot the bubble width $\sigma_B$ and domain wall width $w_D$. 
 
 An approach to this might be the one of ordering the shots by time or size and then dividing all shots in blocks with a fixed number of shots per block. However, the distributions of $t$ and $\sigma_B$ are not continuous (especially $t$, which is discretized), and it may be convenient to look for clustered data. 
 The clustering approach can be implemented by the \texttt{\textbf{K-Means}} algorithm from the \texttt{\textbf{Scikit-Learn}} Python library, which lets us choose the number of clusters. The clustered data, with $n_{\rm clusters} = 20$, is shown in Fig.\ \ref{fig:clust}. 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width = \textwidth]{figures/chap2/b_param_cluster.png}
-    \caption{Bubble parameters distribution averaged on all shots of the same cluster. The upper panel shows, from left to right, $w_B$ vs $\sigma_B$, $w_B$ vs $t$ and $\sigma_B$ vs $t$ (the last one in log-log scale). Errors are estimated with the standard deviation of the values in the cluster. The lower panel presents on the left the average border width over all shots with the same coupling radiation $\Omega_R$. A linear fit on the log-log increasing data is performed in order to estimate the rate of growth, shown on the right of the bottom panel.}
+    \caption{Bubble parameters distribution averaged on all shots of the same cluster. The upper panel shows, from left to right, $w_D$ vs $\sigma_B$, $w_D$ vs $t$ and $\sigma_B$ vs $t$ (the last one in log-log scale). Errors are estimated with the standard deviation of the values in the cluster. The lower panel presents on the left the average domain wall width over all shots with the same coupling radiation $\Omega_R$. A linear fit on the log-log increasing data is performed in order to estimate the rate of growth, shown on the right of the bottom panel.}
     \label{fig:b_param}
 \end{figure}
 
-The bubble parameters, averaged in each cluster and in relation one to another, are shown in Fig.\ \ref{fig:b_param}. The border width does not show any visible pattern when varying the bubble size, and for this reason it is averaged and shown as a function of $\Omega_R/2\pi$ in the upper right plot, where it increases with $\Omega_R$ although the points at 400 Hz and 600 Hz interrupt the monotony. The behavior against time is slightly increasing for small time and decreasing for long times, but the most significant trend is clearly the one of $\sigma_B$ vs $t$, where the bubble size is increasing with time at first, and then decreases. The initial behavior corresponds to the power-law growth of $\sigma_B$ in time of the type
+The bubble parameters, averaged in each cluster and in relation one to another, are shown in Fig.\ \ref{fig:b_param}. The domain wall width does not show any visible pattern when varying the bubble size, and for this reason it is averaged and shown as a function of $\Omega_R/2\pi$ in the upper right plot, where it increases with $\Omega_R$ although the points at 400 Hz and 600 Hz interrupt the monotony. The behavior against time is slightly increasing for small time and decreasing for long times, but the most significant trend is clearly the one of $\sigma_B$ vs $t$, where the bubble size is increasing with time at first, and then decreases. The initial behavior corresponds to the power-law growth of $\sigma_B$ in time of the type
 \[
     \sigma_B(t) = A\left(\frac{t}{1\ \unit{\milli\second}}\right)^B\, , 
 \]
@@ -114,6 +114,7 @@ the final one is probability an artifact due to the low-density tails of the Tho
 
 \section{Spectral analysis}
 Since we are interested in the properties of the bubble throughout its evolution, periodic signals in the magnetization channel and their relation to the waiting time or the bubble size are important features to focus on. In order to study them, a spectral profile is much needed, from which one can extrapolate the main frequencies of the signals and, most importantly, the typical length scales of the system.
+Finding a characteristic frequency/length inside or outside the bubble could help to understand how the system dissipates energy in the decay.
 
 The tools used in the following analysis are the Fast Fourier Transform (FFT) and the autocorrelation function (ACF).
 
@@ -123,7 +124,7 @@ We will first approach the problem of deriving such a profile by using the Fast 
 \begin{equation*}
     \mathcal{F}_k = \sum_{n=0}^{N-1} Z_n e^{-2\pi i \frac{k}{N}n}\, .
 \end{equation*}
-When the input $Z_n$ is real-valued, the transform is too, and it is also symmetric between positive and negative frequencies. The physical world contains only positive frequencies, so we will neglect the negative part of the transform. This is achievable by using the Scipy function \texttt{\textbf{rfft}} instead of \texttt{\textbf{fft}}.
+When the input $Z_n$ is real-valued, the transform is too, and it is also symmetric between positive and negative frequencies. We neglect unphysical negative frequencies by using the Scipy function \texttt{\textbf{rfft}} instead of \texttt{\textbf{fft}}.
 
 The result of the Fourier transform of a signal is the extraction of the main frequency components of the signal itself. In fact, as we know, the transform of a pure sinusoidal signal with frequency $\omega_0$ results in a Dirac delta at $\omega = \omega_0$ (excluding the negative frequencies). In the general case of a signal made up of more frequency components and with noise, the peaks in the Fourier transform will correspond the most relevant frequencies. Note that in our case the signal is in the space-domain, and by taking the inverse of the points in the frequency-domain, one can get information about the spatial periodicity of the system, hence the typical length scale.
 
@@ -233,9 +234,9 @@ An example of fit on the ACF average profiles of the inside shots is presented i
 The parameters retrieved from the fits are in Fig.\ \ref{fig:param_size_inside}, along with the ones from the fits on time-clustered data in \ref{fig:param_time_inside}. 
 The size dependence seems to be the most noticeable. The offset $\Delta$ is clearly increasing (note the clean data of 300 Hz, where the number of shots is bigger) and approaching the value of 1. As mentioned before, this means that when the bubble grows in size its magnetization becomes more uniformed, the system progressively loses local information and its periodic structures disappear.
 The length $\ell_1$ is constant and bigger than the spin healing length $\xi_s \approx 0.8$ \unit{\micro\meter} of Eq.\ \eqref{eq:heal}. 
-The length $\ell_2$ does not show a clear trend, due to the many failed fits.
+The length $\ell_2$ does not show a clear trend.
 
-Eventually, a global fit on all shots with the same radiation coupling is made and shown in Fig.\ \ref{fig:fit_omega_inside}. The $\ell_2$ plot is not shown because its estimation succeeds only for $\Omega_R/2\pi = 300$ \unit{\hertz}. Here it is interesting to notice the behavior of $\Delta$ as a function of $\Omega_R$, because it reminds of the average border width $\langle w_B \rangle$ in Fig.\ \ref{fig:b_param}, especially when looking at the strange 400 Hz and 600 Hz points. The length $\ell_1$ does not show a noticeable behavior.
+Eventually, a global fit on all shots with the same radiation coupling is made and shown in Fig.\ \ref{fig:fit_omega_inside}. The $\ell_2$ plot is not shown because its estimation succeeds only for $\Omega_R/2\pi = 300$ \unit{\hertz}. Here it is interesting to notice the behavior of $\Delta$ as a function of $\Omega_R$, because it reminds of the average domain wall width $\langle w_D \rangle$ in Fig.\ \ref{fig:b_param}, especially when looking at the strange 400 Hz and 600 Hz points. The length $\ell_1$ does not show a noticeable behavior.
 
 \paragraph{Outside}
 For the outside region ACF fit we prefer to use a decreasing exponential
@@ -276,5 +277,3 @@ An example of fit (performed until $\Delta x = 11$ \unit{\micro\meter}) on the o
 What emerges outside of the bubble is that the offset $\Delta$ is decreasing with size, while $\ell_1$ remains constant like in the inside. The decrease of $\Delta$ is the exact opposite behavior of the inside region, where the offset increases with the bubble size. The meaning of this is that outside of the bubble structures begin to appear and it is possible that the system during the bubble expansion acquires information that was previously stored inside.
 
 A global fit on all shots with the same radiation coupling is in Fig.\ \ref{fig:fit_omega_outside}. Here, we plot the length $\ell_1$ against $1/\sqrt{\Omega_R}$ and we observe that the two quantities are correlated. Furthermore, by looking at Eq.\ \eqref{eq:heal}, it is the Rabi healing length $\xi_R$ that scales in this manner, and after plotting it we see a clear correspondence between $\xi_R$ and $\ell_1$, hence we can suggest that the system, outside of the bubble, has a typical length of information equal to its Rabi healing length.
-
-% \subsection{Border alignment}

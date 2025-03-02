@@ -34,7 +34,7 @@ omega_fix = {300: 300, 400: 600, 600: 400, 800:800} #?? what is going on
 # create figures
 fig1 = plt.figure(figsize=(12,8))
 # ax = [plt.subplot(321), plt.subplot(323), plt.subplot(325), plt.subplot(322), plt.subplot(326)]
-gs = gridspec.GridSpec(2, 3, height_ratios=[2, 2], width_ratios=[1, 1, 1]) 
+gs = gridspec.GridSpec(2, 3, height_ratios=[3, 1], width_ratios=[1, 1, 1]) 
 
 # Assigning subplots
 ax1 = fig1.add_subplot(gs[0, 0])  # Upper left
@@ -128,27 +128,27 @@ for om in omega_vals:
     str = rf"$\Omega_R/2\pi = {om}$ Hz" + "\n\n" + r"$\sigma_B\ [\mu m]$"
     ax_cl[omega_vals.index(om), 0].set_ylabel(str)
     ax_cl[omega_vals.index(om), 0].set_xscale("log")
-    ax_cl[omega_vals.index(om), 1].set_ylabel("$w_B\ [\mu m]$")
+    ax_cl[omega_vals.index(om), 1].set_ylabel("$w_D\ [\mu m]$")
     ax_cl[omega_vals.index(om), 1].set_xscale("log")
     # ax_cl[omega_vals.index(om), 1].set_ylim([-2, 52])
-    ax_cl[omega_vals.index(om), 2].set_ylabel("$w_B\ [\mu m]$")
+    ax_cl[omega_vals.index(om), 2].set_ylabel("$w_D\ [\mu m]$")
     # ax_cl[omega_vals.index(om), 2].set_ylim([-2, 52])
     ax_cl[omega_vals.index(om), 2].set_xlim([20, 300])
 
     mask = (clustered_s > 50) & (clustered_s < 300) & (avg_exp_width_size < 35)
     ax1.errorbar(clustered_s[mask], avg_exp_width_size[mask], xerr=err_s[mask], yerr=err_exp_width_size[mask], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
 
-    ax4.errorbar(om, np.mean(exp_width), yerr=np.std(exp_width)/np.sqrt(len(exp_width)), fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz', color='grey')
+    ax4.errorbar(om, np.mean(exp_width), yerr=np.std(exp_width)/np.sqrt(len(exp_width)), fmt='o', capsize=4, label=f'$\Omega_R/2\pi = {om}$ Hz', color='tab:purple', markersize=8, elinewidth=2)
 
-    ax5.errorbar(om, m, yerr=dm, fmt='o', capsize=2, label=f'$\Omega_R/2\pi = {om}$ Hz', color='grey')
+    ax5.errorbar(om, m, yerr=dm, fmt='o', capsize=4, label=f'$\Omega_R/2\pi = {om}$ Hz', color='tab:purple', markersize=8, elinewidth=2)
 
 ax1.set_xlabel("$\sigma_B\ [\mu m]$")
-ax1.set_ylabel("$w_B\ [\mu m]$")
+ax1.set_ylabel("$w_D\ [\mu m]$")
 # ax1.set_yscale("log")
 ax1.legend(fontsize='small', loc='upper left')
 
 ax2.set_xlabel("t [ms]")
-ax2.set_ylabel("$w_B\ [\mu m]$")
+ax2.set_ylabel("$w_D\ [\mu m]$")
 # ax2.set_yscale("log")
 ax2.set_xscale("log")
 ax2.legend(fontsize='small', loc='upper left')
@@ -160,8 +160,9 @@ ax3.set_yscale('log')
 ax3.legend(fontsize='small', loc='upper left')
 
 ax4.set_xlabel("$\Omega_R/2\pi$ [Hz]")
-ax4.set_ylabel(r"$\langle w_B \rangle\ [\mu m]$")
-# ax2.set_yscale("log")
+ax4.set_ylabel(r"$\langle w_D \rangle\ [\mu m]$")
+ax4.set_xlim([0, 820])
+ax4.set_ylim([0, 30])
 
 ax5.set_xlabel("$\Omega_R/2\pi$ [Hz]")
 ax5.set_ylabel("$B$")
