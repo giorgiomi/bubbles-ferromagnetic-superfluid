@@ -7,10 +7,10 @@ In this chapter we describe the experimental platform in which the measurements 
 \end{figure}
 We are looking for correlations between the external parameters $\Omega_R$ and $\delta_{\rm eff}$, and the bubble properties such as its size $\sigma_B$, its domain wall width $w_D$ and the experimental waiting time $t$. It is also possible to notice some periodic structures in the system, both inside and outside. Then, for a spectral analysis, FFT and ACF will be utilized. 
 
-The code for the analysis was written in the \textbf{\texttt{Python}} programming language. The references used in this chapter are mainly \cite{cominotti2023ferro}, \cite{farolfi2021}, \cite{cominotti2023experiments} and \cite{cominotti2024ultracold}.
+The code for the analysis was written in the \textbf{\texttt{Python}} programming language. The references used in this chapter are mainly \cite{cominotti2023ferro,farolfi2021,cominotti2023experiments,cominotti2024ultracold}.
 
 \section{Experimental platform}
-The experimental platform is composed of a bosonic gas of $N \sim 10^6$ $^{23}$Na atoms, optically trapped and cooled below the condensation temperature, with typical peak densities of $n = 10^{14}$ atoms/\unit{\centi\meter\cubed}. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom 
+The experimental platform is composed of a bosonic gas of $^{23}$Na atoms, optically trapped and cooled below the condensation temperature, with typical numbers of $N \sim 10^6$ and peak densities of $n \sim 10^{14}$ atoms/\unit{\centi\meter\cubed}. The initial spin state in which the system is prepared is $\ket{F, m_F} = \ket{2, -2} = \ket{\uparrow}$, with $F$ being the total angular momentum of the atom 
 % ($\mathbf{F} = \mathbf{I} + \mathbf{J}$, takes into account the nuclear spin and the total angular momentum of the electrons) 
 and $m_F$ its projection on the quantization axis. The $\ket{\uparrow}$ state is then coupled to $\ket{1, -1} = \ket{\downarrow}$ through microwave radiation with amplitude $\Omega_R$. The relevant scattering lengths concerning the two states are $a_\uparrow = 64.3 a_0$, $a_\downarrow = 54.5 a_0$ and $a_{\uparrow\downarrow} = 64.3 a_0$.
 
@@ -118,7 +118,7 @@ Finding a characteristic frequency/length inside or outside the bubble could hel
 
 The tools used in the following analysis are the Fast Fourier Transform (FFT) and the autocorrelation function (ACF).
 
-\subsection{FFT and ACF definition}
+\subsection{FFT and ACF definitions}
 \paragraph{FFT}
 We will first approach the problem of deriving such a profile by using the Fast Fourier Transform (FFT), an algorithm that implements the Discrete Fourier Transform (DFT) in an efficient manner.\footnote{There are several efficient methods to compute the DFT. The most common implementation is the Cooley-Tukey algorithm, used in the \texttt{\textbf{Scipy}} Python library for FFT.} Given the input as a sequence of $N$ discrete values $Z_0,\dots,Z_{N-1}$ sampled with spacing $\Delta x$, by definition the DFT is a series of $N$ discrete values $\mathcal{F}_0,\dots,\mathcal{F}_{N-1}$ spaced by $\Delta k = 1/(N\Delta x)$ and convoluted with a complex phase such that
 \begin{equation*}
@@ -146,7 +146,7 @@ Note that the sums run from $n = 0$ to $n = W-1$ and thus the length of the sign
 
 The computation of this function on a simple sinusoidal signal is shown in App.\ \ref{chap:app_ACF}. In contrast to the FFT, the ACF results, as mentioned before, live in the space-domain and give direct results on the length scales. A high ACF value at $\Delta x_0$ means that the signal is correlated with itself when shifted by $\Delta x_0$. The periodicity of the signal is then related to the length $\Delta x_0$.
 
-\subsection{FFT and ACF analysis on sequences}
+\subsection{FFT and ACF comparison}
 Now, what we shall do is computing the FFT and the ACF on the data, taking care of the fact that it is necessary to separate the inside region (the bubble) from the outside one. This is done by relying on the piecewise exponential fit results, namely the positions $x_1$ and $x_2$ from Eq.\ \eqref{eq:fit_exp}.
 \begin{figure}[ht!]
     \centering
