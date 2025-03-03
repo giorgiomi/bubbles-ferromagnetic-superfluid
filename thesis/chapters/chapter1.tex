@@ -1,4 +1,4 @@
-In this chapter we will briefly discuss the theoretical background used when dealing with two-component coherently coupled spin mixtures of BECs. Since we are dealing with a many-body quantum problem, the standard approach is to use a quantum field to describe the state of the condensate. This leads directly to the Gross-Pitaevskii equation, which will be the starting point of this discussion, after a quick review of the ideal Bose gas. The following content is mostly based on Refs.\ \cite{pitaevskii2016bose, lamporesi2023two}.
+In this chapter we briefly discuss the theoretical background used when dealing with two-component coherently coupled spin mixtures of BECs. Since we are dealing with a many-body quantum problem, the standard approach is to use a quantum field to describe the state of the condensate. This leads directly to the Gross-Pitaevskii equation, which is the starting point of this discussion, after a quick review of the ideal Bose gas. The following content is mostly based on Refs.\ \cite{pitaevskii2016bose, lamporesi2023two}.
 
 \section{Ideal Bose gas}
 The simplest way to treat the ideal Bose gas (a quantum system of non-interacting bosons) is by relying on the grand-canonical ensemble. 
@@ -187,7 +187,7 @@ In this setting, the two-component GPEs of Eq.\ \eqref{eq:GPE_two} become couple
     \end{aligned}
     \label{eq:GPE_coupled}
 \end{equation}
-Thanks to this type of coupling, even an immiscible mixture can spatially overlap. In this context, the system can be studied by looking at two distinct energy channels separately, namely the spin $n_a-n_b$ and the total density $n_a+n_b$. The behavior of the spin channel is of great interest, because it shows magnetic properties, which are what we will focus on. 
+Thanks to this type of coupling, even an immiscible mixture can spatially overlap. In this context, the system can be studied by looking at two distinct energy channels separately, namely the spin $n_a-n_b$ and the total density $n_a+n_b$. The behavior of the spin channel is of great interest, because it shows magnetic properties, which are what we are going to focus on. 
 
 In this coupling regime, the wavefunction spatial changes of the condensate have characteristic lengths related to the spin/density channel and the coupling radiation, called \textit{healing lengths}, which are the following:
 \begin{equation}
@@ -204,7 +204,7 @@ where $\overline{g} = (g_{aa}+g_{bb})/2$ and $\delta g = \overline{g} - g_{ab}$.
 The magnetic model of the system is shown in the phase diagram of Fig.\ \ref{fig:ferro}, where a phase transition from \textit{paramagnetism} to \textit{ferromagnetism} occurs.
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/chap1/ferro.png}
+    \includegraphics[width=0.9\textwidth]{figures/chap1/ferro.png}
     \caption{Phase diagram of the magnetic properties of the system, showing the magnetization of the ground state. The association between the diagram labels and the system quantities is $\alpha\to \delta g$, $B_3 \to \delta_{\rm eff}$ and $B_1 \to \Omega_R$. When $|\delta g|n < \hbar\Omega_R$ we are in the paramagnetic (PM) region. On the contrary, when $|\delta g|n > \hbar\Omega_R$ the system can be either in the saturated ferromagnetic (SFM) region if $\delta_{\rm eff}$ is large enough or in the ferromagnetic (FM) region. \textit{Figure reproduced from Ref. \cite{cominotti2023ferro}}.}
     \label{fig:ferro}
 \end{figure}
@@ -221,7 +221,8 @@ where the coupling strength $\Omega_R$ plays the role of the height of the barri
 In the case of $|\delta g|n < \hbar\Omega_R$, the energy landscape reduces to a single well and thus the system exhibits paramagnetic properties. The magnetization of the ground state changes continuously from $Z=-1$ to $Z=1$ and does not depend on the history of the system. 
 
 \paragraph{Ferromagnetism}
-On the other hand, when $|\delta g|n > \hbar\Omega_R$ and $|\delta_{\rm eff}| < \delta_{\rm crit}$ (to avoid being in the saturated ferromagnetic region),\footnote{As for the paramagnetic case, in the saturated ferromagnetic the energy landscape has only one minimum.} the double well creates a metastable state, which can be the ground state depending on the history of the system, yielding an hysteresis cycle and a ferromagnetic behavior. This will lead directly to the phenomenon of domain walls and bubble formation analyzed in the following section.
+On the other hand, when $|\delta g|n > \hbar\Omega_R$ and $|\delta_{\rm eff}| < \delta_{\rm crit}$ (to avoid being in the saturated ferromagnetic region),\footnote{As for the paramagnetic case, in the saturated ferromagnetic the energy landscape has only one minimum.} the double well creates a metastable state, which can be the ground state depending on the history of the system, yielding an hysteresis cycle and a ferromagnetic behavior. 
+This directly leads to the phenomenon of domain walls and bubble formation analyzed in the following section.
 
 
 \section{False vacuum decay and bubble formation}
@@ -230,7 +231,7 @@ To understand the underlying mechanisms and dynamics of this process, let us del
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/chap1/FVD.png}
+    \includegraphics[width=0.6\textwidth]{figures/chap1/FVD.png}
     \caption{Ferromagnetic energy landscape and false vacuum decay via bubble formation. \textit{Figure reproduced from Ref. \cite{zenesini2024false}}.}
     \label{fig:FVD}
 \end{figure}
@@ -244,7 +245,7 @@ Given the asymmetric double well describing the spin channel mean-field energy l
 \end{figure}
 At first, one has to set $\Omega_R$ to a fixed value and $\delta_{\rm eff} > 0$ such that the system is in the saturated ferromagnetic region and the ground state is at positive magnetization. Then, by lowering $\delta_{\rm eff}$, the asymmetry can be shifted until the system is in the metastable state (one must not go beyond $\delta_{\rm eff} = \delta_{\rm crit}$ because it would return to the saturated region). 
 
-The possibility of tunnelling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain wall) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunnelling can occur resonantly from A to B.\footnote{Pure quantum tunnelling occurs at $T = 0$. At non-zero temperature the processed is helped by thermal excitations.} Once happened, the system is not in a metastable state anymore, hence the decaying into the ground state C, the true vacuum (TV), via bubble expansion with more atoms flipping into the $\ket{\downarrow}$ state. Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails, due to the dependence of the effective detuning on the density.
+The possibility of tunnelling to the state B arises from the fact that the bubble formation has an energy cost due to the kinetic contribution of the interaction on the interface (domain walls) between atoms $\ket{\uparrow}$ and $\ket{\downarrow}$. However, when a sufficient number of atoms in the core region flips to $\ket{\downarrow}$, the energy gain compensates the kinetic cost and the tunnelling can occur resonantly from A to B.\footnote{Pure quantum tunnelling occurs at $T = 0$. At non-zero temperature the processed is helped by thermal excitations.} Once happened, the system is not in a metastable state anymore, hence the decaying into the ground state C, the true vacuum (TV), via bubble expansion with more atoms flipping into the $\ket{\downarrow}$ state. Note that the TV is not composed of all atoms $\ket{\downarrow}$. This is because while the $\ket{\downarrow}$ state is energetically lower in the high-density core region, the situation is opposite in the low-density tails, due to the dependence of the effective detuning on the density.
 
 From an experimental point of view, the parameters to vary are $\Omega_R$ and $\delta_{\rm eff}$, that contribute to the energy landscape and hence to the decay process. We expect FVD to be greatly influenced by the depth of the well (the energy difference between FV and TV), and thus by both parameters, since it tells us how much energy the system has to dissipate. 
 % However, the framework where one realizes the experiment is that of $\delta_{\rm eff} \gg \delta_{\rm eff}-\delta_{\rm crit}$, where the tunnelling barrier is shallow.
