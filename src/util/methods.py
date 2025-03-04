@@ -250,14 +250,14 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
     # fig_fit, ax_fit = plt.subplots(1, 3, figsize=(12, 5))
     fig_pro, ax_pro = plt.subplots(1, len(omega_vals), figsize=(15, 5))
 
-    fig_om = plt.figure(figsize=(15, 5))
+    fig_om = plt.figure(figsize=(13, 4.33))
     ax_om = [plt.subplot(131), plt.subplot(132), plt.subplot(133)]
 
     if region == 'inside':
         fig_fit = plt.figure(figsize=(12, 5))
         ax_fit = [plt.subplot(131), plt.subplot(132), plt.subplot(133)]
     else:
-        fig_fit = plt.figure(figsize=(8, 6))
+        fig_fit = plt.figure(figsize=(7, 5.25))
         ax_fit = [plt.subplot(121), plt.subplot(122)]
 
     
