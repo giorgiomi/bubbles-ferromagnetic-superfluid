@@ -32,7 +32,7 @@ omega_vals = [300, 400, 600, 800]
 omega_fix = {300: 300, 400: 600, 600: 400, 800:800} #?? what is going on
 
 # create figures
-fig1 = plt.figure(figsize=(12,8))
+fig1 = plt.figure(figsize=(11,7.33))
 # ax = [plt.subplot(321), plt.subplot(323), plt.subplot(325), plt.subplot(322), plt.subplot(326)]
 gs = gridspec.GridSpec(2, 3, height_ratios=[3, 1], width_ratios=[1, 1, 1]) 
 
@@ -44,7 +44,7 @@ ax4 = fig1.add_subplot(gs[1, 0:2])  # Expands full height (right side)
 ax5 = fig1.add_subplot(gs[1, 2])  # Lower right
 
 
-fig2, ax_cl = plt.subplots(len(omega_vals), 3, figsize=(15, 8), sharex='col')
+fig2, ax_cl = plt.subplots(len(omega_vals), 3, figsize=(12, 6), sharex='col')
 
 for om in omega_vals:
     # filter shots with omega = om
@@ -171,6 +171,7 @@ ax_cl[3, 0].set_xlabel("t [ms]")
 ax_cl[3, 1].set_xlabel("t [ms]")
 ax_cl[3, 2].set_xlabel("$\sigma_B\ [\mu m]$")
 
+plt.rcParams.update({'font.size': 12})
 fig1.suptitle("Bubble clustered parameters")
 fig2.suptitle("Clustering")
 fig1.tight_layout()

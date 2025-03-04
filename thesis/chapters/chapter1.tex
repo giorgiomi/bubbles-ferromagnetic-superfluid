@@ -172,7 +172,7 @@ This is shown in the lower section of Fig.\ \ref{fig:buoy}, while the upper sect
 \section{Coherently coupled mixture}
 When the system is composed of two species of the same atom, such as two hyperfine states, the dynamics become more interesting because of the possible interconversion processes. One possibility is to use a homogeneous microwave radiation, which couples by a Rabi process (i.\ e.\ single-photon exchange) the two internal states $\ket{a}$ and $\ket{b}$. The time-dependent field of the radiation is of the type
 \begin{equation*}
-    \Omega_R(t) \exp{-i\omega_{\rm cpl}t + \phi}\, ,\qquad \text{with }
+    \hbar\Omega_R \exp{-i\omega_{\rm cpl}t + \phi}\, ,\qquad \text{with }
     \omega_{\rm cpl} = \omega_{ab} + \delta_B\, .
 \end{equation*}
 Here, $\omega_{ab}$ is the transition frequency between the two coupled states, and in the case of two hyperfine states of the same angular momentum level it includes the linear Zeeman splitting of a small external magnetic field. The coupling frequency $\omega_{\rm cpl}$ differs from $\omega_{ab}$ by a parameter $\delta_B$ called \textit{detuning}.
@@ -193,18 +193,18 @@ In this coupling regime, the wavefunction spatial changes of the condensate have
 \begin{equation}
     \xi_s = \frac{\hbar}{\sqrt{2mn\delta g}}\, ,
     \qquad
-    \xi_d = \frac{\hbar}{\sqrt{2m\overline{g}}}\, ,
+    \xi_d = \frac{\hbar}{\sqrt{2mn\overline{g}}}\, ,
     \qquad
     \xi_R = \sqrt{\frac{\hbar}{m\Omega_R}}\, ,
     \label{eq:heal}
 \end{equation} 
 where $\overline{g} = (g_{aa}+g_{bb})/2$ and $\delta g = \overline{g} - g_{ab}$.
 
-\subsection{Ferromagnetism}
+\subsection{Magnetic model}
 The magnetic model of the system is shown in the phase diagram of Fig.\ \ref{fig:ferro}, where a phase transition from \textit{paramagnetism} to \textit{ferromagnetism} occurs.
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/chap1/ferro.png}
+    \includegraphics[width=\textwidth]{figures/chap1/ferro.png}
     \caption{Phase diagram of the magnetic properties of the system, showing the magnetization of the ground state. The association between the diagram labels and the system quantities is $\alpha\to \delta g$, $B_3 \to \delta_{\rm eff}$ and $B_1 \to \Omega_R$. When $|\delta g|n < \hbar\Omega_R$ we are in the paramagnetic (PM) region. On the contrary, when $|\delta g|n > \hbar\Omega_R$ the system can be either in the saturated ferromagnetic (SFM) region if $\delta_{\rm eff}$ is large enough or in the ferromagnetic (FM) region. \textit{Figure reproduced from Ref. \cite{cominotti2023ferro}}.}
     \label{fig:ferro}
 \end{figure}
@@ -215,7 +215,7 @@ The mean-field energy landscape of the system spin channel is given by the asymm
     E_{\rm MF}(Z) = -\hbar\left(|\delta g|n Z^2 + 2\Omega_R \sqrt{1-Z^2} + 2\delta_{\rm eff} Z\right)\, ,
     \label{eq:E_MF}
 \end{equation}
-where the coupling strength $\Omega_R$ plays the role of the height of the barrier between the wells and the effective detuning $\delta_{\rm eff} = \delta_B + n(g_{aa}-g_{bb})$ contributes to the asymmetry of the wells. Depending on those values, different behaviors may occur. One may set a fixed value for $\Omega_R$ and then probe the magnetic properties by changing $\delta_{\rm eff}$.
+where the coupling strength $\Omega_R$ plays the role of the height of the barrier between the wells and the effective detuning $\delta_{\rm eff} = \delta_B - n(g_{aa}-g_{bb})$ contributes to the asymmetry of the wells. Depending on those values, different behaviors may occur. One may set a fixed value for $\Omega_R$ and then probe the magnetic properties by changing $\delta_{\rm eff}$.
 
 \paragraph{Paramagnetism}
 In the case of $|\delta g|n < \hbar\Omega_R$, the energy landscape reduces to a single well and thus the system exhibits paramagnetic properties. The magnetization of the ground state changes continuously from $Z=-1$ to $Z=1$ and does not depend on the history of the system. 

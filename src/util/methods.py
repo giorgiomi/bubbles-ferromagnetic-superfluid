@@ -506,10 +506,12 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
         fig_fit.suptitle(f"ACF of {region} shots - Fit parameters $\ell_1$, $\ell_2$, $\Delta$")
     else:
         fig_fit.suptitle(f"ACF of {region} shots - Fit parameters $\ell_1$, $\Delta$")
+    
+    plt.rcParams.update({'font.size': 12})
     fig_fit.tight_layout()
     fig_pro.tight_layout()
     fig_om.tight_layout()
     # fig_pro.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
     # fig_fit.savefig(f"thesis/figures/chap2/param_{cat_str}_{region}.png", dpi=500)
-    fig_om.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
+    # fig_om.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
     plt.show()

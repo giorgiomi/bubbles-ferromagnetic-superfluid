@@ -70,11 +70,11 @@ for om in omega_vals:
         cbar = fig.colorbar(im, cax=ax[2])
         cbar.set_label('Z', rotation=180)
 
-
-        plt.suptitle(f"Bubble shots with $\Omega_R/2\pi = {om}$ Hz and $\delta/2\pi = {det}$ Hz")
+        plt.rcParams.update({'font.size': 12})
+        plt.suptitle(f"Bubble shots with $\Omega_R/2\pi = {om}$ Hz and $\delta = {det}$ Hz")
         plt.tight_layout()
         # plt.savefig("thesis/figures/chap2/shot_sorting.png", dpi=500)
-        # plt.show()
+        plt.show()
 
         
 
@@ -200,7 +200,7 @@ for om in omega_vals:
         axs[1, 0].set_title(region + f" ACF (all shots)")
         axs[1, 0].set_xlabel("$\Delta x\ [\mu m]$")
         axs[1, 0].set_ylabel("Size index")
-        axs[1, 0].set_xticks(np.arange(0, 21, 2))
+        axs[1, 0].set_xticks(np.arange(0, 21, 4))
 
         # Average Autocorrelation
         axs[1, 1].plot(CLG, inside_acf_mean, '-', color='tab:blue', label='Zero-mean data ACF')
@@ -215,9 +215,9 @@ for om in omega_vals:
         axs[1, 1].set_title(region + f" ACF (average)")
         axs[1, 1].set_xlabel("$\Delta x\ [\mu m]$")
         axs[1, 1].set_ylabel("ACF")
-        axs[1, 1].set_xticks(np.arange(0, 21, 2))
+        axs[1, 1].set_xticks(np.arange(0, 21, 4))
 
-        plt.suptitle(f"FFT and ACF on shots with $\Omega_R/2\pi = {om}$ Hz and $\delta/2\pi = {det}$ Hz")
+        plt.suptitle(f"FFT and ACF on shots with $\Omega_R/2\pi = {om}$ Hz and $\delta = {det}$ Hz")
         plt.tight_layout()
-        # plt.savefig("thesis/figures/chap2/inside_omdet.png", dpi=500)
+        plt.savefig("thesis/figures/chap2/inside_omdet.png", dpi=500)
         plt.show()

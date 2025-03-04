@@ -169,12 +169,12 @@ for fs in sel_days: # all seqs
                         # Left subplot: fit with bubbles and bubbleshoulders
                         axs[0].plot(xx, M[i], label="Data")
                         axs[0].plot(xx, bubble(xx, *best_2arctan), label="Double arctan fit")
-                        axs[0].plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left shoulder fit")
-                        axs[0].plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right shoulder fit")
-                        axs[0].set_title(f'Day: {fs}, Sequence: {ei}, Shot: {i} - Bubble and Shoulder Fits')
+                        axs[0].plot(xx_left, bubbleshoulder(xx_left, *best_BS_left), label="Left DW fit")
+                        axs[0].plot(xx_right, bubbleshoulder(xx_right, *best_BS_right), label="Right DW fit")
+                        # axs[0].set_title(f'Day: {fs}, Sequence: {ei}, Shot: {i} - Bubble and Shoulder Fits')
                         axs[0].set_xlabel('$x\ [\mu m]$')
                         axs[0].set_ylabel('$Z(x)$')
-                        axs[0].legend()
+                        axs[0].legend(loc='lower right')
 
                         # Zoomed box for left shoulder
                         ax_inset = axs[0].inset_axes([0.55, 0.55, 0.4, 0.4])
@@ -200,13 +200,16 @@ for fs in sel_days: # all seqs
                         # Right subplot: fit with pieces
                         axs[1].plot(xx, M[i], label="Data")
                         axs[1].plot(xx, bubblePieces(xx, *best_pieces), label="Piecewise fit")
-                        axs[1].set_title(f'Day: {fs}, Sequence: {ei}, Shot: {i} - Piecewise Fit')
+                        # axs[1].set_title(f'Day: {fs}, Sequence: {ei}, Shot: {i} - Piecewise Fit')
                         axs[1].set_xlabel('$x\ [\mu m]$')
                         axs[1].set_ylabel('$Z(x)$')
-                        axs[1].legend()
-
+                        axs[1].legend(loc='lower right')
+                        
+                        # Increase font size
+                        plt.rcParams.update({'font.size': 12})
+                        plt.suptitle(r"Example of fitting routines, $\Omega_R/2\pi = 400$ Hz and $\delta = 596.5$ Hz")
                         plt.tight_layout()
-                        plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
+                        # plt.savefig('thesis/figures/chap2/arctan_fit.png', dpi=500)
                         plt.show()
 
                     # Selection on shots
