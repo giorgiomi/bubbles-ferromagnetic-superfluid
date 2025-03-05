@@ -25,7 +25,7 @@
 }
 
 % Oxford Maths theming
-\usetheme{oxfordmaths}
+\usetheme{unitnphysics}
 
 % Set author etc info
 \title[Bubbles in a ferromagnetic superfluid] %short version of title for slide footer
@@ -44,18 +44,18 @@
   \titlepage
 \end{frame}
 
-\begin{frame}{Overview}
+\begin{frame}{\textbf{Overview}}
   \begin{columns}
-      \begin{column}{0.6\textwidth}
+      \begin{column}{0.7\textwidth}
           This presentation will cover:
           \begin{itemize}
-              \item \textbf{Introduction}: Why this thesis?
-              \item \textbf{Theoretical background}: Ferromagnetism in coherently coupled BEC spin-mixtures
+              \item \textbf{Introduction}
+              \item \textbf{Theoretical background}: Ferromagnetism in coherently coupled two-component spin-mixtures
               \item \textbf{Data analysis}: Characterization of false vacuum decay bubbles
               \item \textbf{Conclusions}
           \end{itemize}
       \end{column}
-      \begin{column}{0.4\textwidth}
+      \begin{column}{0.3\textwidth}
           \begin{figure}
               \centering
               \includegraphics[width=\linewidth]{../thesis/figures/chap1/artistic.png}
@@ -64,76 +64,82 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Introduction}
+\begin{frame}{\textbf{Introduction}}
   Why \textbf{bubbles} in a ferromagnetic superfluid?
+
+  ~
 
   \begin{itemize}
       \item First \textbf{experimental observation} of false vacuum decay (FVD) in the Pitaevskii BEC Center laboratories of the University of Trento.
       \item FVD provides information on \textbf{metastability} and is studied from quantum systems to cosmology
-      \item Framework: \textbf{quantum spin mixture} optically trapped and cooled below the condensation temperature
+      \item Framework: \textbf{quantum gas} of $^{23}$Na atoms optically trapped and cooled below the condensation temperature
   \end{itemize}
   
 \end{frame}
 
-% \section{Theoretical background}
+% \section{\textbf{Theoretical background}}
 
-\begin{frame}{Theoretical background: Ideal Bose gas}
-  The ideal Bose gas is a quantum system of $N$ non-interacting bosons, described by statistical mechanics.
-  \begin{equation*}
-      \langle n_i \rangle = \frac{1}{e^{\beta(\epsilon_i - \mu)}-1}
-  \end{equation*}
-  \onslide<2->
-  The occupation number of the ground state $N_0 = \langle n_0\rangle$ corresponds to the condensation. There is a phase transition at $T = T_c$.
-  \begin{equation*}
-      \frac{N_0}{N} = 1-\left(\frac{T}{T_c}\right)^\alpha \quad \text{for } T < T_c
-  \end{equation*}
-  In a finite box $\alpha = 3/2$, in harmonic confinement $\alpha = 3$.
-\end{frame}
+% \begin{frame}{\textbf{Theoretical background}: Ideal Bose gas}
+%   The ideal Bose gas is a quantum system of $N$ non-interacting bosons, described by statistical mechanics.
+%   \begin{equation*}
+%       \langle n_i \rangle = \frac{1}{e^{\beta(\epsilon_i - \mu)}-1}
+%   \end{equation*}
+%   \onslide<2->
+%   The occupation number of the ground state $N_0 = \langle n_0\rangle$ corresponds to the condensation. There is a phase transition at $T = T_c$.
+%   \begin{equation*}
+%       \frac{N_0}{N} = 1-\left(\frac{T}{T_c}\right)^\alpha \quad \text{for } T < T_c
+%   \end{equation*}
+%   In a finite box $\alpha = 3/2$, in harmonic confinement $\alpha = 3$.
+% \end{frame}
 
-\begin{frame}{Theoretical background: Gross-Pitaevskii equation}
-  A system of weakly-interacting bosons can be described by a single wavefunction by a mean-field approximation, yielding the GPE
+\begin{frame}{\textbf{Theoretical background}: Gross-Pitaevskii equation}
+  A system of \textbf{weakly-interacting bosons} can be described by a mean-field approximation with a single wavefunction, yielding the GPE:
   \begin{equation*}
       i\hbar \pdv{\psi(x,t)}{t} = \left[ 
           -\frac{\hbar^2}{2m}\nabla^2 + V(x,t) + g|\psi(x,t)|^2
       \right] \psi(x,t)
   \end{equation*}
-  \onslide<2->
-  In the stationary case
+  \pause
+  In the stationary case:
   \begin{equation*}
       \left[ 
           -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g|\psi(x)|^2
       \right] \psi(x) = \mu \psi(x)
   \end{equation*}
-  When the interaction dominates on the kinetic term
+  When the interaction dominates on the kinetic term:
   \begin{equation*}
-      n(x) = \frac{\mu - V(x)}{g}
+      n(x) = \frac{\mu - V(x)}{g} \quad \Rightarrow \quad R_{\rm TF} = \sqrt{\frac{2\mu}{m\omega^2}}
   \end{equation*}
 \end{frame}
 
-\begin{frame}{Theoretical background: Two-component mixtures}
-  The GPEs are coupled because of the inter-species interaction constant
+\begin{frame}{\textbf{Theoretical background}: Two-component mixtures}
+  In a two-component gas, the GPEs are \textbf{coupled} because of the inter-species interaction constant:
   \begin{align*}
-      &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{aa}|\psi_a(x)|^2 + g_{ab}|\psi_b(x)|^2
+      &\left[ -\frac{\hbar^2}{2m_a}\nabla^2 + V(x) + g_{aa}|\psi_a(x)|^2 + g_{ab}|\psi_b(x)|^2
       \right] \psi_a(x) = \mu_a \psi_a(x) \\
-      &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g_{ab}|\psi_a(x)|^2 + g_{bb}|\psi_b(x)|^2
+      &\left[ -\frac{\hbar^2}{2m_b}\nabla^2 + V(x) + g_{ab}|\psi_a(x)|^2 + g_{bb}|\psi_b(x)|^2
       \right] \psi_b(x) = \mu_b \psi_b(x)
   \end{align*}
-  Depending on the values of $g_{aa}$, $g_{bb}$ and $g_{ab}$, the system GS can behave in different manners
+  Depending on the values of $g_{aa}$, $g_{bb}$ and $g_{ab}$, the \textbf{ground state} of the system can behave in different manners
 \end{frame}
 
-% \begin{frame}{Theoretical background: Two-component mixtures}
+% \begin{frame}{\textbf{Theoretical background}: Two-component mixtures}
 %     The mixture can be miscible or immiscible: buoyancy effect
 %     \begin{figure}
 %         \centering
-%         \includegraphics[width=\textwidth]{../thesis/figures/chap1/buoyancy.png}
+%         \includegraphics[width=0.7\textwidth]{../thesis/figures/chap1/buoyancy.png}
 %     \end{figure}
 % \end{frame}
 
-\begin{frame}{Theoretical background: Coherent coupling}
-  Coupling radiation between $\ket{a}$ and $\ket{b}$:
+\begin{frame}{\textbf{Theoretical background}: Coherent coupling}
+  When species of the same atom, \textbf{coupling radiation} between $\ket{a}$ and $\ket{b}$:
   \[
-      \Omega_R(t)\exp{-i\omega_{\rm cpl}t+\phi} \quad \omega_{\rm cpl} = \omega_{ab} + \delta_B
+      \hbar\Omega_R\exp{-i\omega_{\rm cpl}t+\phi} \quad \text{with} \quad \omega_{\rm cpl} = \omega_{ab} + \delta_B
   \]
+  Two distinct \textbf{energy channels}: spin $nZ = n_a-n_b$ and total density $n = n_a+n_b$
+  \pause
+
+  ~
 
   Double-well energy landscape
   \begin{equation*}
@@ -141,132 +147,135 @@
       \label{eq:E_MF}
   \end{equation*}
 
-  The order parameter is the ratio $|\delta g|n/\hbar\Omega_R$
+  The order parameter is the ratio $\dfrac{|\delta g|n}{\hbar\Omega_R}$
 \end{frame}
 
-\begin{frame}{Theoretical background: Ferromagnetism}
+\begin{frame}{\textbf{Theoretical background}: Ferromagnetism}
   \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap1/ferro.png}
+      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap1/ferro.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Theoretical background: False Vacuum Decay}
+\begin{frame}{\textbf{Theoretical background}: False Vacuum Decay}
   \begin{figure}
       \centering
-      \includegraphics[width=0.8\textwidth]{../thesis/figures/chap1/FVD.png}
+      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap1/FVD.png}
   \end{figure}    
 \end{frame}
 
-\begin{frame}{Data analysis: Experimental platform}
-  The experiment uses $^{23}$Na atoms prepared in the state $\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}$, which is coupled to the state $\ket{1, -1} = \ket{\downarrow}$.
-
-  The system is cigar-shaped with Thomas-Fermi radii 
-  \begin{equation*}
-      R_x = 200\ \unit{\micro\meter} \quad R_\rho = 2\ \unit{\micro\meter}
-  \end{equation*}
-
-  The magnetization is computed from the densities $n_\uparrow(x)$, $n_\downarrow(x)$
-  \begin{equation*}
+\begin{frame}{\textbf{Data analysis}: Experimental platform}
+  \begin{itemize}
+    \item $^{23}$Na atoms prepared in the state $\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}$, which is coupled to the state $\ket{1, -1} = \ket{\downarrow}$
+    \item \textbf{Harmonic trapping} potential with $\omega_\perp/2\pi = 2$ \unit{\kilo\hertz} and $\omega_x/2\pi = 20$ \unit{\kilo\hertz}
+    \item Thomas-Fermi radii $R_\perp = 2\ \unit{\micro\meter}$ and $R_x = 200\ \unit{\micro\meter}$ (cigar-shaped)
+    \item Reduction to \textbf{1D system} and spin-selective imaging yield the densities $n_\uparrow(x)$, $n_\downarrow(x)$ and the magnetization
+    \begin{equation*}
       Z(x) = \frac{n_\uparrow(x) - n_\downarrow(x)}{n_\uparrow(x) + n_\downarrow(x)}
-  \end{equation*}
+    \end{equation*}
+  \end{itemize}  
 \end{frame}
 
-\begin{frame}{Data analysis: Bubble shots and fits}
-  \vspace{-0.2cm}
+\begin{frame}{\textbf{Data analysis}: Bubble shots and fits}
+  \vspace{-0.1cm}
   \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/two_bubbles.png}
+      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/two_bubbles.png}
   \end{figure}
   \vspace{-0.5cm}
   \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/arctan_fit.png}
+      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/arctan_fit.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Data analysis: Shot sorting}
+\begin{frame}{\textbf{Data analysis}: Shot sorting}
   \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/shot_sorting.png}
+      \includegraphics[width=0.9\textwidth]{../thesis/figures/chap2/shot_sorting.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Data analysis: Parameters clustering}
-  \vspace{-0.2cm}
+\begin{frame}{\textbf{Data analysis}: Parameters clustering}
+  \vspace{-0.1cm}
   \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/b_param_cluster.png}
+      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/b_param_cluster.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Data analysis: FFT and ACF}
-  \vspace{-0.2cm}
+\begin{frame}{\textbf{Data analysis}: FFT and ACF}
+  % \vspace{-0.2cm}
   \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/inside_omdet.png}
+      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/inside_omdet.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Data analysis: FFT and ACF}
+\begin{frame}{\textbf{Data analysis}: FFT and ACF}
   \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/inside_fft_avg.png}
+      \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/inside_fft_avg.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Data analysis: ACF fits}
+\begin{frame}{\textbf{Data analysis}: ACF inside (fits)}
   \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_size_inside.png}
   \end{figure}
-  \vspace{-0.5cm}
+\end{frame}
+
+\begin{frame}{\textbf{Data analysis}: ACF inside (parameters)}
+  \begin{figure}
+      \centering
+      \includegraphics[width=\textwidth]{../thesis/figures/chap2/param_size_inside.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{\textbf{Data analysis}: ACF inside (parameters)}
+  \begin{figure}
+      \centering
+      \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_omega_inside.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{\textbf{Data analysis}: ACF outside (fits)}
   \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_size_outside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Data analysis: ACF inside}
+\begin{frame}{\textbf{Data analysis}: ACF outside (parameters)}
   \begin{figure}
-      \centering
-      \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/param_size_inside.png}
-  \end{figure}
-  \vspace{-0.5cm}
-  \begin{figure}
-      \centering
-      \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/fit_omega_inside.png}
+    \centering
+    \includegraphics[width = 0.6\textwidth]{../thesis/figures/chap2/param_size_outside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Data analysis: ACF outside}
+\begin{frame}{\textbf{Data analysis}: ACF outside (parameters)}
   \begin{figure}
       \centering
-      \begin{minipage}[t]{0.47 \textwidth}
-          \centering
-          \includegraphics[width = \textwidth]{../thesis/figures/chap2/param_size_outside.png}
-      \end{minipage}
-      \hspace{0.02\textwidth}
-      \begin{minipage}[t]{0.47 \textwidth}
-          \centering
-          \includegraphics[width = \textwidth]{../thesis/figures/chap2/param_time_outside.png}
-      \end{minipage}
-  \end{figure}
-  \vspace{-0.5cm}
-  \begin{figure}
-      \centering
-      \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/fit_omega_outside.png}
+      \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_omega_outside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{Conclusions}
+\begin{frame}{\textbf{Conclusions}}
   What did we learn from this work?
   \begin{itemize}
-      \item The system shows \textbf{different properties} between inside and outside of the bubble
-      \item Border width of the bubble \textbf{depends on the coupling} strength $\Omega_R$
-      \item Growth factor of the bubble size in time is \textbf{independent} of $\Omega_R$
-      \item In the bubble, periodic structures \textbf{disappear} with size increasing. They \textbf{appear}, instead, outside of the bubble.
-      \item Length scale of information outside is related to the Rabi \textbf{healing length}
+    \item The system shows \textbf{different properties} between inside and outside of the bubble
+    \item Border width of the bubble \textbf{depends on the coupling} strength $\Omega_R$
+    \item Growth factor of the bubble size in time is \textbf{independent} of $\Omega_R$
+    \item In the bubble, periodic structures \textbf{disappear} with size increasing. They \textbf{appear}, instead, outside of the bubble.
+    \item Length scale of information outside is related to the Rabi \textbf{healing length}
+  \end{itemize}
+  \pause
+  Future research:
+  \begin{itemize}
+    \item Analysis of the \textbf{density} channel
+    \item Comparison with numerical GPE \textbf{simulations}
+    \item Behavior at different \textbf{temperatures}
   \end{itemize}
 \end{frame}
 

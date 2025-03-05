@@ -8,9 +8,9 @@
 % Use infolines as base
 \useoutertheme{infolines} 
 
-% tweak colours for Oxford Blue
-\definecolor{oxfordblue}{RGB}{42,84,66}
-\usecolortheme[named=oxfordblue]{structure}
+% tweak colours for Unitn Physics Green
+\definecolor{unitngreen}{RGB}{42,84,66}
+\usecolortheme[named=unitngreen]{structure}
 
 %turn off the navigation symbols
 \setbeamertemplate{navigation symbols}{}
@@ -27,17 +27,17 @@
 \setlength{\fullpagewidth}{\dimexpr\textwidth+\textmargin+\textmargin\relax}
 
 % Calculate widths from heights for the logos
-\newlength{\oxfordlogowidth}
-\setlength{\oxfordlogowidth}{\dimexpr  10mm * 214 / 311 \relax}
-\newlength{\mathslogowidth}
-\setlength{\mathslogowidth}{\dimexpr 3mm * 347 / 105 \relax}
+\newlength{\imagelogowidth}
+\setlength{\imagelogowidth}{\dimexpr  10mm * 214 / 311 \relax}
+\newlength{\textlogowidth}
+\setlength{\textlogowidth}{\dimexpr 4mm * 347 / 105 \relax}
 
 %% Title slide formatting %%
 \setbeamertemplate{title page}{
     \begin{picture}(0,0)
         \put(-\textmargin, \dimexpr -\paperheight*6/10 \relax){%
         \ifdim\paperwidth>400pt
-           \includegraphics[width=\paperwidth]{background.png}
+           \includegraphics[width=\paperwidth]{images/background.png}
         \else
            \includegraphics[width=\paperwidth]{title-slide-background.png}
         \fi
@@ -47,11 +47,12 @@
                 \raggedright
                 \color{white}
                 \usebeamerfont{title}
-                    {\inserttitle\\[0.9cm]}
+                \fontsize{24pt}{30pt}\selectfont
+                  {\inserttitle\\[0.9cm]}
                 \usebeamerfont{subtitle}
-                    {\sc\insertauthor\\[0.5cm]}
-                    {\it\insertinstitute\\[0.3cm]}
-                    {\insertdate}
+                    {\insertauthor\\[0.5cm]}
+                    {\it\insertinstitute\\[0.1cm]}
+                    {\it\insertdate}
             \end{minipage}
         }
     \end{picture}
@@ -61,14 +62,14 @@
 \setbeamertemplate{frametitle}{%
    \rlap{%
      \begin{beamercolorbox}[sep=\titlevmargin,left,wd=\dimexpr\fullpagewidth-\titlehmargin*2+\titlevmargin*2\relax]{frametitle}%
-      \begin{minipage}{\dimexpr\fullpagewidth-\oxfordlogowidth-\titlehmargin*3-0.1cm\relax}%
+      \begin{minipage}{\dimexpr\fullpagewidth-\imagelogowidth-\titlehmargin*3-0.1cm\relax}%
         \strut\insertframetitle\strut\par%
       \end{minipage}%
       \hspace{\titlehmargin}%
-      \begin{minipage}{\dimexpr\oxfordlogowidth+1mm\relax}%
+      \begin{minipage}{\dimexpr\imagelogowidth+1mm\relax}%
         \hfill
         \vspace*{-4mm}
-        \includegraphics[width=\oxfordlogowidth]{logo_new.png}%
+        \includegraphics[width=\imagelogowidth]{images/logo_new.png}%
       \end{minipage}%
      \end{beamercolorbox}%
    }%
@@ -84,8 +85,8 @@
   \leavevmode%
   \noindent\hspace{\dimexpr\titlehmargin-\titlevmargin\relax}%
   \begin{beamercolorbox}[sep=\titlevmargin,wd=\dimexpr\fullpagewidth-\titlehmargin*2+\titlevmargin*2\relax]{footline}%
-    \begin{minipage}{\dimexpr\mathslogowidth+1pt\relax}%
-      \includegraphics[width=\mathslogowidth]{logonome.png}%
+    \begin{minipage}{\dimexpr\textlogowidth+1pt\relax}%
+      \includegraphics[width=\textlogowidth]{images/logonome.png}%
     \end{minipage}%
     \hfill%
     {\usebeamercolor[fg]{title in head/foot}\usebeamerfont{title in head/foot}\insertshorttitle}%
