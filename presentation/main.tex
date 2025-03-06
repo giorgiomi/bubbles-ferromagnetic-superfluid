@@ -8,6 +8,7 @@
 \usepackage{tikz-cd,wrapfig}
 \usepackage{tcolorbox}
 \usepackage{listings}
+\usepackage[export]{adjustbox}
 
 % Maths
 \usepackage{amsmath}
@@ -147,21 +148,41 @@
       \label{eq:E_MF}
   \end{equation*}
 
-  The order parameter is the ratio $\dfrac{|\delta g|n}{\hbar\Omega_R}$
+  The order parameter is the ratio $\dfrac{|\delta g|n}{\hbar\Omega_R}$, the effective detuning is $\delta_{\rm eff} = \delta_B - n(g_{aa}-g_{bb})$
 \end{frame}
 
-\begin{frame}{\textbf{Theoretical background}: Ferromagnetism}
-  \begin{figure}
+\begin{frame}{\textbf{Theoretical background}: Magnetic model}
+  \begin{minipage}{0.7\textwidth}
+    \begin{figure}
       \centering
-      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap1/ferro.png}
-  \end{figure}
-\end{frame}
+      \includegraphics[width=\linewidth]{../thesis/figures/chap1/ferro.png}
+    \end{figure} 
+  \end{minipage}
+  \hspace{0.01\textwidth}
+  \begin{minipage}{0.27\textwidth}
+    \begin{align*}
+      &\alpha\to\delta g\\
+      &B_3\to\delta_{\rm eff}\\
+      &B_1\to\Omega_R
+    \end{align*}
+  \end{minipage}
+\end{frame} 
 
 \begin{frame}{\textbf{Theoretical background}: False Vacuum Decay}
-  \begin{figure}
+  \begin{minipage}{0.32\textwidth}
+    \begin{itemize}
+      \item Quantum tunnelling from A to B (stochastic)
+      \item Decay from B to C
+      \item Problem: when to take the shot?
+    \end{itemize}
+  \end{minipage}
+  \hspace{0.01\textwidth}
+  \begin{minipage}{0.65\textwidth}
+    \begin{figure}
       \centering
-      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap1/FVD.png}
-  \end{figure}    
+      \includegraphics[width=\linewidth]{../thesis/figures/chap1/FVD.png}
+    \end{figure} 
+  \end{minipage}
 \end{frame}
 
 \begin{frame}{\textbf{Data analysis}: Experimental platform}
@@ -169,23 +190,25 @@
     \item $^{23}$Na atoms prepared in the state $\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}$, which is coupled to the state $\ket{1, -1} = \ket{\downarrow}$
     \item \textbf{Harmonic trapping} potential with $\omega_\perp/2\pi = 2$ \unit{\kilo\hertz} and $\omega_x/2\pi = 20$ \unit{\kilo\hertz}
     \item Thomas-Fermi radii $R_\perp = 2\ \unit{\micro\meter}$ and $R_x = 200\ \unit{\micro\meter}$ (cigar-shaped)
-    \item Reduction to \textbf{1D system} and spin-selective imaging yield the densities $n_\uparrow(x)$, $n_\downarrow(x)$ and the magnetization
-    \begin{equation*}
-      Z(x) = \frac{n_\uparrow(x) - n_\downarrow(x)}{n_\uparrow(x) + n_\downarrow(x)}
-    \end{equation*}
+    \item Reduction to \textbf{1D system} and spin-selective imaging yield the densities $n_\uparrow(x)$, $n_\downarrow(x)$ and the magnetization $Z(x)$
   \end{itemize}  
+  \pause
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/two_bubbles.png}
+  \end{figure}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: Bubble shots and fits}
-  \vspace{-0.1cm}
+\begin{frame}{\textbf{Data analysis}: Bubble fits}
+  % \vspace{-0.1cm}
+  % \begin{figure}
+  %     \centering
+  %     \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/two_bubbles.png}
+  % \end{figure}
+  % \vspace{-0.5cm}
   \begin{figure}
       \centering
-      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/two_bubbles.png}
-  \end{figure}
-  \vspace{-0.5cm}
-  \begin{figure}
-      \centering
-      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/arctan_fit.png}
+      \includegraphics[width=\textwidth]{../thesis/figures/chap2/arctan_fit.png}
   \end{figure}
 \end{frame}
 
@@ -197,11 +220,20 @@
 \end{frame}
 
 \begin{frame}{\textbf{Data analysis}: Parameters clustering}
-  \vspace{-0.1cm}
-  \begin{figure}
-      \centering
-      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/b_param_cluster.png}
-  \end{figure}
+  \begin{minipage}{0.70\textwidth}
+    % \vspace{-0.05cm}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{../thesis/figures/chap2/b_param_cluster.png}
+    \end{figure}
+  \end{minipage}
+  \hspace{0.01\textwidth}
+  \begin{minipage}{0.27\textwidth}
+    Fit function:
+    \[
+      \sigma_B(t) = A\left(\frac{t}{1\ \unit{\milli\second}}\right)^B
+    \]  
+  \end{minipage}
 \end{frame}
 
 \begin{frame}{\textbf{Data analysis}: FFT and ACF}
@@ -220,10 +252,18 @@
 \end{frame}
 
 \begin{frame}{\textbf{Data analysis}: ACF inside (fits)}
-  \begin{figure}
-      \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_size_inside.png}
-  \end{figure}
+  \hspace{-0.05\textwidth}
+  \begin{minipage}{0.47 \textwidth}
+    \centering
+    \adjincludegraphics[width=\linewidth, trim={0 0 {.5\width} 0}, clip]{../thesis/figures/chap2/fit_size_inside.png}
+  \end{minipage}
+  \hspace{0.01\textwidth}
+  \begin{minipage}{0.50 \textwidth}
+      Fit function:
+      \[
+        \mathcal{A}_{\rm fit}(x) = (1 - \Delta)\cos(\frac{\pi x}{\ell_2})\exp[-\frac{1}{2}\left(\frac{x}{\ell_1}\right)^\alpha] + \Delta
+      \]
+  \end{minipage}
 \end{frame}
 
 \begin{frame}{\textbf{Data analysis}: ACF inside (parameters)}
@@ -241,10 +281,18 @@
 \end{frame}
 
 \begin{frame}{\textbf{Data analysis}: ACF outside (fits)}
-  \begin{figure}
-      \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_size_outside.png}
-  \end{figure}
+  \hspace{-0.05\textwidth}
+  \begin{minipage}{0.47 \textwidth}
+    \centering
+    \adjincludegraphics[width=\linewidth, trim={{.5\width} 0 0 0}, clip]{../thesis/figures/chap2/fit_size_outside.png}
+  \end{minipage}
+  \hspace{0.01\textwidth}
+  \begin{minipage}{0.50 \textwidth}
+      Fit function:
+      \[
+        \mathcal{A}_{\rm fit}(x) = (1-\Delta)\exp[-\frac{x}{2\ell_1}] + \Delta
+      \]
+  \end{minipage}
 \end{frame}
 
 \begin{frame}{\textbf{Data analysis}: ACF outside (parameters)}
@@ -262,7 +310,7 @@
 \end{frame}
 
 \begin{frame}{\textbf{Conclusions}}
-  What did we learn from this work?
+  What did we learn?
   \begin{itemize}
     \item The system shows \textbf{different properties} between inside and outside of the bubble
     \item Border width of the bubble \textbf{depends on the coupling} strength $\Omega_R$
