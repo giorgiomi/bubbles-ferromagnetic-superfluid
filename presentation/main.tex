@@ -45,7 +45,7 @@
   \titlepage
 \end{frame}
 
-\begin{frame}{\textbf{Overview}}
+\begin{frame}{Overview}
   \begin{columns}
       \begin{column}{0.7\textwidth}
           This presentation will cover:
@@ -65,7 +65,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{\textbf{Introduction}}
+\begin{frame}{Introduction}
   Why \textbf{bubbles} in a ferromagnetic superfluid?
 
   ~
@@ -73,7 +73,7 @@
   \begin{itemize}
       \item First \textbf{experimental observation} of false vacuum decay (FVD) in the Pitaevskii BEC Center laboratories of the University of Trento.
       \item FVD provides information on \textbf{metastability} and is studied from quantum systems to cosmology
-      \item Framework: \textbf{quantum gas} of $^{23}$Na atoms optically trapped and cooled below the condensation temperature
+      \item Framework: \textbf{quantum gas} of Sodium atoms optically trapped and cooled below the condensation temperature
   \end{itemize}
   
 \end{frame}
@@ -93,65 +93,66 @@
 %   In a finite box $\alpha = 3/2$, in harmonic confinement $\alpha = 3$.
 % \end{frame}
 
-\begin{frame}{\textbf{Theoretical background}: Gross-Pitaevskii equation}
-  A system of \textbf{weakly-interacting bosons} can be described by a mean-field approximation with a single wavefunction, yielding the GPE:
-  \begin{equation*}
-      i\hbar \pdv{\psi(x,t)}{t} = \left[ 
-          -\frac{\hbar^2}{2m}\nabla^2 + V(x,t) + g|\psi(x,t)|^2
-      \right] \psi(x,t)
-  \end{equation*}
-  \pause
-  In the stationary case:
-  \begin{equation*}
-      \left[ 
-          -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g|\psi(x)|^2
-      \right] \psi(x) = \mu \psi(x)
-  \end{equation*}
-  When the interaction dominates on the kinetic term:
-  \begin{equation*}
-      n(x) = \frac{\mu - V(x)}{g} \quad \Rightarrow \quad R_{\rm TF} = \sqrt{\frac{2\mu}{m\omega^2}}
-  \end{equation*}
+\begin{frame}{Experimental platform}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item $^{23}$Na atoms in the hyperfine states $\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}$ and $\ket{F,m_F} = \ket{1, -1} = \ket{\downarrow}$
+        \item Contact interaction constants $g_{\uparrow\uparrow}$, $g_{\downarrow\downarrow}$, $g_{\uparrow\downarrow}$
+        \item Rabi coupling strength $\Omega_R$ and detuning $\delta_B$
+        \item Harmonic trapping potential with $\omega_\perp/2\pi = 2$ \unit{\kilo\hertz} and $\omega_x/2\pi = 20$ \unit{\kilo\hertz}
+        % \item Thomas-Fermi radii $R_\perp = 2\ \unit{\micro\meter}$ and $R_x = 200\ \unit{\micro\meter}$ (cigar-shaped)
+        % \item Reduction to \textbf{1D system} and spin-selective imaging yield the densities $n_\uparrow(x)$, $n_\downarrow(x)$ and the magnetization $Z(x)$
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{../thesis/figures/chap1/rabi.png}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{\textbf{Theoretical background}: Two-component mixtures}
-  In a two-component gas, the GPEs are \textbf{coupled} because of the inter-species interaction constant:
-  \begin{align*}
-      &\left[ -\frac{\hbar^2}{2m_a}\nabla^2 + V(x) + g_{aa}|\psi_a(x)|^2 + g_{ab}|\psi_b(x)|^2
-      \right] \psi_a(x) = \mu_a \psi_a(x) \\
-      &\left[ -\frac{\hbar^2}{2m_b}\nabla^2 + V(x) + g_{ab}|\psi_a(x)|^2 + g_{bb}|\psi_b(x)|^2
-      \right] \psi_b(x) = \mu_b \psi_b(x)
-  \end{align*}
-  Depending on the values of $g_{aa}$, $g_{bb}$ and $g_{ab}$, the \textbf{ground state} of the system can behave in different manners
-\end{frame}
-
-% \begin{frame}{\textbf{Theoretical background}: Two-component mixtures}
-%     The mixture can be miscible or immiscible: buoyancy effect
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=0.7\textwidth]{../thesis/figures/chap1/buoyancy.png}
-%     \end{figure}
+% \begin{frame}{\textbf{Theoretical background}: Gross-Pitaevskii equation}
+%   A system of \textbf{weakly-interacting bosons} can be described by a mean-field approximation with a single wavefunction, yielding the GPE:
+%   \begin{equation*}
+%       i\hbar \pdv{\psi(x,t)}{t} = \left[ 
+%           -\frac{\hbar^2}{2m}\nabla^2 + V(x,t) + g|\psi(x,t)|^2
+%       \right] \psi(x,t)
+%   \end{equation*}
+%   \pause
+%   In the stationary case:
+%   \begin{equation*}
+%       \left[ 
+%           -\frac{\hbar^2}{2m}\nabla^2 + V(x) + g|\psi(x)|^2
+%       \right] \psi(x) = \mu \psi(x)
+%   \end{equation*}
+%   When the interaction dominates on the kinetic term:
+%   \begin{equation*}
+%       n(x) = \frac{\mu - V(x)}{g} \quad \Rightarrow \quad R_{\rm TF} = \sqrt{\frac{2\mu}{m\omega^2}}
+%   \end{equation*}
 % \end{frame}
 
-\begin{frame}{\textbf{Theoretical background}: Coherent coupling}
-  When species of the same atom, \textbf{coupling radiation} between $\ket{a}$ and $\ket{b}$:
-  \[
-      \hbar\Omega_R\exp{-i\omega_{\rm cpl}t+\phi} \quad \text{with} \quad \omega_{\rm cpl} = \omega_{ab} + \delta_B
-  \]
-  Two distinct \textbf{energy channels}: spin $nZ = n_a-n_b$ and total density $n = n_a+n_b$
-  \pause
-
-  ~
-
-  Double-well energy landscape
+\begin{frame}{Coherently coupled two-component spin mixtures}
+  The GPEs contain the inter-species interaction constant and the coupling between the states:
+  \begin{equation*}
+    \begin{aligned}
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) - \frac{\delta_B}{2} + g_{\uparrow\uparrow}|\psi_\uparrow(x)|^2 + g_{\uparrow\downarrow}|\psi_\downarrow(x)|^2
+        \right] \psi_\uparrow(x) - \frac{\hbar\Omega_R}{2}\psi_\downarrow(x) = \mu_\uparrow \psi_\uparrow(x) \\
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + \frac{\delta_B}{2} + g_{\uparrow\downarrow}|\psi_\uparrow(x)|^2 + g_{\downarrow\downarrow}|\psi_\downarrow(x)|^2
+        \right] \psi_\downarrow(x) - \frac{\hbar\Omega_R}{2}\psi_\uparrow(x) = \mu_\downarrow \psi_\downarrow(x)
+    \end{aligned}
+  \end{equation*}
+  % Depending on the values of $g_{aa}$, $g_{bb}$ and $g_{ab}$, the \textbf{ground state} of the system can behave in different manners
+  Magnetization $Z = (n_\uparrow-n_\downarrow)/(n_\uparrow+n_\downarrow)$ produces an energy landscape:
   \begin{equation*}
       E_{\rm MF}(Z) = -\hbar\left(|\delta g|n Z^2 + 2\Omega_R \sqrt{1-Z^2} + 2\delta_{\rm eff} Z\right)
       \label{eq:E_MF}
   \end{equation*}
-
-  The order parameter is the ratio $\dfrac{|\delta g|n}{\hbar\Omega_R}$, the effective detuning is $\delta_{\rm eff} = \delta_B - n(g_{aa}-g_{bb})$
 \end{frame}
 
-\begin{frame}{\textbf{Theoretical background}: Magnetic model}
+\begin{frame}{Magnetic model}
   \begin{minipage}{0.7\textwidth}
     \begin{figure}
       \centering
@@ -168,11 +169,11 @@
   \end{minipage}
 \end{frame} 
 
-\begin{frame}{\textbf{Theoretical background}: False Vacuum Decay}
+\begin{frame}{False vacuum decay bubbles}
   \begin{minipage}{0.32\textwidth}
     \begin{itemize}
       \item Quantum tunnelling from A to B (stochastic)
-      \item Decay from B to C
+      \item Decay from B to C (what we want to study)
       \item Problem: when to take the shot?
     \end{itemize}
   \end{minipage}
@@ -185,41 +186,33 @@
   \end{minipage}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: Experimental platform}
-  \begin{itemize}
-    \item $^{23}$Na atoms prepared in the state $\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}$, which is coupled to the state $\ket{1, -1} = \ket{\downarrow}$
-    \item \textbf{Harmonic trapping} potential with $\omega_\perp/2\pi = 2$ \unit{\kilo\hertz} and $\omega_x/2\pi = 20$ \unit{\kilo\hertz}
-    \item Thomas-Fermi radii $R_\perp = 2\ \unit{\micro\meter}$ and $R_x = 200\ \unit{\micro\meter}$ (cigar-shaped)
-    \item Reduction to \textbf{1D system} and spin-selective imaging yield the densities $n_\uparrow(x)$, $n_\downarrow(x)$ and the magnetization $Z(x)$
-  \end{itemize}  
-  \pause
+\begin{frame}{Example of bubble shots}
   \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/two_bubbles.png}
+    \includegraphics[width=\textwidth]{images/two_bubbles.png}
   \end{figure}
+  Our aim is to study:
+  \begin{itemize}
+    \item Size $\sigma_B$ and domain wall width $w_D$
+    \item Spectrum inside/outside
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: Bubble fits}
-  % \vspace{-0.1cm}
-  % \begin{figure}
-  %     \centering
-  %     \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/two_bubbles.png}
-  % \end{figure}
-  % \vspace{-0.5cm}
+\begin{frame}{Bubble fitting routines}
   \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{../thesis/figures/chap2/arctan_fit.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: Shot sorting}
+\begin{frame}{Shot sorting}
   \begin{figure}
       \centering
       \includegraphics[width=0.9\textwidth]{../thesis/figures/chap2/shot_sorting.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: Parameters clustering}
+\begin{frame}{Analysis of size and domain wall width}
   \begin{minipage}{0.70\textwidth}
     % \vspace{-0.05cm}
     \begin{figure}
@@ -236,7 +229,7 @@
   \end{minipage}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: FFT and ACF}
+\begin{frame}{Spectral analysis in the inside region}
   % \vspace{-0.2cm}
   \begin{figure}
       \centering
@@ -244,14 +237,14 @@
   \end{figure}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: FFT and ACF}
-  \begin{figure}
-      \centering
-      \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/inside_fft_avg.png}
-  \end{figure}
-\end{frame}
+% \begin{frame}{\textbf{Data analysis}: FFT and ACF}
+%   \begin{figure}
+%       \centering
+%       \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/inside_fft_avg.png}
+%   \end{figure}
+% \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: ACF inside (fits)}
+\begin{frame}{ACF analysis in the inside region (fits)}
   \hspace{-0.05\textwidth}
   \begin{minipage}{0.47 \textwidth}
     \centering
@@ -266,21 +259,21 @@
   \end{minipage}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: ACF inside (parameters)}
+\begin{frame}{ACF analysis in the inside region (parameters)}
   \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{../thesis/figures/chap2/param_size_inside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: ACF inside (parameters)}
+\begin{frame}{ACF analysis in the inside region (parameters)}
   \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_omega_inside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: ACF outside (fits)}
+\begin{frame}{ACF analysis in the outside region (fits)}
   \hspace{-0.05\textwidth}
   \begin{minipage}{0.47 \textwidth}
     \centering
@@ -295,25 +288,25 @@
   \end{minipage}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: ACF outside (parameters)}
+\begin{frame}{ACF analysis in the outside region (parameters)}
   \begin{figure}
     \centering
     \includegraphics[width = 0.6\textwidth]{../thesis/figures/chap2/param_size_outside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{\textbf{Data analysis}: ACF outside (parameters)}
+\begin{frame}{ACF analysis in the outside region (parameters)}
   \begin{figure}
       \centering
       \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_omega_outside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{\textbf{Conclusions}}
+\begin{frame}{Conclusions}
   What did we learn?
   \begin{itemize}
     \item The system shows \textbf{different properties} between inside and outside of the bubble
-    \item Border width of the bubble \textbf{depends on the coupling} strength $\Omega_R$
+    \item Domain wall width \textbf{depends on the coupling} strength $\Omega_R$
     \item Growth factor of the bubble size in time is \textbf{independent} of $\Omega_R$
     \item In the bubble, periodic structures \textbf{disappear} with size increasing. They \textbf{appear}, instead, outside of the bubble.
     \item Length scale of information outside is related to the Rabi \textbf{healing length}
