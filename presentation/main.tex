@@ -51,7 +51,7 @@
           This presentation will cover:
           \begin{itemize}
               \item \textbf{Introduction}
-              \item \textbf{Theoretical background}: Ferromagnetism in coherently coupled two-component spin-mixtures
+              \item \textbf{Theoretical background}: Ferromagnetism in coherently coupled two-component spin mixtures
               \item \textbf{Data analysis}: Characterization of false vacuum decay bubbles
               \item \textbf{Conclusions}
           \end{itemize}
@@ -71,9 +71,11 @@
   ~
 
   \begin{itemize}
-      \item First \textbf{experimental observation} of false vacuum decay (FVD) in the Pitaevskii BEC Center laboratories of the University of Trento.
+      \item First \textbf{experimental observation} of false vacuum decay (FVD) in the \emph{Pitaevskii BEC Center} laboratories of the University of Trento.
+      \item Superfluidity: high degree of coherence of the system
+      \item Ferromagnetism: energy landscape
       \item FVD provides information on \textbf{metastability} and is studied from quantum systems to cosmology
-      \item Framework: \textbf{quantum gas} of Sodium atoms optically trapped and cooled below the condensation temperature
+      % \item Framework: \textbf{quantum gas} of Sodium atoms optically trapped and cooled below the condensation temperature
   \end{itemize}
   
 \end{frame}
@@ -100,7 +102,8 @@
         \item $^{23}$Na atoms in the hyperfine states $\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}$ and $\ket{F,m_F} = \ket{1, -1} = \ket{\downarrow}$
         \item Contact interaction constants $g_{\uparrow\uparrow}$, $g_{\downarrow\downarrow}$, $g_{\uparrow\downarrow}$
         \item Rabi coupling strength $\Omega_R$ and detuning $\delta_B$
-        \item Harmonic trapping potential with $\omega_\perp/2\pi = 2$ \unit{\kilo\hertz} and $\omega_x/2\pi = 20$ \unit{\kilo\hertz}
+        \item Harmonic trapping potential (cigar-shaped)
+        \item Cooled below the condensation temperature
         % \item Thomas-Fermi radii $R_\perp = 2\ \unit{\micro\meter}$ and $R_x = 200\ \unit{\micro\meter}$ (cigar-shaped)
         % \item Reduction to \textbf{1D system} and spin-selective imaging yield the densities $n_\uparrow(x)$, $n_\downarrow(x)$ and the magnetization $Z(x)$
       \end{itemize}
@@ -135,7 +138,7 @@
 % \end{frame}
 
 \begin{frame}{Coherently coupled two-component spin mixtures}
-  The GPEs contain the inter-species interaction constant and the coupling between the states:
+  The GPEs contain the intra and inter-species interaction constants and the coupling between the states:
   \begin{equation*}
     \begin{aligned}
         &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) - \frac{\delta_B}{2} + g_{\uparrow\uparrow}|\psi_\uparrow(x)|^2 + g_{\uparrow\downarrow}|\psi_\downarrow(x)|^2
@@ -147,25 +150,24 @@
   % Depending on the values of $g_{aa}$, $g_{bb}$ and $g_{ab}$, the \textbf{ground state} of the system can behave in different manners
   Magnetization $Z = (n_\uparrow-n_\downarrow)/(n_\uparrow+n_\downarrow)$ produces an energy landscape:
   \begin{equation*}
-      E_{\rm MF}(Z) = -\hbar\left(|\delta g|n Z^2 + 2\Omega_R \sqrt{1-Z^2} + 2\delta_{\rm eff} Z\right)
+      E_{\rm MF}(Z) = -|\delta g|n Z^2 - 2\hbar\Omega_R \sqrt{1-Z^2} - 2\hbar\delta_{\rm eff} Z
       \label{eq:E_MF}
   \end{equation*}
 \end{frame}
 
-\begin{frame}{Magnetic model}
+\begin{frame}{Magnetic model phase diagram: para and ferro}
   \begin{minipage}{0.7\textwidth}
     \begin{figure}
       \centering
-      \includegraphics[width=\linewidth]{../thesis/figures/chap1/ferro.png}
+      \includegraphics[width=\linewidth]{images/ferro.png}
     \end{figure} 
   \end{minipage}
   \hspace{0.01\textwidth}
   \begin{minipage}{0.27\textwidth}
-    \begin{align*}
-      &\alpha\to\delta g\\
-      &B_3\to\delta_{\rm eff}\\
-      &B_1\to\Omega_R
-    \end{align*}
+    \begin{itemize}
+      \item Set $\dfrac{|\delta g| n}{\hbar\Omega_R}$ to a fixed value by adjusting $\Omega_R$
+      \item Probe the magnetic properties by changing $\delta_{\rm eff}$
+    \end{itemize}
   \end{minipage}
 \end{frame} 
 
@@ -217,7 +219,7 @@
     % \vspace{-0.05cm}
     \begin{figure}
         \centering
-        \includegraphics[width=\linewidth]{../thesis/figures/chap2/b_param_cluster.png}
+        \includegraphics[width=\linewidth]{images/b_param_cluster.png}
     \end{figure}
   \end{minipage}
   \hspace{0.01\textwidth}
@@ -230,11 +232,27 @@
 \end{frame}
 
 \begin{frame}{Spectral analysis in the inside region}
-  % \vspace{-0.2cm}
-  \begin{figure}
-      \centering
-      \includegraphics[width=0.7\textwidth]{../thesis/figures/chap2/inside_omdet.png}
-  \end{figure}
+  \begin{columns}
+    \begin{column}{0.7\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{../thesis/figures/chap2/inside_omdet.png}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      \hspace{-0.2\textheight}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{images/inside.png}
+      \end{figure}
+      \hspace{0.2\textheight}
+      \begin{itemize}
+        \item FFT: broad peak at $k \sim 0.01$ \unit{\per\micro\meter}
+        \item ACF: peak at $\Delta x \sim 11$ \unit{\micro\meter}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  
 \end{frame}
 
 % \begin{frame}{\textbf{Data analysis}: FFT and ACF}
@@ -245,25 +263,46 @@
 % \end{frame}
 
 \begin{frame}{ACF analysis in the inside region (fits)}
-  \hspace{-0.05\textwidth}
-  \begin{minipage}{0.47 \textwidth}
-    \centering
-    \adjincludegraphics[width=\linewidth, trim={0 0 {.5\width} 0}, clip]{../thesis/figures/chap2/fit_size_inside.png}
-  \end{minipage}
-  \hspace{0.01\textwidth}
-  \begin{minipage}{0.50 \textwidth}
-      Fit function:
-      \[
-        \mathcal{A}_{\rm fit}(x) = (1 - \Delta)\cos(\frac{\pi x}{\ell_2})\exp[-\frac{1}{2}\left(\frac{x}{\ell_1}\right)^\alpha] + \Delta
-      \]
-  \end{minipage}
+  \begin{columns}
+    \begin{column}{0.50\textwidth}
+      \begin{figure}
+        \centering
+        \adjincludegraphics[width=\linewidth, trim={0 0 {.5\width} 0}, clip]{../thesis/figures/chap2/fit_size_inside.png}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{images/inside.png}
+      \end{figure}
+      \begin{itemize}
+        \item Shots clustered by increasing size (darker to lighter colors)
+        \item Fit function $\mathcal{A}_{\rm fit}(x) = $
+        \begin{equation*}
+          (1 - \Delta)\cos(\frac{\pi x}{\ell_2})\exp[-\frac{1}{2}\left(\frac{x}{\ell_1}\right)^{1.7}] + \Delta
+        \end{equation*}
+      \end{itemize}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{ACF analysis in the inside region (parameters)}
-  \begin{figure}
-      \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/param_size_inside.png}
-  \end{figure}
+  \begin{columns}
+    \begin{column}{0.7\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{../thesis/figures/chap2/param_size_inside.png}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      Healing lengths:
+      \begin{align*}
+        &\xi_s = \frac{\hbar}{\sqrt{2mn\delta g}} \approx 0.5\ \unit{\micro\meter}\\
+        &\xi_d = \frac{\hbar}{\sqrt{2mn\overline{g}}} \approx 0.01\ \unit{\micro\meter}\\
+        &\xi_R = \sqrt{\frac{\hbar}{m\Omega_R}} \approx \numrange[range-phrase=-]{1.8}{3.0}\ \unit{\micro\meter}
+      \end{align*}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{ACF analysis in the inside region (parameters)}
@@ -274,18 +313,27 @@
 \end{frame}
 
 \begin{frame}{ACF analysis in the outside region (fits)}
-  \hspace{-0.05\textwidth}
-  \begin{minipage}{0.47 \textwidth}
-    \centering
-    \adjincludegraphics[width=\linewidth, trim={{.5\width} 0 0 0}, clip]{../thesis/figures/chap2/fit_size_outside.png}
-  \end{minipage}
-  \hspace{0.01\textwidth}
-  \begin{minipage}{0.50 \textwidth}
-      Fit function:
-      \[
-        \mathcal{A}_{\rm fit}(x) = (1-\Delta)\exp[-\frac{x}{2\ell_1}] + \Delta
-      \]
-  \end{minipage}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{figure}
+        \centering
+        \adjincludegraphics[width=\linewidth, trim={{.5\width} 0 0 0}, clip]{../thesis/figures/chap2/fit_size_outside.png}
+      \end{figure}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{images/outside.png}
+      \end{figure}
+      \begin{itemize}
+        \item Shots clustered by increasing size (darker to lighter colors)
+        \item Fit function:
+        \[
+          \mathcal{A}_{\rm fit}(x) = (1-\Delta)\exp[-\frac{x}{2\ell_1}] + \Delta
+        \]
+      \end{itemize}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{ACF analysis in the outside region (parameters)}
@@ -305,7 +353,7 @@
 \begin{frame}{Conclusions}
   What did we learn?
   \begin{itemize}
-    \item The system shows \textbf{different properties} between inside and outside of the bubble
+    \item System shows \textbf{different properties} between inside and outside of the bubble
     \item Domain wall width \textbf{depends on the coupling} strength $\Omega_R$
     \item Growth factor of the bubble size in time is \textbf{independent} of $\Omega_R$
     \item In the bubble, periodic structures \textbf{disappear} with size increasing. They \textbf{appear}, instead, outside of the bubble.
