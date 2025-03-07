@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from util.parameters import importParameters
 from sklearn.cluster import KMeans
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import matplotlib.gridspec as gridspec
 
 # Data
@@ -32,17 +33,9 @@ omega_vals = [300, 400, 600, 800]
 omega_fix = {300: 300, 400: 600, 600: 400, 800:800} #?? what is going on
 
 # create figures
-fig1 = plt.figure(figsize=(11,7.33))
-# ax = [plt.subplot(321), plt.subplot(323), plt.subplot(325), plt.subplot(322), plt.subplot(326)]
-gs = gridspec.GridSpec(2, 3, height_ratios=[3, 1], width_ratios=[1, 1, 1]) 
-
-# Assigning subplots
-ax1 = fig1.add_subplot(gs[0, 0])  # Upper left
-ax2 = fig1.add_subplot(gs[0, 1])  # Middle left
-ax3 = fig1.add_subplot(gs[0, 2])  # Lower left
-ax4 = fig1.add_subplot(gs[1, 0:2])  # Expands full height (right side)
-ax5 = fig1.add_subplot(gs[1, 2])  # Lower right
-
+fig1, [ax1, ax2] = plt.subplots(1, 2, figsize=(10, 6.66))
+ax1_inset = inset_axes(ax1, width="60%", height="40%", loc='lower right')
+ax2_inset = inset_axes(ax2, width="60%", height="20%", loc='upper left')
 
 fig2, ax_cl = plt.subplots(len(omega_vals), 3, figsize=(12, 6), sharex='col')
 
@@ -81,8 +74,8 @@ for om in omega_vals:
     err_t = np.array([np.std(time[labels == i])/np.sqrt(len(time[labels == i])) for i in range(n_clusters)])
 
     mask_exp_width = avg_exp_width < 40
-    ax2.errorbar(clustered_t[mask_exp_width], avg_exp_width[mask_exp_width], xerr=err_t[mask_exp_width], yerr=err_exp_width[mask_exp_width], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
-    ax3.errorbar(clustered_t[mask_exp_width], avg_size[mask_exp_width], xerr=err_t[mask_exp_width], yerr=err_size[mask_exp_width], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
+    # ax2.errorbar(clustered_t[mask_exp_width], avg_exp_width[mask_exp_width], xerr=err_t[mask_exp_width], yerr=err_exp_width[mask_exp_width], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
+    ax2.errorbar(clustered_t[mask_exp_width], avg_size[mask_exp_width], xerr=err_t[mask_exp_width], yerr=err_size[mask_exp_width], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
 
     # Perform linear fit on avg_size vs clustered_t
     sorted_indices = np.argsort(clustered_t)
@@ -101,7 +94,7 @@ for om in omega_vals:
     print(om, m, dm)
 
     # Plot the linear fit
-    ax3.plot(sorted_clustered_t[:tr], fit_line(sorted_clustered_t[:tr]), '--', color=ax3.lines[-1].get_color())
+    ax2.plot(sorted_clustered_t[:tr], fit_line(sorted_clustered_t[:tr]), '--', color=ax2.lines[-1].get_color())
     
     # Reshape size for KMeans
     size_reshaped = size.reshape(-1, 1)
@@ -136,46 +129,50 @@ for om in omega_vals:
     ax_cl[omega_vals.index(om), 2].set_xlim([20, 300])
 
     mask = (clustered_s > 50) & (clustered_s < 300) & (avg_exp_width_size < 35)
-    ax1.errorbar(clustered_s[mask], avg_exp_width_size[mask], xerr=err_s[mask], yerr=err_exp_width_size[mask], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=12, capsize=2)
 
-    ax4.errorbar(om, np.mean(exp_width), yerr=np.std(exp_width)/np.sqrt(len(exp_width)), fmt='o', capsize=4, label=f'$\Omega_R/2\pi = {om}$ Hz', color='tab:purple', markersize=8, elinewidth=2)
+    ax1.errorbar(om, np.mean(exp_width), yerr=np.std(exp_width)/np.sqrt(len(exp_width)), fmt='o', capsize=4, label=f'$\Omega_R/2\pi = {om}$ Hz', color='tab:purple', markersize=8, elinewidth=2)
 
-    ax5.errorbar(om, m, yerr=dm, fmt='o', capsize=4, label=f'$\Omega_R/2\pi = {om}$ Hz', color='tab:purple', markersize=8, elinewidth=2)
+    ax1_inset.errorbar(clustered_s[mask], avg_exp_width_size[mask], xerr=err_s[mask], yerr=err_exp_width_size[mask], fmt='.', label=f'$\Omega_R/2\pi = {om}$ Hz', markersize=8, capsize=2)
 
-ax1.set_xlabel("$\sigma_B\ [\mu m]$")
-ax1.set_ylabel("$w_D\ [\mu m]$")
-# ax1.set_yscale("log")
-ax1.legend(fontsize='small', loc='upper left')
+    ax2_inset.errorbar(om, m, yerr=dm, fmt='o', capsize=4, label=f'$\Omega_R/2\pi = {om}$ Hz', color='tab:purple', markersize=8, elinewidth=2)
+
+ax1_inset.set_xlabel("$\sigma_B\ [\mu m]$")
+ax1_inset.set_ylabel("$w_D\ [\mu m]$")
+ax1_inset.legend(fontsize='small', loc='upper right')
+ax1_inset.xaxis.set_ticks_position('top')
+ax1_inset.xaxis.set_label_position('top')
 
 ax2.set_xlabel("t [ms]")
-ax2.set_ylabel("$w_D\ [\mu m]$")
-# ax2.set_yscale("log")
+ax2.set_ylabel("$\sigma_B\ [\mu m]$")
 ax2.set_xscale("log")
-ax2.legend(fontsize='small', loc='upper left')
+ax2.set_yscale('log')
+ax2.set_ylim([72, 285])
+ax2.yaxis.set_major_locator(plt.MaxNLocator(nbins=10))
+ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.0f}'))
+ax2.legend(fontsize='small', loc='lower right')
+ax2.set_title("Bubble size vs time")
 
-ax3.set_xlabel("t [ms]")
-ax3.set_ylabel("$\sigma_B\ [\mu m]$")
-ax3.set_xscale("log")
-ax3.set_yscale('log')
-ax3.legend(fontsize='small', loc='upper left')
+ax1.set_xlabel("$\Omega_R/2\pi$ [Hz]")
+ax1.set_ylabel(r"$\langle w_D \rangle\ [\mu m]$")
+ax1.set_xlim([200, 820])
+ax1.set_ylim([0, 30])
+ax1.set_title("Domain wall width")
 
-ax4.set_xlabel("$\Omega_R/2\pi$ [Hz]")
-ax4.set_ylabel(r"$\langle w_D \rangle\ [\mu m]$")
-ax4.set_xlim([0, 820])
-ax4.set_ylim([0, 30])
-
-ax5.set_xlabel("$\Omega_R/2\pi$ [Hz]")
-ax5.set_ylabel("$B$")
+ax2_inset.set_xlabel("$\Omega_R/2\pi$ [Hz]")
+ax2_inset.set_ylabel("$B$")
+ax2_inset.set_xticks([300, 400, 500, 600, 700, 800])
+ax2_inset.yaxis.set_ticks_position('right')
+ax2_inset.yaxis.set_label_position('right')
 
 ax_cl[3, 0].set_xlabel("t [ms]")
 ax_cl[3, 1].set_xlabel("t [ms]")
 ax_cl[3, 2].set_xlabel("$\sigma_B\ [\mu m]$")
 
 plt.rcParams.update({'font.size': 12})
-fig1.suptitle("Bubble clustered parameters")
+# fig1.suptitle("Bubble clustered parameters")
 fig2.suptitle("Clustering")
 fig1.tight_layout()
 fig2.tight_layout()
-# fig1.savefig("thesis/figures/chap2/b_param_cluster.png", dpi=500)
+fig1.savefig("presentation/images/b_param_cluster.png", dpi=500)
 # fig2.savefig("thesis/figures/chap2/clustering.png", dpi=500)
 plt.show()
