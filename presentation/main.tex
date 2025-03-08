@@ -214,7 +214,7 @@
   \end{figure}
 \end{frame}
 
-\begin{frame}{Analysis of size and domain wall width}
+\begin{frame}{Analysis of domain wall width and bubble size}
   \begin{minipage}{0.70\textwidth}
     % \vspace{-0.05cm}
     \begin{figure}
@@ -224,10 +224,13 @@
   \end{minipage}
   \hspace{0.01\textwidth}
   \begin{minipage}{0.27\textwidth}
-    Fit function:
-    \[
-      \sigma_B(t) = A\left(\frac{t}{1\ \unit{\milli\second}}\right)^B
-    \]  
+    \begin{itemize}
+      \item Shots clustered by size (left) or time (right)
+      \item Fit function:
+      \[
+        \sigma_B(t) = A\left(\frac{t}{1\ \unit{\milli\second}}\right)^B
+      \] 
+    \end{itemize} 
   \end{minipage}
 \end{frame}
 
@@ -243,7 +246,7 @@
       \hspace{-0.2\textheight}
       \begin{figure}
         \centering
-        \includegraphics[width=\linewidth]{images/inside.png}
+        \includegraphics[width=\linewidth]{images/inside_arr.png}
       \end{figure}
       \hspace{0.2\textheight}
       \begin{itemize}
@@ -262,7 +265,7 @@
 %   \end{figure}
 % \end{frame}
 
-\begin{frame}{ACF analysis in the inside region (fits)}
+\begin{frame}{ACF analysis in the inside region vs $\sigma_B$ (fits)}
   \begin{columns}
     \begin{column}{0.50\textwidth}
       \begin{figure}
@@ -273,7 +276,7 @@
     \begin{column}{0.50\textwidth}
       \begin{figure}
         \centering
-        \includegraphics[width=\linewidth]{images/inside.png}
+        \includegraphics[width=\linewidth]{images/inside_arr.png}
       \end{figure}
       \begin{itemize}
         \item Shots clustered by increasing size (darker to lighter colors)
@@ -286,7 +289,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{ACF analysis in the inside region (parameters)}
+\begin{frame}{ACF analysis in the inside region vs $\sigma_B$ (parameters)}
   \begin{columns}
     \begin{column}{0.7\textwidth}
       \begin{figure}
@@ -297,7 +300,7 @@
     \begin{column}{0.3\textwidth}
       Healing lengths:
       \begin{align*}
-        &\xi_s = \frac{\hbar}{\sqrt{2mn\delta g}} \approx 0.5\ \unit{\micro\meter}\\
+        &\xi_s = \frac{\hbar}{\sqrt{2mn|\delta g|}} \approx 0.5\ \unit{\micro\meter}\\
         &\xi_d = \frac{\hbar}{\sqrt{2mn\overline{g}}} \approx 0.01\ \unit{\micro\meter}\\
         &\xi_R = \sqrt{\frac{\hbar}{m\Omega_R}} \approx \numrange[range-phrase=-]{1.8}{3.0}\ \unit{\micro\meter}
       \end{align*}
@@ -305,14 +308,14 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{ACF analysis in the inside region (parameters)}
+\begin{frame}{ACF analysis in the inside region vs $\Omega_R$ (fit and parameters)}
   \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_omega_inside.png}
+      \includegraphics[width=0.9\textwidth]{images/fit_omega_inside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{ACF analysis in the outside region (fits)}
+\begin{frame}{ACF analysis in the outside region vs $\sigma_B$ (fits)}
   \begin{columns}
     \begin{column}{0.55\textwidth}
       \begin{figure}
@@ -323,7 +326,7 @@
     \begin{column}{0.45\textwidth}
       \begin{figure}
         \centering
-        \includegraphics[width=\linewidth]{images/outside.png}
+        \includegraphics[width=\linewidth]{images/outside_arr.png}
       \end{figure}
       \begin{itemize}
         \item Shots clustered by increasing size (darker to lighter colors)
@@ -336,17 +339,17 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{ACF analysis in the outside region (parameters)}
+\begin{frame}{ACF analysis in the outside region vs $\sigma_B$ (parameters)}
   \begin{figure}
     \centering
     \includegraphics[width = 0.6\textwidth]{images/param_size_outside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{ACF analysis in the outside region (parameters)}
+\begin{frame}{ACF analysis in the outside region $\Omega_R$ (fits and parameters)}
   \begin{figure}
       \centering
-      \includegraphics[width=\textwidth]{../thesis/figures/chap2/fit_omega_outside.png}
+      \includegraphics[width=0.9\textwidth]{images/fit_omega_outside.png}
   \end{figure}
 \end{frame}
 
