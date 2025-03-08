@@ -244,14 +244,14 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
     CLG = np.arange(window_len+1)
     # omega_vals = np.unique(omega_data)
     omega_vals = [300, 400, 600, 800]
+    xi_R = [np.sqrt(0.2741/om)*100 for om in omega_vals]
     colors_om = plt.cm.tab10([0, 1, 2, 3])
     k = 0
 
     # fig_fit, ax_fit = plt.subplots(1, 3, figsize=(12, 5))
     fig_pro, ax_pro = plt.subplots(1, len(omega_vals), figsize=(15, 5))
 
-    fig_om = plt.figure(figsize=(13, 4.33))
-    ax_om = [plt.subplot(131), plt.subplot(132), plt.subplot(133)]
+    fig_om, ax_om = plt.subplots(1, 3, figsize=(10, 5), width_ratios=[2, 2, 1])
 
     if region == 'inside':
         fig_fit = plt.figure(figsize=(12, 5))
@@ -381,10 +381,10 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
         if cat_str == 'omega':
             if region == 'outside':
                 if om == 300:
-                    ax_om[1].errorbar(1/np.sqrt(om), l1_values, yerr=dl1_values, fmt='o', capsize=4, color='tab:purple', label='ACF data', markersize=8, elinewidth=2)
+                    ax_om[1].errorbar(xi_R[k], l1_values, yerr=dl1_values, fmt='o', capsize=4, color='tab:purple', label='ACF data', markersize=8, elinewidth=2)
                 else:
-                    ax_om[1].errorbar(1/np.sqrt(om), l1_values, yerr=dl1_values, fmt='o', capsize=4, color='tab:purple', markersize=8, elinewidth=2)
-                ax_om[1].set_xlabel('$1/\sqrt{\Omega_R/2\pi}$ [$Hz^{-1/2}$]')
+                    ax_om[1].errorbar(xi_R[k], l1_values, yerr=dl1_values, fmt='o', capsize=4, color='tab:purple', markersize=8, elinewidth=2)
+                ax_om[1].set_xlabel(r'$\xi_R\ [\mu $m]')
             else:
                 ax_om[1].errorbar(om, l1_values, yerr=dl1_values, fmt='o', capsize=4, color='tab:purple', markersize=8, elinewidth=2)
                 ax_om[1].set_xlabel(displ_str)
@@ -498,10 +498,15 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
 
         k += 1
     if region == 'outside':
-        xi_R = [np.sqrt(0.2741/om)*100 for om in omega_vals]
-        ax_om[1].plot([1/np.sqrt(om) for om in omega_vals], xi_R, '-', color='tab:cyan', label=r'$\xi_R$')
+        ax_om[1].plot(xi_R, xi_R, '-', color='tab:cyan', label=r'$\xi_R$')
     ax_om[1].legend()
-    fig_om.suptitle(f"ACF of {region} shots - Fits and parameters $\ell_1$, $\Delta$")
+    # fig_om.suptitle(f"ACF of {region} shots - Fits and parameters $\ell_1$, $\Delta$")
+    ax_om[0].set_title(f"ACF profiles and fits")
+    ax_om[1].set_title(r"Fit parameter $\ell_1$ vs $\xi_R$")
+    # ax_om[1].set_xticks([300, 400, 600, 800])
+    ax_om[1].set_xticks(np.arange(1.8, 3.2, 0.2))
+    ax_om[2].set_xticks([300, 400, 600, 800])
+    ax_om[2].set_title("Fit parameter $\Delta$ vs $\Omega_R$")
     if region == 'inside':
         fig_fit.suptitle(f"ACF of {region} shots - Fit parameters $\ell_1$, $\ell_2$, $\Delta$")
     else:
@@ -513,5 +518,5 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
     fig_om.tight_layout()
     # fig_pro.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
     # fig_fit.savefig(f"thesis/figures/chap2/param_{cat_str}_{region}.png", dpi=500)
-    # fig_om.savefig(f"thesis/figures/chap2/fit_{cat_str}_{region}.png", dpi=500)
+    # fig_om.savefig(f"presentation/images/fit_{cat_str}_{region}.png", dpi=500)
     plt.show()
