@@ -251,7 +251,7 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
     # fig_fit, ax_fit = plt.subplots(1, 3, figsize=(12, 5))
     fig_pro, ax_pro = plt.subplots(1, len(omega_vals), figsize=(15, 5))
 
-    fig_om, ax_om = plt.subplots(1, 3, figsize=(10, 5), width_ratios=[2, 2, 1])
+    fig_om, ax_om = plt.subplots(1, 2, figsize=(7, 5.25))
 
     if region == 'inside':
         fig_fit = plt.figure(figsize=(12, 5))
@@ -390,9 +390,9 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
                 ax_om[1].set_xlabel(displ_str)
             ax_om[1].set_ylabel(r"$\ell_1\ [\mu $m]")
 
-            ax_om[2].errorbar(om, off_values, yerr=doff_values, fmt='o', capsize=4, color='tab:purple', markersize=8, elinewidth=2)
-            ax_om[2].set_xlabel(displ_str)
-            ax_om[2].set_ylabel(r"$\Delta$")
+            # ax_om[2].errorbar(om, off_values, yerr=doff_values, fmt='o', capsize=4, color='tab:purple', markersize=8, elinewidth=2)
+            # ax_om[2].set_xlabel(displ_str)
+            # ax_om[2].set_ylabel(r"$\Delta$")
 
             if region == 'inside' and len(cats) > 2:
                 ax_om[3].errorbar(om, l2_values, yerr=dl2_values, fmt='o', capsize=2, color='tab:purple')
@@ -503,10 +503,10 @@ def groupFitACF(cat_str, cat_data_raw, omega_data, n_blocks, Z_raw, window_len, 
     # fig_om.suptitle(f"ACF of {region} shots - Fits and parameters $\ell_1$, $\Delta$")
     ax_om[0].set_title(f"ACF profiles and fits")
     ax_om[1].set_title(r"Fit parameter $\ell_1$ vs $\xi_R$")
-    # ax_om[1].set_xticks([300, 400, 600, 800])
+    # ax_om[1].set_xticks([300, 400, 500, 600, 700, 800])
     ax_om[1].set_xticks(np.arange(1.8, 3.2, 0.2))
-    ax_om[2].set_xticks([300, 400, 600, 800])
-    ax_om[2].set_title("Fit parameter $\Delta$ vs $\Omega_R$")
+    # ax_om[2].set_xticks([300, 400, 600, 800])
+    # ax_om[2].set_title("Fit parameter $\Delta$ vs $\Omega_R$")
     if region == 'inside':
         fig_fit.suptitle(f"ACF of {region} shots - Fit parameters $\ell_1$, $\ell_2$, $\Delta$")
     else:
