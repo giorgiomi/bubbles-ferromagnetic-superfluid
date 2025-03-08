@@ -9,6 +9,7 @@
 \usepackage{tcolorbox}
 \usepackage{listings}
 \usepackage[export]{adjustbox}
+\usepackage[dvipsnames]{xcolor}
 
 % Maths
 \usepackage{amsmath}
@@ -74,7 +75,7 @@
       \item First \textbf{experimental observation} of false vacuum decay (FVD) in the \emph{Pitaevskii BEC Center} laboratories of the University of Trento.
       \item Superfluidity: high degree of coherence of the system
       \item Ferromagnetism: energy landscape
-      \item FVD provides information on \textbf{metastability} and is studied from quantum systems to cosmology
+      \item Study of FVD provides information on \textbf{metastability} from quantum systems to cosmology
       % \item Framework: \textbf{quantum gas} of Sodium atoms optically trapped and cooled below the condensation temperature
   \end{itemize}
   
@@ -99,11 +100,11 @@
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{itemize}
-        \item $^{23}$Na atoms in the hyperfine states $\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}$ and $\ket{F,m_F} = \ket{1, -1} = \ket{\downarrow}$
+        \item $N\sim10^6$ condensated $^{23}$Na atoms in the hyperfine states $\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow}$ and $\ket{F,m_F} = \ket{1, -1} = \ket{\downarrow}$
         \item Contact interaction constants $g_{\uparrow\uparrow}$, $g_{\downarrow\downarrow}$, $g_{\uparrow\downarrow}$
-        \item Rabi coupling strength $\Omega_R$ and detuning $\delta_B$
-        \item Harmonic trapping potential (cigar-shaped)
-        \item Cooled below the condensation temperature
+        \item Interconversion due to Rabi coupling: strength $\Omega_R$ and detuning $\delta_B$
+        \item Harmonic trapping potential (cigar-shaped, 1D)
+        % \item Cooled below the condensation temperature
         % \item Thomas-Fermi radii $R_\perp = 2\ \unit{\micro\meter}$ and $R_x = 200\ \unit{\micro\meter}$ (cigar-shaped)
         % \item Reduction to \textbf{1D system} and spin-selective imaging yield the densities $n_\uparrow(x)$, $n_\downarrow(x)$ and the magnetization $Z(x)$
       \end{itemize}
@@ -138,13 +139,13 @@
 % \end{frame}
 
 \begin{frame}{Coherently coupled two-component spin mixtures}
-  The GPEs contain the intra and inter-species interaction constants and the coupling between the states:
+  The GPEs contain the \colorbox{Dandelion}{intra} and \colorbox{Thistle}{inter}-species interaction constants and the \colorbox{lime}{coupling} between the states:
   \begin{equation*}
     \begin{aligned}
-        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) - \frac{\delta_B}{2} + g_{\uparrow\uparrow}|\psi_\uparrow(x)|^2 + g_{\uparrow\downarrow}|\psi_\downarrow(x)|^2
-        \right] \psi_\uparrow(x) - \frac{\hbar\Omega_R}{2}\psi_\downarrow(x) = \mu_\uparrow \psi_\uparrow(x) \\
-        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + \frac{\delta_B}{2} + g_{\uparrow\downarrow}|\psi_\uparrow(x)|^2 + g_{\downarrow\downarrow}|\psi_\downarrow(x)|^2
-        \right] \psi_\downarrow(x) - \frac{\hbar\Omega_R}{2}\psi_\uparrow(x) = \mu_\downarrow \psi_\downarrow(x)
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) - \colorbox{lime}{$\dfrac{\delta_B}{2}$} + \colorbox{Dandelion}{$g_{\uparrow\uparrow}$}|\psi_\uparrow(x)|^2 + \colorbox{Thistle}{$g_{\uparrow\downarrow}$}|\psi_\downarrow(x)|^2
+        \right] \psi_\uparrow(x) - \colorbox{lime}{$\dfrac{\hbar\Omega_R}{2}$}\psi_\downarrow(x) = \mu_\uparrow \psi_\uparrow(x) \\
+        &\left[ -\frac{\hbar^2}{2m}\nabla^2 + V(x) + \colorbox{lime}{$\dfrac{\delta_B}{2}$} + \colorbox{Thistle}{$g_{\uparrow\downarrow}$}|\psi_\uparrow(x)|^2 + \colorbox{Dandelion}{$g_{\downarrow\downarrow}$}|\psi_\downarrow(x)|^2
+        \right] \psi_\downarrow(x) - \colorbox{lime}{$\dfrac{\hbar\Omega_R}{2}$}\psi_\uparrow(x) = \mu_\downarrow \psi_\downarrow(x)
     \end{aligned}
   \end{equation*}
   % Depending on the values of $g_{aa}$, $g_{bb}$ and $g_{ab}$, the \textbf{ground state} of the system can behave in different manners
@@ -196,7 +197,7 @@
   Our aim is to study:
   \begin{itemize}
     \item Size $\sigma_B$ and domain wall width $w_D$
-    \item Spectrum inside/outside
+    \item Excitation structures inside/outside
   \end{itemize}
 \end{frame}
 
