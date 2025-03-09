@@ -67,15 +67,15 @@
 \end{frame}
 
 \begin{frame}{Introduction}
-  Why \textbf{bubbles} in a ferromagnetic superfluid?
+  Why bubbles in a ferromagnetic superfluid?
 
   ~
 
   \begin{itemize}
-      \item First \textbf{experimental observation} of false vacuum decay (FVD) in the \emph{Pitaevskii BEC Center} laboratories of the University of Trento.
+      \item First \textbf{experimental observation} of false vacuum decay (FVD) via bubble formation in the \emph{Pitaevskii BEC Center} laboratories of the University of Trento.
       \item \textbf{Superfluidity}: high degree of coherence of the system
       \item \textbf{Ferromagnetism}: double well energy landscape
-      \item Study of FVD provides information on metastability from quantum systems to cosmology
+      \item Study of FVD provides information on metastability, from quantum systems to cosmology
       % \item Framework: \textbf{quantum gas} of Sodium atoms optically trapped and cooled below the condensation temperature
   \end{itemize}
   
@@ -102,8 +102,8 @@
       \begin{itemize}
         \item $N\sim10^6$ condensed $^{23}$Na atoms in the hyperfine states: 
         \begin{align*}
-          &\ket{F,m_F} = \ket{2, -2} = \ket{\uparrow} \\
-          &\ket{F,m_F} = \ket{1, -1} = \ket{\downarrow}
+          &\ket{F = 2, m_F = -2} = \ket{\uparrow} \\
+          &\ket{F = 1, m_F = -1} = \ket{\downarrow}
         \end{align*}
         \item Contact interaction constants $g_{\uparrow\uparrow}$, $g_{\downarrow\downarrow}$, $g_{\uparrow\downarrow}$
         \item Interconversion due to Rabi coupling: strength $\Omega_R$ and detuning $\delta_B$
@@ -161,11 +161,11 @@
   \end{equation*}
 \end{frame}
 
-\begin{frame}{Magnetic model phase diagram: para and ferro}
+\begin{frame}{Magnetic model phase diagram: ground state configuration}
   \begin{minipage}{0.7\textwidth}
     \begin{figure}
       \centering
-      \includegraphics[width=\linewidth]{images/ferro.png}
+      \includegraphics[width=\linewidth]{images/ferro_clean.png}
     \end{figure} 
   \end{minipage}
   \hspace{0.01\textwidth}
@@ -271,7 +271,7 @@
 %   \end{figure}
 % \end{frame}
 
-\begin{frame}{ACF analysis in the inside region vs $\sigma_B$ (fits)}
+\begin{frame}{ACF analysis in the inside region vs $\sigma_B$}
   \begin{columns}
     \begin{column}{0.50\textwidth}
       \begin{figure}
@@ -295,7 +295,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{ACF analysis in the inside region vs $\sigma_B$ (parameters)}
+\begin{frame}{ACF analysis in the inside region vs $\sigma_B$}
   \begin{columns}
     \begin{column}{0.7\textwidth}
       \begin{figure}
@@ -314,14 +314,14 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{ACF analysis in the inside region vs $\Omega_R$ (fit and parameters)}
+\begin{frame}{ACF analysis in the inside region vs $\Omega_R$}
   \begin{figure}
       \centering
       \includegraphics[width=0.9\textwidth]{images/fit_omega_inside.png}
   \end{figure}
 \end{frame}
 
-\begin{frame}{ACF analysis in the outside region vs $\sigma_B$ (fits)}
+\begin{frame}{ACF analysis in the outside region vs $\sigma_B$}
   \begin{columns}
     \begin{column}{0.55\textwidth}
       \begin{figure}
@@ -385,10 +385,27 @@
   Thank you for your attention!
 \end{frame}
 
-% \backupbegin
-% \begin{frame}
-  
-% \end{frame}
-% \backupend
+\backupbegin
+\begin{frame}{Data clustering}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{../thesis/figures/chap2/clustering.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Windowed ACF}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{../thesis/figures/chap2/ACF_b+w.jpeg}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{FFT and ACF averages in the inside region}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{../thesis/figures/chap2/inside_fft_avg.png}
+  \end{figure}
+\end{frame}
+\backupend
 
 \end{document}
