@@ -18,4 +18,4 @@ The scripts do many different things and, at least for now, they are not properl
 Thesis in LaTeX can be found in the folder `thesis/` or [here](https://github.com/giorgiomi/bubbles-ferromagnetic-superfluid/blob/master/thesis/main.pdf). Figures are not included in this repository.
 
 ## Presentation
-Slides in LaTeX (beamer) can be found in the folder `presentation/` or [here](https://github.com/giorgiomi/bubbles-ferromagnetic-superfluid/blob/master/presentation/main.pdf). Figures are not included in this repository.
+Slides in LaTeX (beamer) can be found in the folders `presentation_en/` and `presentation_it/` or [here (english)](https://github.com/giorgiomi/bubbles-ferromagnetic-superfluid/blob/master/presentation_en/main.pdf) and [here (italian)](https://github.com/giorgiomi/bubbles-ferromagnetic-superfluid/blob/master/presentation_it/main.pdf). Figures are not included in this repository.
